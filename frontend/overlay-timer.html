@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overlay Timer - TikToolStream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #ffd700;
+      --accent-primary: #00d9ff;
+      --accent-secondary: #9d4edd;
+      --accent-warning: #ffd23f;
+      --accent-danger: #ff6b6b;
+      --font-heading: 'Montserrat', sans-serif;
+      --font-numeric: 'Rajdhani', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-heading);
+      background: transparent;
+      color: white;
+      overflow: hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timer-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    /* Mascotas laterales */
+    .mascot {
+      width: 150px;
+      height: 150px;
+      flex-shrink: 0;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .mascot img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+    }
+
+    .mascot.left {
+      animation-delay: 0s;
+    }
+
+    .mascot.right {
+      animation-delay: 0.5s;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Timer central */
+    .timer-container {
+      flex: 1;
+      max-width: 500px;
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 24px;
+      padding: 2rem;
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      backdrop-filter: blur(20px);
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(255, 215, 0, 0.1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timer-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-primary), var(--gold), var(--accent-secondary));
+    }
+
+    .timer-label {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    .timer-display {
+      font-family: var(--font-numeric);
+      font-size: 6rem;
+      font-weight: 700;
+      line-height: 1;
+      background: linear-gradient(135deg, #ffffff, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 4px 20px rgba(255, 215, 0, 0.3));
+    }
+
+    .timer-message {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.8);
+      min-height: 1.5em;
+    }
+
+    /* Barra de progreso */
+    .progress-bar {
+      margin-top: 1.5rem;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--gold));
+      border-radius: 4px;
+      transition: width 1s linear;
+      width: 100%;
+    }
+
+    /* Estados de urgencia */
+    .timer-container.warning {
+      border-color: var(--accent-warning);
+      animation: warningPulse 1s ease-in-out infinite;
+    }
+
+    .timer-container.danger {
+      border-color: var(--accent-danger);
+      animation: dangerPulse 0.5s ease-in-out infinite;
+    }
+
+    .timer-container.danger .timer-display {
+      background: linear-gradient(135deg, #ffffff, var(--accent-danger));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    @keyframes warningPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 210, 63, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 210, 63, 0.5); }
+    }
+
+    @keyframes dangerPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.4); }
+      50% { box-shadow: 0 0 50px rgba(255, 107, 107, 0.7); }
+    }
+
+    /* Logo */
+    .timer-logo {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      width: 40px;
+      opacity: 0.5;
+    }
+
+    /* Conectando */
+    .connecting {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .connecting-text {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 1rem;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Ganador */
+    .winner-display {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gold);
+      animation: goldGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes goldGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+    }
+  </style>
+</head>
+<body>
+  <div id="connectingScreen" class="connecting">
+    <div class="spinner"></div>
+    <p class="connecting-text">Conectando con el panel...</p>
+  </div>
+
+  <div id="timerOverlay" class="timer-overlay" style="display: none;">
+    <!-- Mascota Izquierda -->
+    <div class="mascot left">
+      <img id="mascotLeft" src="assets/QuesadillaCrocodilla.webp" alt="Mascota">
+    </div>
+
+    <!-- Timer Central -->
+    <div class="timer-container" id="timerContainer">
+      <h2 class="timer-label" id="timerLabel">MIN 10</h2>
+      <div class="timer-display" id="timerDisplay">02:00</div>
+      <div class="timer-message" id="timerMessage"></div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="winner-display" id="winnerDisplay">
+        🏆 GANADOR: <span id="winnerName">—</span>
+      </div>
+      <img src="assets/LOGOSINFONDO.png" alt="Logo" class="timer-logo">
+    </div>
+
+    <!-- Mascota Derecha -->
+    <div class="mascot right">
+      <img id="mascotRight" src="assets/Noel.webp" alt="Mascota">
+    </div>
+  </div>
+
+  <script>
+    // Conexión con el panel principal via BroadcastChannel
+    const channel = new BroadcastChannel('tiktoolstream_overlay');
+    const connectingScreen = document.getElementById('connectingScreen');
+    const timerOverlay = document.getElementById('timerOverlay');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerLabel = document.getElementById('timerLabel');
+    const timerMessage = document.getElementById('timerMessage');
+    const timerContainer = document.getElementById('timerContainer');
+    const progressFill = document.getElementById('progressFill');
+    const winnerDisplay = document.getElementById('winnerDisplay');
+    const winnerName = document.getElementById('winnerName');
+    const mascotLeft = document.getElementById('mascotLeft');
+    const mascotRight = document.getElementById('mascotRight');
+
+    let initialTime = 120;
+    let connected = false;
+
+    // Solicitar datos iniciales
+    channel.postMessage({ type: 'request_sync' });
+
+    // Escuchar actualizaciones
+    channel.onmessage = (event) => {
+      const data = event.data;
+      
+      if (!connected && data.type !== 'error') {
+        connected = true;
+        connectingScreen.style.display = 'none';
+        timerOverlay.style.display = 'flex';
+      }
+
+      switch (data.type) {
+        case 'timer_update':
+          updateTimer(data);
+          break;
+        case 'timer_config':
+          if (data.initialTime) initialTime = data.initialTime;
+          if (data.label) timerLabel.textContent = data.label;
+          break;
+        case 'winner':
+          showWinner(data.winner);
+          break;
+        case 'overlay_images':
+          if (data.leftImage) mascotLeft.src = data.leftImage;
+          if (data.rightImage) mascotRight.src = data.rightImage;
+          break;
+        case 'sync':
+          // Sincronización completa
+          if (data.timer) updateTimer(data.timer);
+          if (data.config) {
+            initialTime = data.config.initialTime || 120;
+            timerLabel.textContent = data.config.label || 'MIN 10';
+          }
+          if (data.images) {
+            if (data.images.left) mascotLeft.src = data.images.left;
+            if (data.images.right) mascotRight.src = data.images.right;
+          }
+          break;
+      }
+    };
+
+    function updateTimer(data) {
+      const seconds = data.seconds || 0;
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+      // Actualizar barra de progreso
+      const progress = (seconds / initialTime) * 100;
+      progressFill.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+
+      // Estados de urgencia
+      timerContainer.classList.remove('warning', 'danger');
+      if (seconds <= 10) {
+        timerContainer.classList.add('danger');
+      } else if (seconds <= 30) {
+        timerContainer.classList.add('warning');
+      }
+
+      // Mensaje
+      if (data.message) {
+        timerMessage.textContent = data.message;
+      }
+
+      // Ocultar ganador si el timer está activo
+      if (seconds > 0) {
+        winnerDisplay.style.display = 'none';
+      }
+    }
+
+    function showWinner(winner) {
+      if (winner) {
+        winnerName.textContent = winner;
+        winnerDisplay.style.display = 'block';
+      }
+    }
+
+    // Timeout para conexión
+    setTimeout(() => {
+      if (!connected) {
+        connectingScreen.innerHTML = `
+          <p class="connecting-text">⚠️ No se detectó el panel principal</p>
+          <p class="connecting-text" style="font-size: 0.9rem; opacity: 0.7;">
+            Abre el panel de control en otra pestaña
+          </p>
+        `;
+      }
+    }, 5000);
+
+    // Mantener viva la conexión
+    setInterval(() => {
+      if (connected) {
+        channel.postMessage({ type: 'ping' });
+      }
+    }, 10000);
+  </script>
+</body>
+</html>

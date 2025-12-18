@@ -99,9 +99,23 @@ function initModals() {
  * Inicializa la barra flotante
  */
 function initFloatingSidebar() {
+  const sidebar = document.getElementById('floatingSidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebarContent = document.getElementById('sidebarContent');
   const newsBtn = document.getElementById('newsBtn');
   const chatBtn = document.getElementById('chatBtn');
   const overlayBtn = document.getElementById('overlayBtn');
+  const openLeaderboardBtn = document.getElementById('openLeaderboardBtn');
+  const openTimerBtn = document.getElementById('openTimerBtn');
+
+  // Toggle de la barra flotante
+  if (sidebarToggle && sidebar) {
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+    // Iniciar expandido
+    sidebar.classList.add('active');
+  }
 
   if (newsBtn) {
     newsBtn.addEventListener('click', () => openModal('newsModal'));
@@ -113,6 +127,24 @@ function initFloatingSidebar() {
 
   if (overlayBtn) {
     overlayBtn.addEventListener('click', () => openModal('overlayModal'));
+  }
+
+  // Botón para abrir overlay de leaderboard
+  if (openLeaderboardBtn) {
+    openLeaderboardBtn.addEventListener('click', () => {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const overlayUrl = `${window.location.origin}/overlay.html`;
+      window.open(overlayUrl, '_blank', 'width=500,height=600');
+    });
+  }
+
+  // Botón para abrir overlay de timer
+  if (openTimerBtn) {
+    openTimerBtn.addEventListener('click', () => {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const timerUrl = `${window.location.origin}/overlay-timer.html`;
+      window.open(timerUrl, '_blank', 'width=800,height=400');
+    });
   }
 }
 

@@ -66,6 +66,66 @@ import {
 import { processGiftEvent } from "./modules/coins.js";
 
 // ============================================
+// BroadcastChannel para comunicación con overlays
+// ============================================
+
+const overlayChannel = new BroadcastChannel('tiktoolstream_overlay');
+
+// Escuchar peticiones de sincronización de overlays
+overlayChannel.onmessage = (event) => {
+  if (event.data.type === 'request_sync' || event.data.type === 'ping') {
+    sendOverlaySync();
+  }
+};
+
+function sendOverlaySync() {
+  const config = getConfig();
+  const state = getTimerState();
+  const winner = getWinner();
+  
+  overlayChannel.postMessage({
+    type: 'sync',
+    timer: {
+      seconds: state.timeRemaining,
+      phase: state.phase,
+      active: state.active
+    },
+    config: {
+      initialTime: config.initialTime,
+      label: config.minMessage
+    },
+    winner: winner ? winner.user : null
+  });
+}
+
+// Función para enviar actualizaciones del timer a los overlays
+function broadcastTimerUpdate(seconds, message = '') {
+  overlayChannel.postMessage({
+    type: 'timer_update',
+    seconds: seconds,
+    message: message
+  });
+}
+
+// Función para enviar el ganador a los overlays
+function broadcastWinner(winner) {
+  overlayChannel.postMessage({
+    type: 'winner',
+    winner: winner
+  });
+}
+
+// Función para enviar la configuración a los overlays
+function broadcastConfig() {
+  const config = getConfig();
+  overlayChannel.postMessage({
+    type: 'timer_config',
+    initialTime: config.initialTime,
+    label: config.minMessage
+  });
+}
+
+// ============================================
 // Referencias DOM
 // ============================================
 
@@ -143,9 +203,17 @@ function initializeModules() {
   setTimerCallbacks({
     onFinished: (winner) => {
       updateTimerControls();
+      // Enviar ganador a overlays
+      if (winner) {
+        broadcastWinner(winner.user);
+      }
     },
     onPhaseChange: (phase) => {
       updateTimerControls();
+    },
+    onTick: (seconds, message) => {
+      // Enviar actualización a overlays cada segundo
+      broadcastTimerUpdate(seconds, message);
     },
     onTieExt: (tiedUsers, extensionTime, count) => {
       // Aquí se podría agregar una notificación visual adicional

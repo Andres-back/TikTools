@@ -40,6 +40,7 @@ let initialTimeForProgress = 0;
 let onTimerFinished = null;
 let onPhaseChanged = null;
 let onTieExtension = null;
+let onTimerTick = null;
 
 /**
  * Inicializa el módulo con referencias DOM
@@ -66,10 +67,11 @@ export function initTimer(elements) {
 /**
  * Registra callbacks para eventos del timer
  */
-export function setTimerCallbacks({ onFinished, onPhaseChange, onTieExt }) {
+export function setTimerCallbacks({ onFinished, onPhaseChange, onTieExt, onTick }) {
   onTimerFinished = onFinished || null;
   onPhaseChanged = onPhaseChange || null;
   onTieExtension = onTieExt || null;
+  onTimerTick = onTick || null;
 }
 
 /**
@@ -203,6 +205,11 @@ function tick() {
   // Sincronizar el shadow
   if (timerDisplayShadowEl) {
     timerDisplayShadowEl.textContent = timeText;
+  }
+  
+  // Callback de tick para sincronizar overlays
+  if (onTimerTick) {
+    onTimerTick(timeRemaining, timerMessageEl ? timerMessageEl.textContent : '');
   }
   
   const config = getConfig();
