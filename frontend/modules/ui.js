@@ -434,7 +434,8 @@ async function loadOverlaySettings() {
     }
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const overlayUrl = `${window.location.origin}/overlay/${user.id}`;
+    const identifier = user.username || user.id;
+    const overlayUrl = `${window.location.origin}/overlay/${identifier}`;
     overlayLinkInput.value = overlayUrl;
   } catch (error) {
     console.error('Error loading overlay settings:', error);

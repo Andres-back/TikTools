@@ -33,7 +33,7 @@ const upload = multer({
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
-    
+
     if (mimetype && extname) {
       return cb(null, true);
     }
@@ -72,12 +72,29 @@ router.get('/my', authenticateToken, async (req, res) => {
 });
 
 /**
- * GET /api/overlays/:userId
+ * GET /api/overlays/:identifier
  * Obtener configuración de overlay de un usuario específico (público)
+ * Acepta ID o Username
  */
-router.get('/:userId', async (req, res) => {
+router.get('/:identifier', async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { identifier } = req.params;
+    let userId = identifier;
+
+    // Si no es un número, asumir que es un username
+    if (isNaN(identifier)) {
+      const userResult = await db.query('SELECT id FROM users WHERE username = $1', [identifier]);
+      const user = userResult.rows ? userResult.rows[0] : userResult[0];
+
+      if (!user) {
+        // Si no existe el usuario, devolver default sin error 404 para no romper el overlay
+        return res.json({
+          left_image_url: '/assets/QuesadillaCrocodilla.webp',
+          right_image_url: '/assets/Noel.webp'
+        });
+      }
+      userId = user.id;
+    }
 
     const result = await db.query(
       'SELECT * FROM overlays WHERE user_id = $1',
@@ -110,7 +127,7 @@ router.post('/', authenticateToken, upload.fields([
 ]), async (req, res) => {
   try {
     const userId = req.user.id;
-    
+
     // Obtener overlay actual para eliminar imágenes antiguas si se reemplazan
     const currentResult = await db.query(
       'SELECT * FROM overlays WHERE user_id = $1',

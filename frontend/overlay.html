@@ -341,8 +341,13 @@
 
   <script type="module">
     // Conectar al WebSocket del servidor principal
-    const WS_URL = 'ws://localhost:8080/live';
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const WS_URL = `${protocol}//${window.location.host}/live`;
     let ws = null;
+    
+    // Obtener usuario de la URL
+    const pathParts = window.location.pathname.split('/');
+    const username = pathParts[pathParts.length - 1];
 
     function connectWebSocket() {
       try {
@@ -350,14 +355,19 @@
 
         ws.addEventListener('open', () => {
           console.log('[Overlay] Conectado al servidor');
+          // Identificarse si es necesario (futuro)
+          // ws.send(JSON.stringify({ type: 'identify', username }));
         });
 
         ws.addEventListener('message', (event) => {
           try {
             const data = JSON.parse(event.data);
-            console.log('[Overlay] Mensaje recibido:', data);
+            // console.log('[Overlay] Mensaje recibido:', data);
+            
+            // Aquí podríamos filtrar por usuario si el servidor enviara el target
+            // Por ahora aceptamos todo broadcast
+            
             if (data.type === 'leaderboard-update') {
-              console.log('[Overlay] Actualizando leaderboard con:', data.donors);
               updateLeaderboard(data.donors);
             }
           } catch (err) {

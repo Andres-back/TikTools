@@ -48,19 +48,6 @@ export function initConnection(elements) {
 
   // Inicializar WebSocket de sincronización permanente
   initSyncWebSocket();
-}
-
-/**
- * Inicializa WebSocket de sincronización (siempre activo)
- */
-function initSyncWebSocket() {
-  const wsUrl = `ws://${window.location.host}/live`;
-
-  syncWs = new WebSocket(wsUrl);
-
-  syncWs.addEventListener('open', () => {
-    console.log('[SyncWS] Conectado');
-  });
 
   syncWs.addEventListener('close', () => {
     setTimeout(initSyncWebSocket, 3000);
