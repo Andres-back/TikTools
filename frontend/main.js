@@ -175,6 +175,15 @@ const elements = {
   animationOverlay: document.getElementById("animationOverlay")
 };
 
+// Log de elementos encontrados
+console.log('Elementos DOM cargados:', {
+  tiktokConnect: !!elements.tiktokConnect,
+  tiktokUserInput: !!elements.tiktokUserInput,
+  timerPlay: !!elements.timerPlay,
+  timerReset: !!elements.timerReset,
+  donorList: !!elements.donorList
+});
+
 // ============================================
 // Inicialización de módulos
 // ============================================
@@ -325,12 +334,17 @@ function loadUIFromStorage() {
 // ============================================
 
 function setupEventListeners() {
+  console.log('setupEventListeners - Configurando event listeners');
+  
   // Conectar/Desconectar (ahora también guarda el usuario)
   elements.tiktokConnect?.addEventListener("click", () => {
+    console.log('Connect button clicked');
     if (isConnected()) {
+      console.log('Disconnecting...');
       disconnect();
     } else {
       const username = elements.tiktokUserInput?.value?.trim() || getCurrentUser();
+      console.log('Attempting to connect with username:', username);
       if (username) {
         // Guardar el usuario automáticamente al conectar
         saveUser(username);
@@ -342,7 +356,10 @@ function setupEventListeners() {
         // Obtener credenciales opcionales del localStorage
         const sessionId = loadSessionId() || null;
         const ttTargetIdc = loadTtTargetIdc() || null;
+        console.log('Connecting with credentials:', { username, hasSessionId: !!sessionId, hasTtTargetIdc: !!ttTargetIdc });
         connect(username, sessionId, ttTargetIdc);
+      } else {
+        console.warn('No username provided');
       }
     }
     updateConnectionUI();
@@ -575,16 +592,27 @@ function showPlanBanner(planData) {
 // ============================================
 
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log('DOMContentLoaded - Iniciando aplicación');
+  
   // Inicializar UI (modales, menús, etc.)
+  console.log('Inicializando UI...');
   initUI();
   
+  console.log('Inicializando módulos...');
   initializeModules();
+  
+  console.log('Cargando UI desde storage...');
   loadUIFromStorage();
+  
+  console.log('Configurando event listeners...');
   setupEventListeners();
+  
+  console.log('Actualizando controles...');
   updateTimerControls();
   updateConnectionUI();
   
   // Verificar estado del plan
+  console.log('Verificando estado del plan...');
   const planStatus = await checkPlanStatus();
   if (planStatus) {
     showPlanBanner(planStatus);
