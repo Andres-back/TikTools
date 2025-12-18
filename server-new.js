@@ -109,16 +109,16 @@ app.get('/api/setup/manually-verify', async (req, res) => {
 app.get('/api/setup/debug-email', async (req, res) => {
   if (req.query.secret !== 'lolkjk12_RESET') return res.status(403).send('Forbidden');
 
-  const targetEmail = req.query.email || 'resslow41@gmail.com';
+  const targetEmail = req.query.email || 'tiktoolstreamstudio@gmail.com';
   const { transporter } = require('./utils/mailer');
 
   try {
     const info = await transporter.sendMail({
-      from: '"TikTool Debug" <resslow41@gmail.com>',
+      from: '"TikToolStream Debug" <tiktoolstreamstudio@gmail.com>',
       to: targetEmail,
-      subject: 'Prueba de Diagnóstico',
-      text: 'Si ves esto, el correo funciona.',
-      html: '<b>Si ves esto, el correo funciona.</b>'
+      subject: 'Prueba de Diagnóstico - TikToolStream',
+      text: 'Si ves esto, el correo funciona correctamente.',
+      html: '<b>Si ves esto, el correo funciona correctamente. ✅</b>'
     });
     res.json({ success: true, messageId: info.messageId, response: info.response });
   } catch (error) {
@@ -126,7 +126,10 @@ app.get('/api/setup/debug-email', async (req, res) => {
       success: false,
       error: error.message,
       code: error.code,
-      response: error.response
+      command: error.command,
+      response: error.response,
+      stack: error.stack
+    });
     });
   }
 });

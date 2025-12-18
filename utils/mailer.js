@@ -1,8 +1,8 @@
 const nodemailer = require('nodemailer');
 
-// Usar variables de entorno para mayor seguridad
-const EMAIL_USER = process.env.EMAIL_USER || 'resslow41@gmail.com';
-const EMAIL_PASS = process.env.EMAIL_PASS || ''; // REEMPLAZAR CON TU APP PASSWORD DE GOOGLE
+// Credenciales de correo
+const EMAIL_USER = process.env.EMAIL_USER || 'tiktoolstreamstudio@gmail.com';
+const EMAIL_PASS = process.env.EMAIL_PASS || 'zcfwoqqtbcmdmhsy';
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -27,7 +27,7 @@ const sendVerificationEmail = async (email, token) => {
     const verificationLink = `https://tiktoolstream.studio/verify-email.html?token=${token}`;
 
     const mailOptions = {
-        from: '"TikToolStream" <resslow41@gmail.com>', // Debe coincidir con el usuario autenticado
+        from: '"TikToolStream" <tiktoolstreamstudio@gmail.com>',
         to: email,
         subject: 'Verifica tu cuenta - TikToolStream',
         html: `
