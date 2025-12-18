@@ -28,26 +28,24 @@ async function initDatabase() {
   try {
     if (process.env.DATABASE_URL) {
       // PostgreSQL (Digital Ocean, Heroku, etc.)
-      let connectionString = process.env.DATABASE_URL;
-      
-      // Asegurar que sslmode=require esté presente
-      if (!connectionString.includes('sslmode')) {
-        connectionString += (connectionString.includes('?') ? '&' : '?') + 'sslmode=require';
-      }
+      const connectionString = process.env.DATABASE_URL;
       
       process.stdout.write(`🔗 Connecting to PostgreSQL...\n`);
       
-      // Configuración SSL para DigitalOcean Managed Databases
-      // CRÍTICO: rejectUnauthorized: false acepta certificados auto-firmados
-      const sslConfig = {
-        rejectUnauthorized: false,
-        // No validar el hostname del certificado
-        checkServerIdentity: () => undefined
-      };
-
+      // Parsear la URL para extraer componentes
+      const url = new URL(connectionString.replace('postgresql://', 'postgres://'));
+      
+      // Configuración explícita sin usar connectionString
+      // Esto evita conflictos con sslmode en la URL
       pool = new Pool({
-        connectionString,
-        ssl: sslConfig,
+        user: url.username,
+        password: url.password,
+        host: url.hostname,
+        port: parseInt(url.port) || 5432,
+        database: url.pathname.slice(1), // Remover el / inicial
+        ssl: {
+          rejectUnauthorized: false
+        },
         max: 20,
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 10000,
