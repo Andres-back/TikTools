@@ -45,9 +45,15 @@
     }
 
     .auth-logo img {
-      width: 120px;
+      width: 180px;
       height: auto;
-      filter: drop-shadow(0 4px 12px rgba(254, 44, 85, 0.3));
+      filter: drop-shadow(0 6px 20px rgba(254, 44, 85, 0.4));
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
 
     .auth-title {
@@ -58,8 +64,35 @@
     }
 
     .auth-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 20px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .features-list li {
       color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .features-list li::before {
+      content: "✓";
+      color: #00ff88;
+      font-weight: bold;
+      font-size: 16px;
     }
 
     .auth-tabs {
@@ -298,10 +331,16 @@
       height: 16px;
       accent-color: #fe2c55;
     }
-
-    .forgot-link {
-      color: #fe2c55;
-      text-decoration: none;
+LOGOSINFONDO.png" alt="TikToolStream Logo">
+      </div>
+      <h1 class="auth-title">TikToolStream</h1>
+      <p class="auth-subtitle">Herramientas profesionales para streamers de TikTok</p>
+      <ul class="features-list">
+        <li>Sistema de subastas en vivo con temporizador</li>
+        <li>Leaderboard animado en tiempo real</li>
+        <li>Gestión de donaciones y regalos</li>
+        <li>Panel de control personalizable</li>
+      </ul
       transition: color 0.3s ease;
     }
 

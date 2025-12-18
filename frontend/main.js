@@ -9,8 +9,10 @@
  * - leaderboard.js → Ranking de donadores
  * - timer.js     → Temporizador con tie-breaker
  * - connection.js → WebSocket al servidor TikTok
+ * - auth.js      → Autenticación y gestión de sesión
  */
 
+import { apiCall, getUser, clearTokens } from "./modules/auth.js";
 import { 
   loadUser, 
   saveUser,
@@ -436,14 +438,82 @@ window.tiktokLiveUi = {
 };
 
 // ============================================
+// Verificación de Plan
+// ============================================
+
+async function checkPlanStatus() {
+  try {
+    const response = await apiCall('/payments/plan-status');
+    
+    if (!response.ok) {
+      return null;
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error checking plan status:', error);
+    return null;
+  }
+}
+
+function showPlanBanner(planData) {
+  const banner = document.getElementById('planBanner');
+  const planText = document.getElementById('planText');
+  const upgradeBtn = document.getElementById('upgradePlan');
+  
+  if (!banner || !planData) return;
+  
+  const daysRemaining = planData.daysRemaining || 0;
+  const planType = planData.planType || 'free';
+  const isActive = planData.isActive;
+  
+  banner.classList.remove('warning', 'expired');
+  banner.style.display = 'flex';
+  
+  if (!isActive || daysRemaining <= 0) {
+    // Plan expirado
+    banner.classList.add('expired');
+    planText.textContent = '⚠️ Tu plan ha expirado. Actualiza para continuar usando la plataforma.';
+    upgradeBtn.style.display = 'block';
+  } else if (daysRemaining <= 3 && planType === 'free') {
+    // Trial por expirar
+    banner.classList.add('warning');
+    planText.textContent = `⏰ Te quedan ${daysRemaining} día${daysRemaining !== 1 ? 's' : ''} de prueba gratis`;
+    upgradeBtn.style.display = 'block';
+  } else if (planType === 'free') {
+    // Trial activo
+    planText.textContent = `🎁 Período de prueba: ${daysRemaining} día${daysRemaining !== 1 ? 's' : ''} restantes`;
+    upgradeBtn.style.display = 'block';
+  } else {
+    // Plan Pro activo
+    planText.textContent = `💎 Plan Pro - ${daysRemaining} día${daysRemaining !== 1 ? 's' : ''} restantes`;
+    upgradeBtn.style.display = 'none';
+  }
+  
+  // Configurar botón de upgrade
+  upgradeBtn.onclick = () => {
+    if (confirm('Para obtener el Plan Pro, contacta con el administrador vía PayPal. ¿Deseas continuar?')) {
+      window.open('https://www.paypal.me/xDangerous', '_blank');
+    }
+  };
+}
+
+// ============================================
 // Inicialización
 // ============================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initializeModules();
   loadUIFromStorage();
   setupEventListeners();
   updateTimerControls();
   updateConnectionUI();
+  
+  // Verificar estado del plan
+  const planStatus = await checkPlanStatus();
+  if (planStatus) {
+    showPlanBanner(planStatus);
+  }
   
   });

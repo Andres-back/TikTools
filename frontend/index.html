@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🏆 Andrecchh Tools</title>
+  <title>🏆 TikToolStream - Panel de Control</title>
   
   <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,20 @@
          PANEL DE CONTROL (Izquierda)
          ======================================== -->
     <aside class="control-panel">
-      <h1 class="panel-title">⚙️ Panel de Control</h1>
+      <div class="panel-header">
+        <img src="assets/LOGOSINFONDO.png" alt="Logo" class="panel-logo">
+        <h1 class="panel-title">Panel de Control</h1>
+      </div>
+
+      <!-- Banner de Plan/Trial -->
+      <div id="planBanner" class="plan-banner" style="display: none;">
+        <div class="plan-info">
+          <span id="planText"></span>
+        </div>
+        <button id="upgradePlan" class="btn-upgrade" style="display: none;">
+          💎 Actualizar a Pro
+        </button>
+      </div>
       
       <!-- Conexión TikTok -->
       <section class="panel-section">
