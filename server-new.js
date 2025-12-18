@@ -139,14 +139,14 @@ app.get('/api/health', async (req, res) => {
 
 app.use(express.static(PUBLIC_DIR));
 
-// SPA fallback (Express 5 syntax)
-app.get('/{*path}', (req, res, next) => {
+// SPA fallback - Express 5 compatible
+app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ error: 'Endpoint no encontrado' });
   }
   
   const ext = path.extname(req.path);
-  if (ext) {
+  if (ext && ext !== '.html') {
     return res.sendFile(path.join(PUBLIC_DIR, req.path), (err) => {
       if (err) {
         res.status(404).send('Archivo no encontrado');

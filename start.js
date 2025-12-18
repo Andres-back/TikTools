@@ -153,8 +153,8 @@ app.get('/api/health', async (req, res) => {
 
 app.use(express.static(PUBLIC_DIR));
 
-// SPA fallback
-app.get('*', (req, res, next) => {
+// SPA fallback - Express 5 compatible
+app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ error: 'Endpoint no encontrado' });
   }
