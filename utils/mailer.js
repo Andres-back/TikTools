@@ -1,12 +1,25 @@
 const nodemailer = require('nodemailer');
 
+// Usar variables de entorno para mayor seguridad
+const EMAIL_USER = process.env.EMAIL_USER || 'resslow41@gmail.com';
+const EMAIL_PASS = process.env.EMAIL_PASS || ''; // REEMPLAZAR CON TU APP PASSWORD DE GOOGLE
+
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587, // TLS
     secure: false,
     auth: {
-        user: 'resslow41@gmail.com', // Tu correo de Gmail
-        pass: 'zcfwoqqtbcmdmhsy'     // Sin espacios
+        user: EMAIL_USER,
+        pass: EMAIL_PASS
+    }
+});
+
+// Verificar conexión al iniciar
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('❌ Error de configuración SMTP:', error.message);
+    } else {
+        console.log('✅ Servidor SMTP listo para enviar correos');
     }
 });
 
