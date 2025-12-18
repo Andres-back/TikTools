@@ -301,6 +301,126 @@ async function getDashboard(req, res) {
   }
 }
 
+/**
+ * Crear nuevo usuario (desde admin)
+ * POST /api/admin/users
+ */
+async function createUser(req, res) {
+  try {
+    const { username, email, password, planType = 'free', planDays = 2, role = 'user' } = req.body;
+    const bcrypt = require('bcryptjs');
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'Username, email y password son requeridos' });
+    }
+
+    // Verificar si ya existe
+    const existing = await query(
+      'SELECT id FROM users WHERE username = $1 OR email = $2',
+      [username.toLowerCase(), email.toLowerCase()]
+    );
+
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ error: 'Usuario o email ya existe' });
+    }
+
+    // Hash de password
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    // Crear usuario
+    const result = await query(
+      `INSERT INTO users (username, email, password_hash, role, is_verified, is_active, plan_type, plan_days_remaining)
+       VALUES ($1, $2, $3, $4, true, true, $5, $6)
+       RETURNING id, username, email, role, plan_type, plan_days_remaining`,
+      [username.toLowerCase(), email.toLowerCase(), passwordHash, role, planType, planDays]
+    );
+
+    // Establecer fecha de expiración
+    if (planDays > 0) {
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + planDays);
+      await query(
+        'UPDATE users SET plan_expires_at = $1 WHERE id = $2',
+        [expiresAt.toISOString(), result.rows[0].id]
+      );
+    }
+
+    // Crear configuración por defecto
+    await query('INSERT INTO user_settings (user_id) VALUES ($1)', [result.rows[0].id]);
+    await query('INSERT INTO user_stats (user_id) VALUES ($1)', [result.rows[0].id]);
+
+    // Registrar en historial
+    await query(
+      `INSERT INTO plan_history (user_id, action, plan_type, days_changed, admin_id, notes)
+       VALUES ($1, 'created', $2, $3, $4, 'Usuario creado por administrador')`,
+      [result.rows[0].id, planType, planDays, req.user.userId]
+    );
+
+    res.status(201).json({
+      message: 'Usuario creado exitosamente',
+      user: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Error al crear usuario' });
+  }
+}
+
+/**
+ * Eliminar usuario (solo admin)
+ * DELETE /api/admin/users/:id
+ */
+async function deleteUser(req, res) {
+  try {
+    const { id } = req.params;
+
+    // No permitir eliminar administradores
+    const userResult = await query('SELECT role FROM users WHERE id = $1', [id]);
+    
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    if (userResult.rows[0].role === 'admin') {
+      return res.status(400).json({ error: 'No se puede eliminar un administrador' });
+    }
+
+    // Eliminar en cascada (gracias a las foreign keys)
+    await query('DELETE FROM users WHERE id = $1', [id]);
+
+    res.json({ message: 'Usuario eliminado exitosamente' });
+
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Error al eliminar usuario' });
+  }
+}
+
+/**
+ * Resetear contraseña de usuario
+ * POST /api/admin/users/:id/reset-password
+ */
+async function resetPassword(req, res) {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+    const bcrypt = require('bcryptjs');
+
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await query('UPDATE users SET password_hash = $1 WHERE id = $2', [passwordHash, id]);
+
+    res.json({ message: 'Contraseña reseteada exitosamente' });
+
+  } catch (error) {
+    res.status(500).json({ error: 'Error al resetear contraseña' });
+  }
+}
+
 module.exports = {
   getUsers,
   getUser,
@@ -308,5 +428,8 @@ module.exports = {
   removeDays,
   toggleStatus,
   changeRole,
-  getDashboard
+  getDashboard,
+  createUser,
+  deleteUser,
+  resetPassword
 };
