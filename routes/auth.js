@@ -370,7 +370,7 @@ async function getProfile(req, res) {
   try {
     const result = await query(
       'SELECT id, username, email, display_name, role, avatar_url, created_at, is_verified FROM users WHERE id = $1',
-      [req.user.id]
+      [req.user.userId]
     );
 
     if (result.rows.length === 0) return res.sendStatus(404);
@@ -396,7 +396,7 @@ async function updateProfile(req, res) {
            updated_at = CURRENT_TIMESTAMP
        WHERE id = $3 
        RETURNING id, username, email, display_name, avatar_url`,
-      [displayName, avatarUrl, req.user.id]
+      [displayName, avatarUrl, req.user.userId]
     );
 
     res.json(result.rows[0]);
@@ -418,7 +418,7 @@ async function changePassword(req, res) {
       return res.status(400).json({ error: 'La nueva contraseña debe tener al menos 6 caracteres' });
     }
 
-    const userResult = await query('SELECT password_hash FROM users WHERE id = $1', [req.user.id]);
+    const userResult = await query('SELECT password_hash FROM users WHERE id = $1', [req.user.userId]);
     const user = userResult.rows[0];
 
     const valid = await bcrypt.compare(currentPassword, user.password_hash);
@@ -427,7 +427,7 @@ async function changePassword(req, res) {
     }
 
     const newHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
-    await query('UPDATE users SET password_hash = $1 WHERE id = $2', [newHash, req.user.id]);
+    await query('UPDATE users SET password_hash = $1 WHERE id = $2', [newHash, req.user.userId]);
 
     res.json({ message: 'Contraseña actualizada exitosamente' });
 

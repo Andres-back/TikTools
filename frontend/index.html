@@ -348,49 +348,29 @@
 
   <!-- Protección de autenticación -->
   <script type="module">
-    import { isLoggedIn, isGuest, getUser, getAccessToken } from './modules/auth.js';
+    import { isLoggedIn, isGuest, getAccessToken } from './modules/auth.js';
 
-    // Función para verificar si el usuario es admin (incluye llamada API)
-    async function checkAndRedirect() {
+    // Verificar si el usuario está autenticado
+    (async function checkAuth() {
       if (!isLoggedIn() && !isGuest()) {
         window.location.href = '/login.html';
         return;
       }
       
       if (isLoggedIn()) {
-        // Primero verificar localStorage
-        const user = getUser();
-        if (user?.role === 'admin') {
-          window.location.href = '/admin.html';
-          return;
-        }
-        
-        // Si no hay rol en localStorage, verificar con API (una sola vez)
-        if (!user?.role && !sessionStorage.getItem('roleChecked')) {
+        // Verificar rol directamente del localStorage primero
+        const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+        if (userStr) {
           try {
-            sessionStorage.setItem('roleChecked', 'true');
-            const token = getAccessToken();
-            const response = await fetch('/api/auth/profile', {
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (response.ok) {
-              const profile = await response.json();
-              if (profile.role === 'admin') {
-                // Actualizar localStorage y redirigir
-                const storage = localStorage.getItem('accessToken') ? localStorage : sessionStorage;
-                const existingUser = user || {};
-                storage.setItem('user', JSON.stringify({ ...existingUser, role: 'admin' }));
-                window.location.href = '/admin.html';
-              }
+            const user = JSON.parse(userStr);
+            if (user.role === 'admin') {
+              window.location.href = '/admin.html';
+              return;
             }
-          } catch (e) {
-            console.error('Error verificando rol:', e);
-          }
+          } catch (e) {}
         }
       }
-    }
-    
-    checkAndRedirect();
+    })();
   </script>
 
   <!-- Módulo principal -->
