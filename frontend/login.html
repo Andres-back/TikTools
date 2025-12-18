@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - TikTok Auction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .auth-logo {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .auth-title {
+      color: #fff;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .auth-subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 6px;
+      border-radius: 12px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.5);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .auth-tab.active {
+      background: linear-gradient(135deg, #fe2c55 0%, #ff6b6b 100%);
+      color: #fff;
+    }
+
+    .auth-tab:hover:not(.active) {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #fe2c55;
+      box-shadow: 0 0 0 4px rgba(254, 44, 85, 0.2);
+    }
+
+    .form-input.error {
+      border-color: #ff4757;
+    }
+
+    .form-error {
+      color: #ff4757;
+      font-size: 12px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .form-error.show {
+      display: block;
+    }
+
+    .password-toggle {
+      position: relative;
+    }
+
+    .password-toggle .toggle-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #fe2c55 0%, #ff6b6b 100%);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(254, 44, 85, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .submit-btn .loading {
+      display: none;
+    }
+
+    .submit-btn.loading .text {
+      display: none;
+    }
+
+    .submit-btn.loading .loading {
+      display: inline-block;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 13px;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .skip-btn {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .skip-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .alert {
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    .alert.error {
+      background: rgba(255, 71, 87, 0.2);
+      border: 1px solid rgba(255, 71, 87, 0.3);
+      color: #ff6b7a;
+    }
+
+    .alert.success {
+      background: rgba(46, 213, 115, 0.2);
+      border: 1px solid rgba(46, 213, 115, 0.3);
+      color: #5fe89a;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+    }
+
+    .remember-me input {
+      width: 16px;
+      height: 16px;
+      accent-color: #fe2c55;
+    }
+
+    .forgot-link {
+      color: #fe2c55;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-link:hover {
+      color: #ff6b6b;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 32px 24px;
+      }
+
+      .auth-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-header">
+      <div class="auth-logo">🎯</div>
+      <h1 class="auth-title">TikTok Auction</h1>
+      <p class="auth-subtitle">Sistema de subastas en vivo</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Iniciar Sesión</button>
+      <button class="auth-tab" data-tab="register">Registrarse</button>
+    </div>
+
+    <div id="alert" class="alert"></div>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="auth-form active">
+      <div class="form-group">
+        <label class="form-label">Email o Usuario</label>
+        <input type="text" class="form-input" name="username" placeholder="tu@email.com" required>
+        <div class="form-error" id="loginUsernameError"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <div class="password-toggle">
+          <input type="password" class="form-input" name="password" placeholder="••••••••" required>
+          <button type="button" class="toggle-btn" onclick="togglePassword(this)">👁</button>
+        </div>
+        <div class="form-error" id="loginPasswordError"></div>
+      </div>
+
+      <div class="remember-forgot">
+        <label class="remember-me">
+          <input type="checkbox" name="remember">
+          Recordarme
+        </label>
+        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <span class="text">Iniciar Sesión</span>
+        <span class="loading">⏳ Cargando...</span>
+      </button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="registerForm" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Nombre de Usuario</label>
+        <input type="text" class="form-input" name="username" placeholder="usuario123" required minlength="3">
+        <div class="form-error" id="regUsernameError"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" name="email" placeholder="tu@email.com" required>
+        <div class="form-error" id="regEmailError"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <div class="password-toggle">
+          <input type="password" class="form-input" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+          <button type="button" class="toggle-btn" onclick="togglePassword(this)">👁</button>
+        </div>
+        <div class="form-error" id="regPasswordError"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Confirmar Contraseña</label>
+        <div class="password-toggle">
+          <input type="password" class="form-input" name="confirmPassword" placeholder="Repite la contraseña" required>
+          <button type="button" class="toggle-btn" onclick="togglePassword(this)">👁</button>
+        </div>
+        <div class="form-error" id="regConfirmError"></div>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <span class="text">Crear Cuenta</span>
+        <span class="loading">⏳ Cargando...</span>
+      </button>
+    </form>
+
+    <div class="auth-divider">o</div>
+
+    <button class="skip-btn" onclick="skipLogin()">
+      Continuar sin cuenta →
+    </button>
+  </div>
+
+  <script>
+    // API Base URL
+    const API_URL = window.location.origin + '/api';
+
+    // Elements
+    const tabs = document.querySelectorAll('.auth-tab');
+    const forms = document.querySelectorAll('.auth-form');
+    const alert = document.getElementById('alert');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    // Tab switching
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        forms.forEach(f => f.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(tabName + 'Form').classList.add('active');
+        
+        hideAlert();
+      });
+    });
+
+    // Toggle password visibility
+    function togglePassword(btn) {
+      const input = btn.parentElement.querySelector('input');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁';
+      }
+    }
+
+    // Show alert
+    function showAlert(message, type = 'error') {
+      alert.textContent = message;
+      alert.className = `alert ${type} show`;
+    }
+
+    function hideAlert() {
+      alert.className = 'alert';
+    }
+
+    // Set button loading state
+    function setLoading(form, loading) {
+      const btn = form.querySelector('.submit-btn');
+      if (loading) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+      } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    // Store tokens
+    function storeTokens(tokens, remember = false) {
+      const storage = remember ? localStorage : sessionStorage;
+      storage.setItem('accessToken', tokens.accessToken);
+      storage.setItem('refreshToken', tokens.refreshToken);
+      if (tokens.user) {
+        storage.setItem('user', JSON.stringify(tokens.user));
+      }
+    }
+
+    // Get token
+    function getAccessToken() {
+      return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    }
+
+    // Check if logged in
+    function checkAuth() {
+      const token = getAccessToken();
+      if (token) {
+        // Ya está logueado, redirigir
+        window.location.href = '/';
+      }
+    }
+
+    // Login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+      setLoading(loginForm, true);
+
+      const formData = new FormData(loginForm);
+      const remember = formData.get('remember') === 'on';
+
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: formData.get('username'),
+            password: formData.get('password')
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Error al iniciar sesión');
+        }
+
+        storeTokens(data, remember);
+        showAlert('¡Bienvenido! Redirigiendo...', 'success');
+        
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+
+      } catch (error) {
+        showAlert(error.message);
+      } finally {
+        setLoading(loginForm, false);
+      }
+    });
+
+    // Register
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const formData = new FormData(registerForm);
+      
+      // Validate passwords match
+      if (formData.get('password') !== formData.get('confirmPassword')) {
+        showAlert('Las contraseñas no coinciden');
+        return;
+      }
+
+      setLoading(registerForm, true);
+
+      try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: formData.get('username'),
+            email: formData.get('email'),
+            password: formData.get('password')
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Error al registrarse');
+        }
+
+        storeTokens(data, true);
+        showAlert('¡Cuenta creada! Redirigiendo...', 'success');
+        
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+
+      } catch (error) {
+        showAlert(error.message);
+      } finally {
+        setLoading(registerForm, false);
+      }
+    });
+
+    // Skip login
+    function skipLogin() {
+      sessionStorage.setItem('guest', 'true');
+      window.location.href = '/';
+    }
+
+    // Check auth on load
+    checkAuth();
+  </script>
+</body>
+</html>

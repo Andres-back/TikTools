@@ -1,0 +1,245 @@
+/**
+ * Configuración de Base de Datos
+ * Soporta PostgreSQL (producción) y SQLite (desarrollo)
+ */
+
+const { Pool } = require('pg');
+const path = require('path');
+
+// Detectar entorno
+const isProduction = process.env.NODE_ENV === 'production';
+
+let pool = null;
+
+/**
+ * Inicializa la conexión a la base de datos
+ */
+function initDatabase() {
+  if (pool) return pool;
+
+  if (process.env.DATABASE_URL) {
+    // PostgreSQL (Digital Ocean, Heroku, etc.)
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: isProduction ? { rejectUnauthorized: false } : false,
+      max: 20,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+    });
+  } else {
+    // Fallback a SQLite para desarrollo local
+    const Database = require('better-sqlite3');
+    const dbPath = path.join(__dirname, '..', 'data', 'auction.db');
+    
+    // Crear directorio si no existe
+    const fs = require('fs');
+    const dataDir = path.dirname(dbPath);
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    const sqlite = new Database(dbPath);
+    sqlite.pragma('journal_mode = WAL');
+    
+    // Wrapper para hacer SQLite compatible con la API de pg
+    pool = {
+      query: async (text, params) => {
+        // Convertir $1, $2 a ?, ?
+        const sqliteText = text.replace(/\$(\d+)/g, '?');
+        
+        if (sqliteText.trim().toUpperCase().startsWith('SELECT')) {
+          const rows = sqlite.prepare(sqliteText).all(...(params || []));
+          return { rows, rowCount: rows.length };
+        } else {
+          const result = sqlite.prepare(sqliteText).run(...(params || []));
+          return { 
+            rows: [{ id: result.lastInsertRowid }], 
+            rowCount: result.changes 
+          };
+        }
+      },
+      end: () => sqlite.close()
+    };
+    
+    // Ejecutar schema de SQLite
+    initSQLiteSchema(sqlite);
+  }
+
+  return pool;
+}
+
+/**
+ * Inicializa el schema en SQLite
+ */
+function initSQLiteSchema(db) {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      display_name TEXT,
+      avatar_url TEXT,
+      role TEXT DEFAULT 'user',
+      plan_type TEXT DEFAULT 'free',
+      plan_expires_at DATETIME,
+      plan_days_remaining INTEGER DEFAULT 2,
+      tiktok_session_id TEXT,
+      tiktok_target_idc TEXT,
+      is_active INTEGER DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      last_login DATETIME
+    );
+
+    CREATE TABLE IF NOT EXISTS payments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id),
+      paypal_order_id TEXT,
+      paypal_payer_id TEXT,
+      amount REAL NOT NULL,
+      currency TEXT DEFAULT 'USD',
+      plan_type TEXT NOT NULL,
+      days_added INTEGER NOT NULL,
+      status TEXT DEFAULT 'pending',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      completed_at DATETIME
+    );
+
+    CREATE TABLE IF NOT EXISTS plan_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id),
+      action TEXT NOT NULL,
+      plan_type TEXT,
+      days_changed INTEGER,
+      admin_id INTEGER REFERENCES users(id),
+      notes TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS auctions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id),
+      tiktok_username TEXT NOT NULL,
+      title TEXT,
+      status TEXT DEFAULT 'active',
+      initial_time INTEGER DEFAULT 120,
+      delay_time INTEGER DEFAULT 20,
+      tie_extension INTEGER DEFAULT 10,
+      winner_username TEXT,
+      winner_coins INTEGER DEFAULT 0,
+      total_coins_collected INTEGER DEFAULT 0,
+      total_gifts_received INTEGER DEFAULT 0,
+      unique_donors INTEGER DEFAULT 0,
+      started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      finished_at DATETIME,
+      notes TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS donors (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      auction_id INTEGER REFERENCES auctions(id),
+      tiktok_unique_id TEXT NOT NULL,
+      tiktok_nickname TEXT,
+      profile_picture_url TEXT,
+      total_coins INTEGER DEFAULT 0,
+      total_gifts INTEGER DEFAULT 0,
+      final_position INTEGER,
+      is_winner INTEGER DEFAULT 0,
+      first_donation_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      last_donation_at DATETIME,
+      UNIQUE(auction_id, tiktok_unique_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS gifts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      auction_id INTEGER REFERENCES auctions(id),
+      donor_id INTEGER REFERENCES donors(id),
+      tiktok_unique_id TEXT NOT NULL,
+      gift_id TEXT,
+      gift_name TEXT,
+      diamond_count INTEGER DEFAULT 0,
+      repeat_count INTEGER DEFAULT 1,
+      total_coins INTEGER DEFAULT 0,
+      received_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS user_stats (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER UNIQUE REFERENCES users(id),
+      total_auctions INTEGER DEFAULT 0,
+      total_coins_collected INTEGER DEFAULT 0,
+      total_gifts_received INTEGER DEFAULT 0,
+      total_unique_donors INTEGER DEFAULT 0,
+      average_auction_duration INTEGER DEFAULT 0,
+      most_valuable_gift_name TEXT,
+      most_valuable_gift_diamonds INTEGER DEFAULT 0,
+      top_donor_username TEXT,
+      top_donor_total_coins INTEGER DEFAULT 0,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS user_settings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER UNIQUE REFERENCES users(id),
+      default_initial_time INTEGER DEFAULT 120,
+      default_delay_time INTEGER DEFAULT 20,
+      default_tie_extension INTEGER DEFAULT 10,
+      default_min_message TEXT DEFAULT 'MIN',
+      overlay_theme TEXT DEFAULT 'default',
+      sound_enabled INTEGER DEFAULT 1,
+      auto_save_auctions INTEGER DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id),
+      refresh_token_hash TEXT NOT NULL,
+      device_info TEXT,
+      ip_address TEXT,
+      expires_at DATETIME NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_auctions_user_id ON auctions(user_id);
+    CREATE INDEX IF NOT EXISTS idx_donors_auction_id ON donors(auction_id);
+    CREATE INDEX IF NOT EXISTS idx_gifts_auction_id ON gifts(auction_id);
+  `);
+}
+
+/**
+ * Obtiene la instancia de la base de datos
+ */
+function getDB() {
+  if (!pool) {
+    initDatabase();
+  }
+  return pool;
+}
+
+/**
+ * Ejecuta una query
+ */
+async function query(text, params) {
+  const db = getDB();
+  return db.query(text, params);
+}
+
+/**
+ * Cierra la conexión
+ */
+async function closeDatabase() {
+  if (pool) {
+    await pool.end();
+    pool = null;
+  }
+}
+
+module.exports = {
+  initDatabase,
+  getDB,
+  query,
+  closeDatabase
+};

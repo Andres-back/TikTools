@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏆 Andrecchh Tools</title>
+  
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Partículas de fondo decorativas -->
+  <div class="particles" id="particles"></div>
+  
+  <!-- Overlay para animaciones épicas -->
+  <div class="animation-overlay" id="animationOverlay"></div>
+
+  <div class="app-container">
+    <!-- ========================================
+         PANEL DE CONTROL (Izquierda)
+         ======================================== -->
+    <aside class="control-panel">
+      <h1 class="panel-title">⚙️ Panel de Control</h1>
+      
+      <!-- Conexión TikTok -->
+      <section class="panel-section">
+        <label class="panel-label">Usuario TikTok</label>
+        <div class="input-group">
+          <span class="input-prefix">@</span>
+          <input 
+            type="text" 
+            id="tiktokUserInput" 
+            class="input-field" 
+            placeholder="username"
+            autocomplete="off"
+          >
+        </div>
+        
+        <div class="btn-group" style="margin-top: 0.75rem;">
+          <button id="tiktokUserSave" class="btn btn-secondary">Guardar</button>
+          <button id="tiktokConnect" class="btn btn-primary">Conectar</button>
+        </div>
+        
+        <div class="status-display">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="connectionStatus">Sin conexión</span>
+        </div>
+        <p id="connectionFeedback" class="panel-feedback"></p>
+        <p class="status-display">Usuario: <strong id="tiktokUserDisplay">—</strong></p>
+        
+        <!-- Sección de Session ID (colapsable) -->
+        <details class="auth-details" id="authDetails">
+          <summary class="auth-summary">🔐 Configurar Session ID (opcional)</summary>
+          <div class="auth-content">
+            <p class="auth-help">Si tienes problemas de conexión, configura tu Session ID de TikTok:</p>
+            <ol class="auth-steps">
+              <li>Abre <a href="https://www.tiktok.com" target="_blank">tiktok.com</a> e inicia sesión</li>
+              <li>Presiona F12 → Application → Cookies</li>
+              <li>Copia el valor de <code>sessionid</code></li>
+            </ol>
+            <div class="input-group" style="margin-top: 0.5rem;">
+              <input type="password" id="sessionIdInput" class="input-field" placeholder="Session ID">
+            </div>
+            <div class="input-group" style="margin-top: 0.5rem;">
+              <input type="text" id="ttTargetIdcInput" class="input-field" placeholder="tt-target-idc (ej: useast1a)">
+            </div>
+            <button id="saveSessionId" class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;">Guardar Credenciales</button>
+          </div>
+        </details>
+      </section>
+      
+      <!-- Controles de Subasta -->
+      <section class="panel-section">
+        <label class="panel-label">Controles de Subasta</label>
+        <div class="btn-group">
+          <button id="timerPlay" class="btn btn-primary">▶ Iniciar</button>
+          <button id="timerReset" class="btn btn-secondary">↺ Reiniciar</button>
+        </div>
+      </section>
+      
+      <!-- Configuración de Tiempos -->
+      <section class="panel-section">
+        <label class="panel-label">⏱️ Tiempos (segundos)</label>
+        <div class="time-inputs">
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.65rem;">Inicial</label>
+            <div class="input-group">
+              <input type="number" id="initialTimeInput" class="input-field" value="120" min="10" max="600">
+            </div>
+          </div>
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.65rem;">Delay</label>
+            <div class="input-group">
+              <input type="number" id="delayTimeInput" class="input-field" value="20" min="0" max="120">
+            </div>
+          </div>
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.65rem;">Empate</label>
+            <div class="input-group">
+              <input type="number" id="tieExtensionInput" class="input-field" value="30" min="10" max="120">
+            </div>
+          </div>
+        </div>
+        <button id="updateTimes" class="btn btn-secondary" style="margin-top: 0.75rem; width: 100%;">Aplicar</button>
+      </section>
+      
+      <!-- Mensaje del Timer -->
+      <section class="panel-section">
+        <label class="panel-label">📝 Mensaje</label>
+        <div class="input-group">
+          <input type="text" id="minMessageInput" class="input-field" placeholder="MIN 10" maxlength="20">
+        </div>
+        <button id="updateMinMessage" class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;">Actualizar</button>
+      </section>
+      
+      <!-- Suma Manual -->
+      <section class="panel-section">
+        <label class="panel-label">💎 Suma Manual</label>
+        <div class="input-group" style="margin-bottom: 0.5rem;">
+          <span class="input-prefix">@</span>
+          <input type="text" id="manualUserInput" class="input-field" placeholder="usuario">
+        </div>
+        <div class="input-group">
+          <input type="number" id="manualCoinsInput" class="input-field" placeholder="Monedas" min="1">
+        </div>
+        <button id="addManualCoins" class="btn btn-success" style="margin-top: 0.75rem; width: 100%;">+ Agregar Monedas</button>
+      </section>
+    </aside>
+
+    <!-- ========================================
+         CONTENIDO PRINCIPAL (Derecha)
+         ======================================== -->
+    <main class="main-content">
+      <!-- Timer Card - DISEÑO ÉPICO -->
+      <div class="timer-card" id="timerCard">
+        <div class="timer-glow"></div>
+        <div class="timer-bg-effects"></div>
+        
+        <!-- Mascota Izquierda - Cocodrilo -->
+        <div class="timer-mascot mascot-left">
+          <img src="assets/QuesadillaCrocodilla.webp" alt="Mascota Cocodrilo" class="mascot-img">
+          <div class="mascot-speech" id="mascotSpeechLeft">¡VAMOS!</div>
+        </div>
+        
+        <!-- Contenido Central del Timer -->
+        <div class="timer-content">
+          <h2 class="timer-label" id="timerHeading">MIN 10</h2>
+          
+          <!-- DISPLAY GIGANTE DEL TIMER -->
+          <div class="timer-display-wrapper">
+            <div class="timer-display" id="timerDisplay">02:00</div>
+            <div class="timer-display-shadow">02:00</div>
+          </div>
+          
+          <div class="timer-message" id="timerMessage"></div>
+          
+          <!-- Barra de progreso -->
+          <div class="timer-progress-bar">
+            <div class="timer-progress-fill" id="timerProgressFill"></div>
+          </div>
+        </div>
+        
+        <!-- Mascota Derecha - Santa -->
+        <div class="timer-mascot mascot-right">
+          <img src="assets/Noel.webp" alt="Mascota Noel" class="mascot-img">
+          <div class="mascot-speech" id="mascotSpeechRight">¡Sipe!</div>
+        </div>
+        
+        <!-- Efectos de urgencia -->
+        <div class="timer-urgency-overlay" id="timerUrgencyOverlay"></div>
+      </div>
+
+      <!-- Leaderboard Card -->
+      <div class="leaderboard-card">
+        <header class="leaderboard-header">
+          <div>
+            <h2 class="leaderboard-title">🏆 Top Donadores</h2>
+          </div>
+        </header>
+        
+        <ol class="leaderboard-list" id="donorList">
+          <li class="leaderboard-empty">
+            <div class="leaderboard-empty-icon">💎</div>
+            <p>Esperando donaciones...</p>
+          </li>
+        </ol>
+        
+        <footer class="leaderboard-footer" id="leaderboardFooter">
+          <span class="winner-label">🎉 Ganador de la Subasta, by Andrecchh Tools</span>
+          <div class="winner-display" id="winnerDisplay">—</div>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- Script de partículas -->
+  <script>
+    // Crear partículas decorativas
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 20 + 's';
+      particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+      particlesContainer.appendChild(particle);
+    }
+  </script>
+  
+  <!-- Módulo principal -->
+  <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "name": "tiktok-live-auction",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Sistema de subastas en vivo para TikTok con autenticación y base de datos",
+  "main": "server-new.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server-new.js",
+    "start:old": "node server.js",
+    "dev": "node server-new.js",
+    "check": "node check-config.js",
+    "setup": "node check-config.js",
+    "test": "node test-coins-count.js",
+    "test:coins": "node test-coins-count.js",
+    "db:init": "node -e \"require('./database/db').initDatabase().then(() => process.exit(0))\"",
+    "docker:build": "docker build -t tiktok-auction .",
+    "docker:run": "docker run -p 8080:8080 --env-file .env tiktok-auction"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1",
+    "tiktok-live-connector": "^2.0.2",
+    "ws": "^8.17.0"
+  },
+  "devDependencies": {
+    "better-sqlite3": "^11.6.0"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.6.0"
+  },
+  "keywords": [
+    "tiktok",
+    "live",
+    "auction",
+    "streaming",
+    "gifts"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "tiktok-live-auction",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Sistema de subastas en vivo para TikTok con autenticación y base de datos",
+  "main": "server-new.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server-new.js",
+    "start:legacy": "node server.js",
+    "dev": "node server-new.js",
+    "check": "node check-config.js",
+    "setup": "node check-config.js",
+    "test": "node test-coins-count.js",
+    "test:coins": "node test-coins-count.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.16.3",
+    "tiktok-live-connector": "^2.0.2",
+    "ws": "^8.17.0"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.10.0"
+  }
+}

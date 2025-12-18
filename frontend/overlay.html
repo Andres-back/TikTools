@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overlay TikTok - Top Donadores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #ffd700;
+      --gold-dark: #b8860b;
+      --silver: #c0c0c0;
+      --silver-dark: #808080;
+      --bronze: #cd7f32;
+      --bronze-dark: #8b4513;
+      --accent-primary: #00d9ff;
+      --accent-secondary: #9d4edd;
+      --accent-warning: #ffd23f;
+      --accent-danger: #ff6b6b;
+      --font-heading: 'Montserrat', sans-serif;
+      --font-body: 'Poppins', sans-serif;
+      --font-numeric: 'Rajdhani', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: transparent;
+      color: white;
+      overflow: hidden;
+    }
+
+    /* LEADERBOARD COMPACTO Y ELEGANTE */
+    .leaderboard-card {
+      position: relative;
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 24px;
+      padding: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      max-width: 420px;
+      margin: 1rem;
+    }
+
+    .leaderboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .leaderboard-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--gold), var(--accent-warning));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .leaderboard-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .leaderboard-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .leaderboard-rank {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 800;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .leaderboard-avatar-container {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .leaderboard-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .leaderboard-avatar-fallback {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .leaderboard-user {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .leaderboard-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    .leaderboard-coins {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.25rem;
+      font-family: var(--font-numeric);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-left: auto;
+      padding-left: 0.5rem;
+    }
+
+    .coin-icon {
+      font-size: 1rem;
+    }
+
+    /* TOP 1 - GANADOR DESTACADO */
+    .leaderboard-item.first {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+      border: 2px solid var(--gold);
+      box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.25),
+        inset 0 0 30px rgba(255, 215, 0, 0.05);
+      animation: goldGlow 2s ease-in-out infinite;
+      padding: 0.75rem 1rem;
+    }
+
+    .leaderboard-item.first .leaderboard-rank {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #1a1a2e;
+      font-size: 1.1rem;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      animation: crownPulse 1.5s ease-in-out infinite;
+    }
+
+    .leaderboard-item.first .leaderboard-avatar-container {
+      width: 48px;
+      height: 48px;
+    }
+
+    .leaderboard-item.first .leaderboard-avatar {
+      width: 48px;
+      height: 48px;
+      border-color: var(--gold);
+      border-width: 3px;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    }
+
+    .leaderboard-item.first .leaderboard-avatar-fallback {
+      width: 48px;
+      height: 48px;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #1a1a2e;
+      border-color: var(--gold);
+    }
+
+    .leaderboard-item.first .leaderboard-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold), #fff5cc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .leaderboard-item.first .leaderboard-coins {
+      font-size: 1.3rem;
+      color: var(--gold);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+
+    /* TOP 2 - Plata */
+    .leaderboard-item.second {
+      background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(192, 192, 192, 0.03));
+      border-color: var(--silver);
+    }
+
+    .leaderboard-item.second .leaderboard-rank {
+      background: linear-gradient(135deg, var(--silver), var(--silver-dark));
+      color: #1a1a2e;
+    }
+
+    .leaderboard-item.second .leaderboard-name {
+      font-size: 0.95rem;
+    }
+
+    .leaderboard-item.second .leaderboard-coins {
+      font-size: 1.15rem;
+      color: var(--silver);
+    }
+
+    /* TOP 3 - Bronce */
+    .leaderboard-item.third {
+      background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(205, 127, 50, 0.03));
+      border-color: var(--bronze);
+    }
+
+    .leaderboard-item.third .leaderboard-rank {
+      background: linear-gradient(135deg, var(--bronze), var(--bronze-dark));
+      color: #1a1a2e;
+    }
+
+    .leaderboard-item.third .leaderboard-name {
+      font-size: 0.92rem;
+    }
+
+    .leaderboard-item.third .leaderboard-coins {
+      font-size: 1.1rem;
+      color: var(--bronze);
+    }
+
+    /* Estado vacío */
+    .leaderboard-empty {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+    }
+
+    .leaderboard-empty-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.3;
+    }
+
+    /* Animaciones */
+    @keyframes goldGlow {
+      0%, 100% {
+        box-shadow: 
+          0 0 20px rgba(255, 215, 0, 0.2),
+          inset 0 0 30px rgba(255, 215, 0, 0.05);
+      }
+      50% {
+        box-shadow: 
+          0 0 35px rgba(255, 215, 0, 0.35),
+          inset 0 0 40px rgba(255, 215, 0, 0.08);
+      }
+    }
+
+    @keyframes crownPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.05) rotate(2deg); }
+    }
+
+    /* Corona flotante para top 1 */
+    .floating-crown {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 1.2rem;
+      animation: floatCrown 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    }
+
+    @keyframes floatCrown {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="leaderboard-card">
+    <header class="leaderboard-header">
+      <div>
+        <h2 class="leaderboard-title">🏆 Top Donadores</h2>
+      </div>
+    </header>
+    
+    <ol class="leaderboard-list" id="donorList">
+      <li class="leaderboard-empty">
+        <div class="leaderboard-empty-icon">💎</div>
+        <p>Esperando donaciones...</p>
+      </li>
+    </ol>
+  </div>
+
+  <script type="module">
+    // Conectar al WebSocket del servidor principal
+    const WS_URL = 'ws://localhost:8080/live';
+    let ws = null;
+
+    function connectWebSocket() {
+      try {
+        ws = new WebSocket(WS_URL);
+
+        ws.addEventListener('open', () => {
+          console.log('[Overlay] Conectado al servidor');
+        });
+
+        ws.addEventListener('message', (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            console.log('[Overlay] Mensaje recibido:', data);
+            if (data.type === 'leaderboard-update') {
+              console.log('[Overlay] Actualizando leaderboard con:', data.donors);
+              updateLeaderboard(data.donors);
+            }
+          } catch (err) {
+            console.error('[Overlay] Error parseando mensaje:', err);
+          }
+        });
+
+        ws.addEventListener('close', () => {
+          console.log('[Overlay] Desconectado. Reconectando en 3s...');
+          setTimeout(connectWebSocket, 3000);
+        });
+
+        ws.addEventListener('error', (error) => {
+          console.error('[Overlay] Error WebSocket:', error);
+        });
+      } catch (err) {
+        console.error('[Overlay] Error al conectar:', err);
+        setTimeout(connectWebSocket, 3000);
+      }
+    }
+
+    function updateLeaderboard(donors) {
+      const donorList = document.getElementById('donorList');
+      
+      if (!donors || donors.length === 0) {
+        donorList.innerHTML = `
+          <li class="leaderboard-empty">
+            <div class="leaderboard-empty-icon">💎</div>
+            <p>Esperando donaciones...</p>
+          </li>
+        `;
+        return;
+      }
+
+      const rankClasses = ['first', 'second', 'third'];
+      
+      donorList.innerHTML = donors.map((donor, index) => {
+        const rankClass = rankClasses[index] || '';
+        const initial = donor.uniqueId ? donor.uniqueId.charAt(0).toUpperCase() : '?';
+        const showCrown = index === 0;
+        
+        return `
+          <li class="leaderboard-item ${rankClass}">
+            ${showCrown ? '<span class="floating-crown">👑</span>' : ''}
+            <div class="leaderboard-rank">${index + 1}</div>
+            <div class="leaderboard-avatar-container">
+              ${donor.profilePictureUrl 
+                ? `<img src="${donor.profilePictureUrl}" alt="${donor.uniqueId}" class="leaderboard-avatar">`
+                : `<div class="leaderboard-avatar-fallback">${initial}</div>`
+              }
+            </div>
+            <div class="leaderboard-user">
+              <div class="leaderboard-name">${donor.uniqueId || 'Anónimo'}</div>
+            </div>
+            <div class="leaderboard-coins">
+              <span class="coin-icon">💎</span>
+              <span>${donor.totalCoins.toLocaleString()}</span>
+            </div>
+          </li>
+        `;
+      }).join('');
+    }
+
+    // Iniciar conexión
+    connectWebSocket();
+  </script>
+</body>
+</html>
