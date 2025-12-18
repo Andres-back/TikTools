@@ -118,16 +118,16 @@ app.get('/api/setup/manually-verify', async (req, res) => {
 app.get('/api/setup/debug-email', async (req, res) => {
   if (req.query.secret !== 'lolkjk12_RESET') return res.status(403).send('Forbidden');
 
-  const targetEmail = req.query.email || 'resslow41@gmail.com';
+  const targetEmail = req.query.email || 'tiktoolstreamstudio@gmail.com';
   const { transporter } = require('./utils/mailer');
 
   try {
     const info = await transporter.sendMail({
-      from: '"TikTool Debug" <resslow41@gmail.com>',
+      from: '"TikToolStream Debug" <tiktoolstreamstudio@gmail.com>',
       to: targetEmail,
-      subject: 'Prueba de Diagnóstico',
-      text: 'Si ves esto, el correo funciona.',
-      html: '<b>Si ves esto, el correo funciona.</b>'
+      subject: 'Prueba de Diagnóstico - TikToolStream',
+      text: 'Si ves esto, el correo funciona correctamente.',
+      html: '<b>Si ves esto, el correo funciona correctamente. ✅</b>'
     });
     res.json({ success: true, messageId: info.messageId, response: info.response });
   } catch (error) {
@@ -138,6 +138,53 @@ app.get('/api/setup/debug-email', async (req, res) => {
       command: error.command,
       response: error.response,
       stack: error.stack
+    });
+  }
+});
+
+// Endpoint para crear administrador inicial
+app.post('/api/setup/create-admin', async (req, res) => {
+  if (req.query.secret !== 'lolkjk12_RESET') return res.status(403).send('Forbidden');
+
+  const { username, email, password } = req.body;
+  
+  if (!username || !email || !password) {
+    return res.status(400).json({ error: 'Username, email y password son requeridos' });
+  }
+
+  try {
+    const { query } = require('./database/db');
+    const bcrypt = require('bcryptjs');
+    
+    // Verificar si ya existe
+    const existing = await query(
+      'SELECT id FROM users WHERE username = $1 OR email = $2',
+      [username.toLowerCase(), email.toLowerCase()]
+    );
+    
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ error: 'Usuario o email ya existe' });
+    }
+    
+    // Crear admin
+    const passwordHash = await bcrypt.hash(password, 12);
+    const result = await query(
+      `INSERT INTO users (username, email, password_hash, role, is_verified, is_active, plan_type)
+       VALUES ($1, $2, $3, 'admin', true, true, 'premium')
+       RETURNING id, username, email, role`,
+      [username.toLowerCase(), email.toLowerCase(), passwordHash]
+    );
+    
+    res.json({
+      success: true,
+      message: 'Administrador creado exitosamente',
+      admin: result.rows[0]
+    });
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
     });
   }
 });
@@ -159,9 +206,12 @@ app.get('/api/payments/history', authMiddleware, paymentRoutes.getPaymentHistory
 app.get('/api/admin/dashboard', authMiddleware, adminMiddleware, adminRoutes.getDashboard);
 app.get('/api/admin/users', authMiddleware, adminMiddleware, adminRoutes.getUsers);
 app.get('/api/admin/users/:id', authMiddleware, adminMiddleware, adminRoutes.getUser);
+app.post('/api/admin/users', authMiddleware, adminMiddleware, adminRoutes.createUser);
+app.delete('/api/admin/users/:id', authMiddleware, adminMiddleware, adminRoutes.deleteUser);
 app.post('/api/admin/users/:id/add-days', authMiddleware, adminMiddleware, adminRoutes.addDays);
 app.post('/api/admin/users/:id/remove-days', authMiddleware, adminMiddleware, adminRoutes.removeDays);
 app.post('/api/admin/users/:id/toggle-status', authMiddleware, adminMiddleware, adminRoutes.toggleStatus);
+app.post('/api/admin/users/:id/reset-password', authMiddleware, adminMiddleware, adminRoutes.resetPassword);
 app.put('/api/admin/users/:id/role', authMiddleware, adminMiddleware, adminRoutes.changeRole);
 
 // Auction routes (protegidas + verificación de plan)
