@@ -284,7 +284,7 @@ async function loadChat() {
 
   if (!chatMessages) return;
 
-  chatLoading.style.display = 'block';
+  if (chatLoading) chatLoading.style.display = 'block';
   chatMessages.innerHTML = '';
 
   try {
@@ -293,7 +293,7 @@ async function loadChat() {
     const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
     if (!user || !user.id || !token) {
-      chatLoading.style.display = 'none';
+      if (chatLoading) chatLoading.style.display = 'none';
       chatMessages.innerHTML = '<p class="info-text">Debes iniciar sesión para ver el chat.</p>';
       return;
     }
@@ -305,7 +305,7 @@ async function loadChat() {
     });
     
     if (response.status === 401) {
-      chatLoading.style.display = 'none';
+      if (chatLoading) chatLoading.style.display = 'none';
       chatMessages.innerHTML = '<p class="info-text">Sesión expirada. Por favor recarga la página.</p>';
       return;
     }
@@ -314,7 +314,7 @@ async function loadChat() {
 
     const messages = await response.json();
 
-    chatLoading.style.display = 'none';
+    if (chatLoading) chatLoading.style.display = 'none';
 
     if (!messages || messages.length === 0) {
       chatMessages.innerHTML = '<p class="info-text">No hay mensajes aún. ¡Inicia la conversación!</p>';

@@ -48,7 +48,7 @@ const upload = multer({
 router.get('/:userId', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
-    const requesterId = req.user.id;
+    const requesterId = req.user.userId;
     const isAdminUser = req.user.role === 'admin';
 
     // Solo el usuario mismo o el admin pueden ver sus mensajes
@@ -90,7 +90,7 @@ router.get('/:userId', authenticateToken, async (req, res) => {
  */
 router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
   try {
-    const senderId = req.user.id;
+    const senderId = req.user.userId;
     const { message } = req.body;
     const isAdminUser = req.user.role === 'admin';
 
@@ -139,7 +139,7 @@ router.post('/', authenticateToken, upload.single('image'), async (req, res) => 
 router.patch('/:messageId/read', authenticateToken, async (req, res) => {
   try {
     const { messageId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     await db.query(
       `UPDATE messages 
