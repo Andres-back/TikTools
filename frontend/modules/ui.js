@@ -292,13 +292,16 @@ async function loadChat() {
     const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
     const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
-    if (!user || !user.id || !token) {
+    // El usuario puede tener 'id' o 'userId' dependiendo de cómo se guardó
+    const userId = user.id || user.userId;
+
+    if (!user || !userId || !token) {
       if (chatLoading) chatLoading.style.display = 'none';
       chatMessages.innerHTML = '<p class="info-text">Debes iniciar sesión para ver el chat.</p>';
       return;
     }
 
-    const response = await fetch(`/api/chat/${user.id}`, {
+    const response = await fetch(`/api/chat/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -322,7 +325,7 @@ async function loadChat() {
     }
 
     messages.forEach(message => {
-      const messageEl = createChatMessage(message, user.id);
+      const messageEl = createChatMessage(message, userId);
       chatMessages.appendChild(messageEl);
     });
 
@@ -330,7 +333,7 @@ async function loadChat() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   } catch (error) {
     console.error('Error loading chat:', error);
-    chatLoading.style.display = 'none';
+    if (chatLoading) chatLoading.style.display = 'none';
     chatMessages.innerHTML = '<p class="info-text">Error al cargar el chat</p>';
   }
 

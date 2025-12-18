@@ -31,6 +31,43 @@ let onConnectionStateChange = null;
 let onGiftReceived = null;
 
 /**
+ * Inicializa WebSocket de sincronización para overlays
+ */
+function initSyncWebSocket() {
+  try {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/sync`;
+    
+    syncWs = new WebSocket(wsUrl);
+    
+    syncWs.onopen = () => {
+      console.log('[SyncWS] Conectado');
+    };
+    
+    syncWs.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        // Manejar mensajes de sincronización si es necesario
+        console.log('[SyncWS] Mensaje:', data.type);
+      } catch (e) {
+        console.warn('[SyncWS] Error parsing message');
+      }
+    };
+    
+    syncWs.onerror = (err) => {
+      console.warn('[SyncWS] Error de conexión');
+    };
+    
+    syncWs.onclose = () => {
+      console.log('[SyncWS] Desconectado, reconectando en 3s...');
+      setTimeout(initSyncWebSocket, 3000);
+    };
+  } catch (e) {
+    console.warn('[SyncWS] Error inicializando:', e);
+  }
+}
+
+/**
  * Inicializa el módulo con referencias DOM
  * @param {Object} elements - { statusBadge, feedback }
  */
@@ -47,15 +84,11 @@ export function initConnection(elements) {
   });
 
   // Inicializar WebSocket de sincronización permanente
-  initSyncWebSocket();
-
-  syncWs.addEventListener('close', () => {
-    setTimeout(initSyncWebSocket, 3000);
-  });
-
-  syncWs.addEventListener('error', (err) => {
-    console.warn('[SyncWS] Error:', err);
-  });
+  try {
+    initSyncWebSocket();
+  } catch (e) {
+    console.warn('[SyncWS] Error al inicializar:', e);
+  }
 }
 
 /**

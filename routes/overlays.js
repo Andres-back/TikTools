@@ -47,7 +47,7 @@ const upload = multer({
  */
 router.get('/my', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const result = await db.query(
       'SELECT * FROM overlays WHERE user_id = $1',
@@ -126,7 +126,7 @@ router.post('/', authenticateToken, upload.fields([
   { name: 'rightImage', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     // Obtener overlay actual para eliminar imágenes antiguas si se reemplazan
     const currentResult = await db.query(
