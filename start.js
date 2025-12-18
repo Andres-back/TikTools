@@ -103,14 +103,42 @@ app.get('/api/setup/reset-users-force', async (req, res) => {
   }
 });
 
-// Endpoint TEMPORAL para verificar manualmente un usuario (Bypass de correo)
+// Endpoint TEMPORAL para verificar manualmente
 app.get('/api/setup/manually-verify', async (req, res) => {
   if (req.query.secret === 'lolkjk12_RESET' && req.query.email) {
     const { query } = require('./database/db');
     await query('UPDATE users SET is_verified = true WHERE email = $1', [req.query.email]);
-    res.send(`Usuario ${req.query.email} verificado manualmente. Ahora puedes hacer login.`);
+    res.send(`Usuario ${req.query.email} verificado manualmente.`);
   } else {
-    res.status(403).send('Forbidden o falta email');
+    res.status(403).send('Forbidden');
+  }
+});
+
+// Endpoint de DIAGNÓSTICO DE CORREO (Para ver el error exacto)
+app.get('/api/setup/debug-email', async (req, res) => {
+  if (req.query.secret !== 'lolkjk12_RESET') return res.status(403).send('Forbidden');
+
+  const targetEmail = req.query.email || 'resslow41@gmail.com';
+  const { transporter } = require('./utils/mailer');
+
+  try {
+    const info = await transporter.sendMail({
+      from: '"TikTool Debug" <resslow41@gmail.com>',
+      to: targetEmail,
+      subject: 'Prueba de Diagnóstico',
+      text: 'Si ves esto, el correo funciona.',
+      html: '<b>Si ves esto, el correo funciona.</b>'
+    });
+    res.json({ success: true, messageId: info.messageId, response: info.response });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      code: error.code,
+      command: error.command,
+      response: error.response,
+      stack: error.stack
+    });
   }
 });
 
