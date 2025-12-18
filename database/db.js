@@ -14,19 +14,28 @@ let pool = null;
 /**
  * Inicializa la conexión a la base de datos
  */
-function initDatabase() {
+async function initDatabase() {
   if (pool) return pool;
 
-  if (process.env.DATABASE_URL) {
-    // PostgreSQL (Digital Ocean, Heroku, etc.)
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: isProduction ? { rejectUnauthorized: false } : false,
-      max: 20,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
-    });
-  } else {
+  try {
+    if (process.env.DATABASE_URL) {
+      // PostgreSQL (Digital Ocean, Heroku, etc.)
+      pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: isProduction ? { rejectUnauthorized: false } : false,
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+      });
+
+      // Verificar conexión
+      await pool.query('SELECT NOW()');
+      
+      // Crear tablas si no existen (en producción)
+      if (isProduction) {
+        await initPostgresSchema(pool);
+      }
+    } else {
     // Fallback a SQLite para desarrollo local
     const Database = require('better-sqlite3');
     const dbPath = path.join(__dirname, '..', 'data', 'auction.db');
@@ -66,6 +75,10 @@ function initDatabase() {
   }
 
   return pool;
+  } catch (error) {
+    process.stderr.write(`Database initialization error: ${error.message}\n`);
+    throw error;
+  }
 }
 
 /**
@@ -207,6 +220,152 @@ function initSQLiteSchema(db) {
     CREATE INDEX IF NOT EXISTS idx_donors_auction_id ON donors(auction_id);
     CREATE INDEX IF NOT EXISTS idx_gifts_auction_id ON gifts(auction_id);
   `);
+}
+
+/**
+ * Inicializa el schema en PostgreSQL (producción)
+ */
+async function initPostgresSchema(pool) {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        display_name VARCHAR(255),
+        avatar_url TEXT,
+        role VARCHAR(50) DEFAULT 'user',
+        plan_type VARCHAR(50) DEFAULT 'free',
+        plan_expires_at TIMESTAMP,
+        plan_days_remaining INTEGER DEFAULT 2,
+        tiktok_session_id TEXT,
+        tiktok_target_idc TEXT,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS payments (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        paypal_order_id TEXT,
+        paypal_payer_id TEXT,
+        amount NUMERIC(10,2) NOT NULL,
+        currency VARCHAR(3) DEFAULT 'USD',
+        plan_type VARCHAR(50) NOT NULL,
+        days_added INTEGER NOT NULL,
+        status VARCHAR(50) DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        completed_at TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS plan_history (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        action TEXT NOT NULL,
+        plan_type VARCHAR(50),
+        days_changed INTEGER,
+        admin_id INTEGER REFERENCES users(id),
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS auctions (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        tiktok_username VARCHAR(255) NOT NULL,
+        title TEXT,
+        status VARCHAR(50) DEFAULT 'active',
+        initial_time INTEGER DEFAULT 120,
+        delay_time INTEGER DEFAULT 20,
+        tie_extension INTEGER DEFAULT 10,
+        winner_username VARCHAR(255),
+        winner_coins INTEGER DEFAULT 0,
+        total_coins_collected INTEGER DEFAULT 0,
+        total_gifts_received INTEGER DEFAULT 0,
+        unique_donors INTEGER DEFAULT 0,
+        started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        finished_at TIMESTAMP,
+        notes TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS donors (
+        id SERIAL PRIMARY KEY,
+        auction_id INTEGER REFERENCES auctions(id),
+        tiktok_unique_id VARCHAR(255) NOT NULL,
+        tiktok_nickname VARCHAR(255),
+        profile_picture_url TEXT,
+        total_coins INTEGER DEFAULT 0,
+        total_gifts INTEGER DEFAULT 0,
+        final_position INTEGER,
+        is_winner BOOLEAN DEFAULT false,
+        first_donation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_donation_at TIMESTAMP,
+        UNIQUE(auction_id, tiktok_unique_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS gifts (
+        id SERIAL PRIMARY KEY,
+        auction_id INTEGER REFERENCES auctions(id),
+        donor_id INTEGER REFERENCES donors(id),
+        tiktok_unique_id VARCHAR(255) NOT NULL,
+        gift_id VARCHAR(255),
+        gift_name VARCHAR(255),
+        diamond_count INTEGER DEFAULT 0,
+        repeat_count INTEGER DEFAULT 1,
+        total_coins INTEGER DEFAULT 0,
+        received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS user_stats (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER UNIQUE REFERENCES users(id),
+        total_auctions INTEGER DEFAULT 0,
+        total_coins_collected INTEGER DEFAULT 0,
+        total_gifts_received INTEGER DEFAULT 0,
+        total_unique_donors INTEGER DEFAULT 0,
+        average_auction_duration INTEGER DEFAULT 0,
+        most_valuable_gift_name VARCHAR(255),
+        most_valuable_gift_diamonds INTEGER DEFAULT 0,
+        top_donor_username VARCHAR(255),
+        top_donor_total_coins INTEGER DEFAULT 0,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS user_settings (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER UNIQUE REFERENCES users(id),
+        default_initial_time INTEGER DEFAULT 120,
+        default_delay_time INTEGER DEFAULT 20,
+        default_tie_extension INTEGER DEFAULT 10,
+        default_min_message VARCHAR(10) DEFAULT 'MIN',
+        overlay_theme VARCHAR(50) DEFAULT 'default',
+        sound_enabled BOOLEAN DEFAULT true,
+        auto_save_auctions BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS sessions (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        refresh_token_hash TEXT NOT NULL,
+        device_info TEXT,
+        ip_address VARCHAR(45),
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_auctions_user_id ON auctions(user_id);
+      CREATE INDEX IF NOT EXISTS idx_donors_auction_id ON donors(auction_id);
+      CREATE INDEX IF NOT EXISTS idx_gifts_auction_id ON gifts(auction_id);
+    `);
+  } catch (error) {
+    process.stderr.write(`PostgreSQL schema initialization error: ${error.message}\n`);
+    throw error;
+  }
 }
 
 /**

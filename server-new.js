@@ -18,7 +18,7 @@ const {
 } = require('tiktok-live-connector');
 
 // Database y Auth
-const { initDatabase, closeDatabase } = require('./database/db');
+const { initDatabase, closeDatabase, getDB } = require('./database/db');
 const { authMiddleware } = require('./middleware/auth');
 const { checkPlanMiddleware, adminMiddleware } = require('./middleware/plan');
 const authRoutes = require('./routes/auth');
@@ -50,6 +50,16 @@ const EXTRA_HEADERS = process.env.TIKTOK_EXTRA_HEADERS
 // ==================== EXPRESS APP ====================
 
 const app = express();
+
+// Validar variables de entorno críticas en producción
+if (IS_PRODUCTION) {
+  const requiredEnvVars = ['JWT_SECRET'];
+  const missing = requiredEnvVars.filter(v => !process.env[v]);
+  if (missing.length > 0) {
+    process.stderr.write(`ERROR: Missing required environment variables: ${missing.join(', ')}\n`);
+    process.exit(1);
+  }
+}
 
 // Middleware
 app.use(cors({
@@ -101,12 +111,25 @@ app.post('/api/auctions/:id/finish', authMiddleware, auctionRoutes.finishAuction
 app.get('/api/stats', authMiddleware, auctionRoutes.getStats);
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    version: process.env.npm_package_version || '2.0.0'
-  });
+app.get('/api/health', async (req, res) => {
+  try {
+    // Verificar DB
+    const db = getDB();
+    if (process.env.DATABASE_URL) {
+      await db.query('SELECT 1');
+    }
+    res.json({ 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      version: process.env.npm_package_version || '2.0.0',
+      database: process.env.DATABASE_URL ? 'postgresql' : 'sqlite'
+    });
+  } catch (error) {
+    res.status(503).json({ 
+      status: 'error', 
+      message: 'Database not available'
+    });
+  }
 });
 
 // ==================== STATIC FILES ====================
@@ -438,12 +461,16 @@ async function startServer() {
     await initDatabase();
 
     server.listen(PORT, HOST, () => {
-      if (!IS_PRODUCTION) {
-        process.stdout.write(`Server ready on port ${PORT}\n`);
-      }
+      process.stdout.write(`✓ Server listening on ${HOST}:${PORT}\n`);
+      process.stdout.write(`✓ Environment: ${process.env.NODE_ENV || 'development'}\n`);
+      process.stdout.write(`✓ Database: ${process.env.DATABASE_URL ? 'PostgreSQL' : 'SQLite'}\n`);
     });
 
   } catch (error) {
+    process.stderr.write(`✗ Server startup failed: ${error.message}\n`);
+    if (error.stack && !IS_PRODUCTION) {
+      process.stderr.write(error.stack + '\n');
+    }
     process.exit(1);
   }
 }
