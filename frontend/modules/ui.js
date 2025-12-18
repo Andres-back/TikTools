@@ -85,7 +85,7 @@ function initModals() {
   // Cerrar modal al hacer clic en el botón de cerrar
   Object.values(modals).forEach(modal => {
     if (!modal) return;
-    
+
     const closeBtn = modal.querySelector('.modal-close');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => closeModal(modal));
@@ -255,7 +255,7 @@ async function loadNews() {
 function createNewsItem(news) {
   const div = document.createElement('div');
   div.className = 'news-item';
-  
+
   const date = new Date(news.created_at).toLocaleDateString('es-ES', {
     year: 'numeric',
     month: 'long',
@@ -288,7 +288,16 @@ async function loadChat() {
 
   try {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (!user || !user.id) {
+      chatLoading.style.display = 'none';
+      chatMessages.innerHTML = '<p class="info-text">Debes iniciar sesión para ver el chat.</p>';
+      return;
+    }
+
     const response = await fetch(`/api/chat/${user.id}`);
+    if (!response.ok) throw new Error('Error en la respuesta del servidor');
+
     const messages = await response.json();
 
     chatLoading.style.display = 'none';
@@ -321,7 +330,7 @@ async function loadChat() {
 function createChatMessage(message, currentUserId) {
   const div = document.createElement('div');
   div.className = `chat-message${message.sender_id === currentUserId ? ' own' : ''}`;
-  
+
   const time = new Date(message.created_at).toLocaleTimeString('es-ES', {
     hour: '2-digit',
     minute: '2-digit'
@@ -468,7 +477,7 @@ function initOverlayInputs() {
   if (overlaySaveBtn) {
     overlaySaveBtn.addEventListener('click', async () => {
       const formData = new FormData();
-      
+
       if (overlayLeft.files[0]) {
         formData.append('leftImage', overlayLeft.files[0]);
       }
@@ -509,7 +518,7 @@ function initOverlayInputs() {
       if (overlayLinkInput) {
         overlayLinkInput.select();
         document.execCommand('copy');
-        
+
         const originalText = copyOverlayBtn.textContent;
         copyOverlayBtn.textContent = '✅ Copiado';
         setTimeout(() => {

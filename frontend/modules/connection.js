@@ -37,7 +37,7 @@ let onGiftReceived = null;
 export function initConnection(elements) {
   statusBadgeEl = elements.statusBadge;
   feedbackEl = elements.feedback;
-  
+
   // Conectar módulo de monedas con leaderboard
   setOnCoinsRecorded((uniqueId, label, coins, profilePictureUrl) => {
     recordDonorCoins(uniqueId, label, coins, profilePictureUrl);
@@ -45,7 +45,7 @@ export function initConnection(elements) {
       onGiftReceived({ uniqueId, label, coins, profilePictureUrl });
     }
   });
-  
+
   // Inicializar WebSocket de sincronización permanente
   initSyncWebSocket();
 }
@@ -55,18 +55,20 @@ export function initConnection(elements) {
  */
 function initSyncWebSocket() {
   const wsUrl = `ws://${window.location.host}/live`;
-  
+
   syncWs = new WebSocket(wsUrl);
-  
+
   syncWs.addEventListener('open', () => {
-    });
-  
+    console.log('[SyncWS] Conectado');
+  });
+
   syncWs.addEventListener('close', () => {
     setTimeout(initSyncWebSocket, 3000);
   });
-  
+
   syncWs.addEventListener('error', (err) => {
-    });
+    console.warn('[SyncWS] Error:', err);
+  });
 }
 
 /**
@@ -82,9 +84,9 @@ export function setConnectionCallbacks({ onStateChange, onGift }) {
  */
 function updateStatusUI() {
   if (!statusBadgeEl) return;
-  
+
   statusBadgeEl.className = "status-badge";
-  
+
   switch (connectionState) {
     case CONNECTION_STATES.DISCONNECTED:
       statusBadgeEl.textContent = "Sin conexión";
@@ -113,13 +115,13 @@ function updateStatusUI() {
  */
 function showFeedback(message, type = "info", needsAuth = false) {
   if (!feedbackEl) return;
-  
+
   feedbackEl.textContent = message;
   feedbackEl.className = `panel-feedback panel-feedback--${type}`;
   if (needsAuth) {
     feedbackEl.classList.add("panel-feedback--needs-auth");
   }
-  
+
   // Auto-limpiar después de 8 segundos (más tiempo para mensajes de error)
   const timeout = type === "error" ? 10000 : 5000;
   setTimeout(() => {
@@ -137,7 +139,7 @@ function showFeedback(message, type = "info", needsAuth = false) {
 function setConnectionState(newState) {
   connectionState = newState;
   updateStatusUI();
-  
+
   if (onConnectionStateChange) {
     onConnectionStateChange(newState);
   }
@@ -150,7 +152,7 @@ function setConnectionState(newState) {
 function handleWebSocketMessage(event) {
   try {
     const data = JSON.parse(event.data);
-    
+
     switch (data.type) {
       case "connected":
         setConnectionState(CONNECTION_STATES.CONNECTED);
@@ -158,25 +160,25 @@ function handleWebSocketMessage(event) {
         showFeedback(`Conectado al live de @${connectedUser}`, "success");
         reconnectAttempts = 0;
         break;
-        
+
       case "disconnected":
         setConnectionState(CONNECTION_STATES.DISCONNECTED);
         showFeedback("Desconectado del live", "warning");
         break;
-        
+
       case "gift":
         processGiftEvent(data.data);
         break;
-        
+
       case "chat":
         // Se puede agregar manejo de chat si es necesario
         break;
-        
+
       case "error":
         // El mensaje puede venir en data.message o data.data.message
         const errorMessage = data.message || data.data?.message || "Error de conexión desconocido";
         setConnectionState(CONNECTION_STATES.ERROR);
-        
+
         // Si el error indica que necesita autenticación, expandir la sección de auth
         if (data.needsAuth) {
           showFeedback(errorMessage, "error", true);
@@ -187,16 +189,18 @@ function handleWebSocketMessage(event) {
           showFeedback(errorMessage, "error");
         }
         break;
-        
+
       case "streamEnd":
         setConnectionState(CONNECTION_STATES.DISCONNECTED);
         showFeedback("El stream ha terminado", "warning");
         break;
-        
+
       default:
-        }
-  } catch (e) {
+        console.log('[WS] Mensaje no manejado:', data.type);
     }
+  } catch (e) {
+    console.error('[WS] Error al procesar mensaje:', e);
+  }
 }
 
 /**
@@ -207,10 +211,10 @@ function attemptReconnect() {
     showFeedback("No se pudo reconectar. Intenta manualmente.", "error");
     return;
   }
-  
+
   reconnectAttempts++;
   showFeedback(`Reconectando... (intento ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`, "warning");
-  
+
   setTimeout(() => {
     if (currentUser && connectionState !== CONNECTION_STATES.CONNECTED) {
       connect(currentUser);
@@ -230,52 +234,52 @@ export function connect(username, sessionId = null, ttTargetIdc = null) {
     showFeedback("Por favor ingresa un usuario de TikTok", "warning");
     return false;
   }
-  
+
   // Limpiar @ si lo tiene
   const cleanUsername = username.replace(/^@/, "").trim();
-  
+
   // Desconectar si ya hay una conexión
   if (ws && ws.readyState === WebSocket.OPEN) {
     disconnect();
   }
-  
+
   currentUser = cleanUsername;
   setConnectionState(CONNECTION_STATES.CONNECTING);
   showFeedback(`Conectando a @${cleanUsername}...`, "info");
-  
+
   try {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/live`;
-    
+
     ws = new WebSocket(wsUrl);
-    
+
     ws.onopen = () => {
       // Construir mensaje de conexión con credenciales opcionales
       const connectMessage = {
         type: "connect",
         uniqueId: cleanUsername
       };
-      
+
       // Agregar sessionId si está disponible
       if (sessionId) {
         connectMessage.sessionId = sessionId;
-        }
-      
+      }
+
       // Agregar ttTargetIdc si está disponible
       if (ttTargetIdc) {
         connectMessage.ttTargetIdc = ttTargetIdc;
       }
-      
+
       ws.send(JSON.stringify(connectMessage));
     };
-    
+
     ws.onmessage = handleWebSocketMessage;
-    
+
     ws.onerror = (error) => {
       setConnectionState(CONNECTION_STATES.ERROR);
       showFeedback("Error de conexión WebSocket", "error");
     };
-    
+
     ws.onclose = (event) => {
       if (connectionState === CONNECTION_STATES.CONNECTED) {
         setConnectionState(CONNECTION_STATES.DISCONNECTED);
@@ -285,7 +289,7 @@ export function connect(username, sessionId = null, ttTargetIdc = null) {
         setConnectionState(CONNECTION_STATES.DISCONNECTED);
       }
     };
-    
+
     return true;
   } catch (e) {
     setConnectionState(CONNECTION_STATES.ERROR);
@@ -305,14 +309,15 @@ export function disconnect() {
       }
       ws.close();
     } catch (e) {
-      }
+      console.error('[WS] Error al cerrar:', e);
+    }
     ws = null;
   }
-  
+
   setConnectionState(CONNECTION_STATES.DISCONNECTED);
   reconnectAttempts = 0;
   showFeedback("Desconectado", "info");
-  }
+}
 
 /**
  * Obtiene el estado actual de la conexión
@@ -350,7 +355,7 @@ export function setCurrentUser(username) {
 export function broadcastLeaderboard(donors) {
   // Usar syncWs (siempre activo) o ws (si está conectado)
   const wsToUse = (syncWs && syncWs.readyState === WebSocket.OPEN) ? syncWs : ws;
-  
+
   if (wsToUse && wsToUse.readyState === WebSocket.OPEN) {
     try {
       wsToUse.send(JSON.stringify({
@@ -358,9 +363,11 @@ export function broadcastLeaderboard(donors) {
         donors: donors
       }));
     } catch (err) {
-      }
-  } else {
+      console.warn('[WS] Error broadcast:', err);
     }
+  } else {
+    // console.debug('[WS] No hay conexión para broadcast');
+  }
 }
 
 export { CONNECTION_STATES };
