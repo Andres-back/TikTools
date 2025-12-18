@@ -30,6 +30,13 @@ async function register(req, res) {
       });
     }
 
+    if (!email.toLowerCase().endsWith('@gmail.com')) {
+      return res.status(400).json({
+        error: 'Dominio no permitido',
+        message: 'Solo se permiten cuentas de Gmail (@gmail.com) para registrarse.'
+      });
+    }
+
     if (password.length < 6) {
       return res.status(400).json({
         error: 'Password débil',
