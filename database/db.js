@@ -29,12 +29,12 @@ async function initDatabase() {
     if (process.env.DATABASE_URL) {
       // PostgreSQL (Digital Ocean, Heroku, etc.)
       const connectionString = process.env.DATABASE_URL;
-      
+
       process.stdout.write(`🔗 Connecting to PostgreSQL...\n`);
-      
+
       // Parsear la URL para extraer componentes
       const url = new URL(connectionString.replace('postgresql://', 'postgres://'));
-      
+
       // Configuración explícita sin usar connectionString
       // Esto evita conflictos con sslmode en la URL
       pool = new Pool({
@@ -54,50 +54,50 @@ async function initDatabase() {
       // Verificar conexión
       await pool.query('SELECT NOW()');
       process.stdout.write('✓ PostgreSQL connected successfully\n');
-      
+
       // Crear tablas si no existen
       await initPostgresSchema(pool);
       process.stdout.write('✓ PostgreSQL schema initialized\n');
     } else {
-    // Fallback a SQLite para desarrollo local
-    const Database = require('better-sqlite3');
-    const dbPath = path.join(__dirname, '..', 'data', 'auction.db');
-    
-    // Crear directorio si no existe
-    const fs = require('fs');
-    const dataDir = path.dirname(dbPath);
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
-    }
-    
-    const sqlite = new Database(dbPath);
-    sqlite.pragma('journal_mode = WAL');
-    
-    // Wrapper para hacer SQLite compatible con la API de pg
-    pool = {
-      query: async (text, params) => {
-        // Convertir $1, $2 a ?, ?
-        const sqliteText = text.replace(/\$(\d+)/g, '?');
-        
-        if (sqliteText.trim().toUpperCase().startsWith('SELECT')) {
-          const rows = sqlite.prepare(sqliteText).all(...(params || []));
-          return { rows, rowCount: rows.length };
-        } else {
-          const result = sqlite.prepare(sqliteText).run(...(params || []));
-          return { 
-            rows: [{ id: result.lastInsertRowid }], 
-            rowCount: result.changes 
-          };
-        }
-      },
-      end: () => sqlite.close()
-    };
-    
-    // Ejecutar schema de SQLite
-    initSQLiteSchema(sqlite);
-  }
+      // Fallback a SQLite para desarrollo local
+      const Database = require('better-sqlite3');
+      const dbPath = path.join(__dirname, '..', 'data', 'auction.db');
 
-  return pool;
+      // Crear directorio si no existe
+      const fs = require('fs');
+      const dataDir = path.dirname(dbPath);
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+
+      const sqlite = new Database(dbPath);
+      sqlite.pragma('journal_mode = WAL');
+
+      // Wrapper para hacer SQLite compatible con la API de pg
+      pool = {
+        query: async (text, params) => {
+          // Convertir $1, $2 a ?, ?
+          const sqliteText = text.replace(/\$(\d+)/g, '?');
+
+          if (sqliteText.trim().toUpperCase().startsWith('SELECT')) {
+            const rows = sqlite.prepare(sqliteText).all(...(params || []));
+            return { rows, rowCount: rows.length };
+          } else {
+            const result = sqlite.prepare(sqliteText).run(...(params || []));
+            return {
+              rows: [{ id: result.lastInsertRowid }],
+              rowCount: result.changes
+            };
+          }
+        },
+        end: () => sqlite.close()
+      };
+
+      // Ejecutar schema de SQLite
+      initSQLiteSchema(sqlite);
+    }
+
+    return pool;
   } catch (error) {
     process.stderr.write(`Database initialization error: ${error.message}\n`);
     throw error;
@@ -239,9 +239,41 @@ function initSQLiteSchema(db) {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
+    -- Tabla de noticias/novedades
+    CREATE TABLE IF NOT EXISTS news (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      image_url TEXT,
+      author_id INTEGER REFERENCES users(id),
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Tabla de mensajes (chat usuario-admin)
+    CREATE TABLE IF NOT EXISTS messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sender_id INTEGER REFERENCES users(id),
+      recipient_id INTEGER REFERENCES users(id),
+      message TEXT NOT NULL,
+      image_url TEXT,
+      read INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Tabla de configuración de overlays por usuario
+    CREATE TABLE IF NOT EXISTS overlays (
+      user_id INTEGER PRIMARY KEY REFERENCES users(id),
+      left_image_url TEXT DEFAULT '/assets/QuesadillaCrocodilla.webp',
+      right_image_url TEXT DEFAULT '/assets/Noel.webp',
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE INDEX IF NOT EXISTS idx_auctions_user_id ON auctions(user_id);
     CREATE INDEX IF NOT EXISTS idx_donors_auction_id ON donors(auction_id);
     CREATE INDEX IF NOT EXISTS idx_gifts_auction_id ON gifts(auction_id);
+    CREATE INDEX IF NOT EXISTS idx_news_created_at ON news(created_at);
+    CREATE INDEX IF NOT EXISTS idx_messages_sender ON messages(sender_id);
+    CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient_id);
   `);
 }
 
@@ -381,9 +413,41 @@ async function initPostgresSchema(pool) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
+      -- Tabla de noticias/novedades
+      CREATE TABLE IF NOT EXISTS news (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(200) NOT NULL,
+        content TEXT NOT NULL,
+        image_url TEXT,
+        author_id INTEGER REFERENCES users(id),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Tabla de mensajes (chat usuario-admin)
+      CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        sender_id INTEGER REFERENCES users(id),
+        recipient_id INTEGER REFERENCES users(id),
+        message TEXT NOT NULL,
+        image_url TEXT,
+        read BOOLEAN DEFAULT false,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Tabla de configuración de overlays por usuario
+      CREATE TABLE IF NOT EXISTS overlays (
+        user_id INTEGER PRIMARY KEY REFERENCES users(id),
+        left_image_url TEXT DEFAULT '/assets/QuesadillaCrocodilla.webp',
+        right_image_url TEXT DEFAULT '/assets/Noel.webp',
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
       CREATE INDEX IF NOT EXISTS idx_auctions_user_id ON auctions(user_id);
       CREATE INDEX IF NOT EXISTS idx_donors_auction_id ON donors(auction_id);
       CREATE INDEX IF NOT EXISTS idx_gifts_auction_id ON gifts(auction_id);
+      CREATE INDEX IF NOT EXISTS idx_news_created_at ON news(created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_messages_sender ON messages(sender_id);
+      CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient_id);
     `);
   } catch (error) {
     process.stderr.write(`PostgreSQL schema initialization error: ${error.message}\n`);

@@ -28,6 +28,9 @@ const authRoutes = require('./routes/auth');
 const auctionRoutes = require('./routes/auctions');
 const adminRoutes = require('./routes/admin');
 const paymentRoutes = require('./routes/payments');
+const newsRoutes = require('./routes/news');
+const chatRoutes = require('./routes/chat');
+const overlaysRoutes = require('./routes/overlays');
 
 // Configuración
 const HOST = process.env.HOST || '0.0.0.0';
@@ -113,6 +116,11 @@ app.post('/api/auctions/:id/finish', authMiddleware, auctionRoutes.finishAuction
 // Stats routes
 app.get('/api/stats', authMiddleware, auctionRoutes.getStats);
 
+// News, Chat y Overlay routes
+app.use('/api/news', newsRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/overlays', overlaysRoutes);
+
 // Health check
 app.get('/api/health', async (req, res) => {
   try {
@@ -121,15 +129,15 @@ app.get('/api/health', async (req, res) => {
     if (process.env.DATABASE_URL) {
       await db.query('SELECT 1');
     }
-    res.json({ 
-      status: 'ok', 
+    res.json({
+      status: 'ok',
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '2.0.0',
       database: process.env.DATABASE_URL ? 'postgresql' : 'sqlite'
     });
   } catch (error) {
-    res.status(503).json({ 
-      status: 'error', 
+    res.status(503).json({
+      status: 'error',
       message: 'Database not available'
     });
   }
@@ -137,14 +145,22 @@ app.get('/api/health', async (req, res) => {
 
 // ==================== STATIC FILES ====================
 
+// Servir archivos subidos (uploads)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use(express.static(PUBLIC_DIR));
+
+// Ruta especial para overlay personalizado
+app.get('/overlay/:userId', async (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'overlay.html'));
+});
 
 // SPA fallback - Express 5 compatible
 app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ error: 'Endpoint no encontrado' });
   }
-  
+
   const ext = path.extname(req.path);
   if (ext && ext !== '.html') {
     return res.sendFile(path.join(PUBLIC_DIR, req.path), (err) => {
@@ -153,7 +169,7 @@ app.use((req, res, next) => {
       }
     });
   }
-  
+
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 
@@ -262,7 +278,7 @@ function attachSocketToUniqueId(socket, uniqueId, clientSessionId = null, client
   if (socket.currentUniqueId === uniqueId) {
     return;
   }
-  
+
   detachSocket(socket);
 
   let listeners = listenersByUniqueId.get(uniqueId);
@@ -280,7 +296,7 @@ function attachSocketToUniqueId(socket, uniqueId, clientSessionId = null, client
     .catch((err) => {
       let errorMessage = err.message || 'No se pudo conectar al live.';
       let needsAuth = false;
-      
+
       if (errorMessage.includes('504') || errorMessage.includes('sign server') || errorMessage.includes('Sign Error')) {
         errorMessage = 'Error del servidor de firma. El usuario puede no estar en vivo.';
         needsAuth = true;
@@ -290,7 +306,7 @@ function attachSocketToUniqueId(socket, uniqueId, clientSessionId = null, client
         errorMessage = 'TikTok requiere verificación CAPTCHA.';
         needsAuth = true;
       }
-      
+
       send(socket, {
         type: 'error',
         message: errorMessage,
@@ -322,7 +338,7 @@ function ensureStream(uniqueId, sessionId = null, ttTargetIdc = null) {
   if (streamEntry && streamEntry.connection && streamEntry.connection.isConnected) {
     return Promise.resolve(streamEntry);
   }
-  
+
   if (streamEntry && streamEntry.connectPromise) {
     return streamEntry.connectPromise;
   }
@@ -356,7 +372,7 @@ function cleanupStream(uniqueId) {
   if (entry.connection) {
     try {
       entry.connection.removeAllListeners();
-      entry.connection.disconnect().catch(() => {});
+      entry.connection.disconnect().catch(() => { });
     } catch (err) {
       // Silent
     }
@@ -366,7 +382,7 @@ function cleanupStream(uniqueId) {
 function createTikTokConnection(uniqueId, sessionId = null, ttTargetIdc = null) {
   const effectiveSessionId = sessionId || SESSION_ID;
   const effectiveTtTargetIdc = ttTargetIdc || TT_TARGET_IDC;
-  
+
   const options = {
     processInitialData: false,
     enableExtendedGiftInfo: true,
@@ -386,14 +402,14 @@ function createTikTokConnection(uniqueId, sessionId = null, ttTargetIdc = null) 
     wsClientParams: {},
     wsClientOptions: {}
   };
-  
+
   if (effectiveSessionId) {
     options.sessionId = effectiveSessionId;
     if (effectiveTtTargetIdc) {
       options.ttTargetIdc = effectiveTtTargetIdc;
     }
   }
-  
+
   const connection = new TikTokLiveConnection(uniqueId, options);
 
   connection.on(ControlEvent.CONNECTED, (state) => {
@@ -404,7 +420,7 @@ function createTikTokConnection(uniqueId, sessionId = null, ttTargetIdc = null) 
     broadcast(uniqueId, { type: 'disconnected', data: { uniqueId, code: data?.code, reason: data?.reason } });
     cleanupStream(uniqueId);
   });
-  
+
   connection.on(WebcastEvent.STREAM_END, (data) => {
     broadcast(uniqueId, { type: 'streamEnd', data: { uniqueId, action: data?.action } });
     cleanupStream(uniqueId);
@@ -413,7 +429,7 @@ function createTikTokConnection(uniqueId, sessionId = null, ttTargetIdc = null) 
   connection.on(WebcastEvent.GIFT, (event) => {
     broadcast(uniqueId, { type: 'gift', data: event });
   });
-  
+
   connection.on(ControlEvent.ERROR, (err) => {
     let errorMsg = 'Error desconocido';
     if (typeof err === 'string') {
@@ -481,11 +497,11 @@ async function startServer() {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   clearInterval(heartbeatTimer);
-  
+
   wss.clients.forEach((socket) => {
     socket.close();
   });
-  
+
   server.close(async () => {
     await closeDatabase();
     process.exit(0);
