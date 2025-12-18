@@ -68,7 +68,6 @@ import { processGiftEvent } from "./modules/coins.js";
 const elements = {
   // Panel de control
   tiktokUserInput: document.getElementById("tiktokUserInput"),
-  tiktokUserSave: document.getElementById("tiktokUserSave"),
   tiktokConnect: document.getElementById("tiktokConnect"),
   tiktokUserDisplay: document.getElementById("tiktokUserDisplay"),
   connectionStatus: document.getElementById("connectionStatus"),
@@ -254,25 +253,20 @@ function loadUIFromStorage() {
 // ============================================
 
 function setupEventListeners() {
-  // Guardar usuario
-  elements.tiktokUserSave?.addEventListener("click", () => {
-    const username = elements.tiktokUserInput?.value?.trim() || "";
-    if (username) {
-      saveUser(username);
-      setCurrentUser(username);
-      if (elements.tiktokUserDisplay) {
-        elements.tiktokUserDisplay.textContent = username;
-      }
-      }
-  });
-  
-  // Conectar/Desconectar
+  // Conectar/Desconectar (ahora también guarda el usuario)
   elements.tiktokConnect?.addEventListener("click", () => {
     if (isConnected()) {
       disconnect();
     } else {
       const username = elements.tiktokUserInput?.value?.trim() || getCurrentUser();
       if (username) {
+        // Guardar el usuario automáticamente al conectar
+        saveUser(username);
+        setCurrentUser(username);
+        if (elements.tiktokUserDisplay) {
+          elements.tiktokUserDisplay.textContent = username;
+        }
+        
         // Obtener credenciales opcionales del localStorage
         const sessionId = loadSessionId() || null;
         const ttTargetIdc = loadTtTargetIdc() || null;
@@ -395,10 +389,10 @@ function setupEventListeners() {
     }
   });
   
-  // Enter en input de usuario TikTok
+  // Enter en input de usuario TikTok (conecta automáticamente)
   elements.tiktokUserInput?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      elements.tiktokUserSave?.click();
+      elements.tiktokConnect?.click();
     }
   });
   

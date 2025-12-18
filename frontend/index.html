@@ -42,8 +42,7 @@
         </div>
         
         <div class="btn-group" style="margin-top: 0.75rem;">
-          <button id="tiktokUserSave" class="btn btn-secondary">Guardar</button>
-          <button id="tiktokConnect" class="btn btn-primary">Conectar</button>
+          <button id="tiktokConnect" class="btn btn-primary" style="flex: 1;">Conectar</button>
         </div>
         
         <div class="status-display">
@@ -209,6 +208,17 @@
       particle.style.animationDelay = Math.random() * 20 + 's';
       particle.style.animationDuration = (15 + Math.random() * 10) + 's';
       particlesContainer.appendChild(particle);
+    }
+  </script>
+  
+  <!-- Protección de autenticación -->
+  <script type="module">
+    import { isLoggedIn, isGuest } from './modules/auth.js';
+    
+    // Verificar si el usuario está autenticado
+    if (!isLoggedIn() && !isGuest()) {
+      // Redirigir al login
+      window.location.href = '/login.html';
     }
   </script>
   
