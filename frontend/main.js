@@ -15,8 +15,8 @@
 
 import { apiCall, getUser, clearTokens } from "./modules/auth.js";
 import { initUI } from "./modules/ui.js";
-import { 
-  loadUser, 
+import {
+  loadUser,
   saveUser,
   saveSessionId,
   loadSessionId,
@@ -82,7 +82,7 @@ function sendOverlaySync() {
   const config = getConfig();
   const state = getTimerState();
   const winner = getWinner();
-  
+
   overlayChannel.postMessage({
     type: 'sync',
     timer: {
@@ -136,28 +136,28 @@ const elements = {
   tiktokUserDisplay: document.getElementById("tiktokUserDisplay"),
   connectionStatus: document.getElementById("connectionStatus"),
   connectionFeedback: document.getElementById("connectionFeedback"),
-  
+
   // Autenticación TikTok
   sessionIdInput: document.getElementById("sessionIdInput"),
   ttTargetIdcInput: document.getElementById("ttTargetIdcInput"),
   saveSessionId: document.getElementById("saveSessionId"),
   authDetails: document.getElementById("authDetails"),
-  
+
   // Tiempos
   initialTimeInput: document.getElementById("initialTimeInput"),
   delayTimeInput: document.getElementById("delayTimeInput"),
   tieExtensionInput: document.getElementById("tieExtensionInput"),
   updateTimes: document.getElementById("updateTimes"),
-  
+
   // Mensaje mínimo
   minMessageInput: document.getElementById("minMessageInput"),
   updateMinMessage: document.getElementById("updateMinMessage"),
-  
+
   // Suma manual de monedas
   manualUserInput: document.getElementById("manualUserInput"),
   manualCoinsInput: document.getElementById("manualCoinsInput"),
   addManualCoins: document.getElementById("addManualCoins"),
-  
+
   // Timer
   timerCard: document.getElementById("timerCard"),
   timerDisplay: document.getElementById("timerDisplay"),
@@ -165,12 +165,12 @@ const elements = {
   timerHeading: document.getElementById("timerHeading"),
   timerPlay: document.getElementById("timerPlay"),
   timerReset: document.getElementById("timerReset"),
-  
+
   // Leaderboard
   donorList: document.getElementById("donorList"),
   winnerDisplay: document.getElementById("winnerDisplay"),
   leaderboardFooter: document.getElementById("leaderboardFooter"),
-  
+
   // Animaciones
   animationOverlay: document.getElementById("animationOverlay")
 };
@@ -191,7 +191,7 @@ console.log('Elementos DOM cargados:', {
 function initializeModules() {
   // Cargar configuración
   loadConfig();
-  
+
   // Inicializar leaderboard con overlay de animaciones
   initLeaderboard({
     donorList: elements.donorList,
@@ -199,7 +199,7 @@ function initializeModules() {
     leaderboardFooter: elements.leaderboardFooter,
     animationOverlay: elements.animationOverlay
   });
-  
+
   // Inicializar timer
   initTimer({
     timerDisplay: elements.timerDisplay,
@@ -207,7 +207,7 @@ function initializeModules() {
     timerMessage: elements.timerMessage,
     timerHeading: elements.timerHeading
   });
-  
+
   // Configurar callbacks del timer
   setTimerCallbacks({
     onFinished: (winner) => {
@@ -228,20 +228,20 @@ function initializeModules() {
       // Aquí se podría agregar una notificación visual adicional
     }
   });
-  
+
   // Inicializar conexión
   initConnection({
     statusBadge: elements.connectionStatus,
     feedback: elements.connectionFeedback
   });
-  
+
   // Configurar callbacks de conexión
   setConnectionCallbacks({
     onStateChange: (state) => {
       updateConnectionUI();
     },
     onGift: (data) => {
-      }
+    }
   });
 }
 
@@ -251,9 +251,9 @@ function initializeModules() {
 
 function updateTimerControls() {
   if (!elements.timerPlay || !elements.timerReset) return;
-  
+
   const state = getTimerState();
-  
+
   if (state.phase === TIMER_PHASES.FINISHED) {
     elements.timerPlay.textContent = "✓ Finalizado";
     elements.timerPlay.disabled = true;
@@ -271,9 +271,9 @@ function updateTimerControls() {
 
 function updateConnectionUI() {
   if (!elements.tiktokConnect) return;
-  
+
   const statusDot = document.getElementById("statusDot");
-  
+
   if (isConnected()) {
     elements.tiktokConnect.textContent = "Desconectar";
     elements.tiktokConnect.classList.remove("btn-primary");
@@ -297,7 +297,7 @@ function loadUIFromStorage() {
   if (elements.tiktokUserDisplay) {
     elements.tiktokUserDisplay.textContent = savedUser || "—";
   }
-  
+
   // Credenciales de TikTok
   const savedSessionId = loadSessionId();
   const savedTtTargetIdc = loadTtTargetIdc();
@@ -307,7 +307,7 @@ function loadUIFromStorage() {
   if (savedTtTargetIdc && elements.ttTargetIdcInput) {
     elements.ttTargetIdcInput.value = savedTtTargetIdc;
   }
-  
+
   // Tiempos
   const config = getConfig();
   if (elements.initialTimeInput) {
@@ -319,12 +319,12 @@ function loadUIFromStorage() {
   if (elements.tieExtensionInput) {
     elements.tieExtensionInput.value = config.tieExtension;
   }
-  
+
   // Mensaje mínimo
   if (elements.minMessageInput) {
     elements.minMessageInput.value = config.minMessage;
   }
-  
+
   // Actualizar UI del timer
   refreshTimerUI();
 }
@@ -335,7 +335,7 @@ function loadUIFromStorage() {
 
 function setupEventListeners() {
   console.log('setupEventListeners - Configurando event listeners');
-  
+
   // Conectar/Desconectar (ahora también guarda el usuario)
   elements.tiktokConnect?.addEventListener("click", () => {
     console.log('Connect button clicked');
@@ -352,7 +352,7 @@ function setupEventListeners() {
         if (elements.tiktokUserDisplay) {
           elements.tiktokUserDisplay.textContent = username;
         }
-        
+
         // Obtener credenciales opcionales del localStorage
         const sessionId = loadSessionId() || null;
         const ttTargetIdc = loadTtTargetIdc() || null;
@@ -364,20 +364,20 @@ function setupEventListeners() {
     }
     updateConnectionUI();
   });
-  
+
   // Guardar Session ID
   elements.saveSessionId?.addEventListener("click", () => {
     const sessionId = elements.sessionIdInput?.value?.trim() || "";
     const ttTargetIdc = elements.ttTargetIdcInput?.value?.trim() || "";
-    
+
     saveSessionId(sessionId);
     saveTtTargetIdc(ttTargetIdc);
-    
+
     console.log("Credenciales guardadas:", {
       sessionId: sessionId ? sessionId.substring(0, 10) + "..." : "(vacío)",
       ttTargetIdc: ttTargetIdc || "(vacío)"
     });
-    
+
     // Mostrar feedback
     if (elements.connectionFeedback) {
       elements.connectionFeedback.textContent = "Credenciales guardadas. Intenta conectar de nuevo.";
@@ -388,14 +388,14 @@ function setupEventListeners() {
       }, 3000);
     }
   });
-  
+
   // Play/Pause timer
   elements.timerPlay?.addEventListener("click", () => {
     const state = getTimerState();
     if (state.phase === TIMER_PHASES.FINISHED) {
       return;
     }
-    
+
     if (state.active) {
       pauseTimer();
     } else if (state.phase === TIMER_PHASES.IDLE) {
@@ -403,23 +403,23 @@ function setupEventListeners() {
     } else {
       resumeTimer();
     }
-    
+
     updateTimerControls();
   });
-  
+
   // Reset timer
   elements.timerReset?.addEventListener("click", () => {
     resetTimer();
     resetLeaderboard();
     updateTimerControls();
   });
-  
+
   // Actualizar tiempos
   elements.updateTimes?.addEventListener("click", () => {
     const initialTime = parseInt(elements.initialTimeInput?.value, 10);
     const delayTime = parseInt(elements.delayTimeInput?.value, 10);
     const tieExtension = parseInt(elements.tieExtensionInput?.value, 10);
-    
+
     if (!isNaN(initialTime)) {
       setInitialTime(initialTime);
     }
@@ -429,10 +429,10 @@ function setupEventListeners() {
     if (!isNaN(tieExtension)) {
       setTieExtension(tieExtension);
     }
-    
+
     refreshTimerUI();
   });
-  
+
   // Actualizar mensaje mínimo
   elements.updateMinMessage?.addEventListener("click", () => {
     const message = elements.minMessageInput?.value?.trim();
@@ -441,36 +441,36 @@ function setupEventListeners() {
       updateTimerHeading(message);
     }
   });
-  
+
   // Enter en input de mensaje
   elements.minMessageInput?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       elements.updateMinMessage?.click();
     }
   });
-  
+
   // Suma manual de monedas
   elements.addManualCoins?.addEventListener("click", () => {
     const username = elements.manualUserInput?.value?.trim();
     const coins = parseInt(elements.manualCoinsInput?.value, 10);
-    
+
     if (!username) {
       alert("Por favor ingresa un usuario");
       return;
     }
-    
+
     if (isNaN(coins) || coins <= 0) {
       alert("Por favor ingresa una cantidad válida de monedas");
       return;
     }
-    
+
     if (isLeaderboardFrozen()) {
       alert("No se pueden agregar monedas después de que terminó el tiempo");
       return;
     }
-    
+
     const success = recordDonorCoins(username, username, coins);
-    
+
     if (success) {
       // Limpiar inputs
       elements.manualCoinsInput.value = "";
@@ -478,14 +478,14 @@ function setupEventListeners() {
       alert("No se pudieron agregar las monedas");
     }
   });
-  
+
   // Enter en input de usuario TikTok (conecta automáticamente)
   elements.tiktokUserInput?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       elements.tiktokConnect?.click();
     }
   });
-  
+
   // Enter en input de monedas manuales
   elements.manualCoinsInput?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
@@ -504,22 +504,22 @@ window.tiktokLiveUi = {
   resetLeaderboard,
   getWinner,
   getLeaderboard: getTop3,
-  
+
   // Timer
   startTimer,
   pauseTimer,
   resetTimer,
   getTimerState,
-  
+
   // Connection
   connect,
   disconnect,
   isConnected,
   setCurrentUser,
-  
+
   // Coins
   processGiftEvent,
-  
+
   // Utility
   getConfig,
   refreshTimerUI
@@ -532,11 +532,11 @@ window.tiktokLiveUi = {
 async function checkPlanStatus() {
   try {
     const response = await apiCall('/payments/plan-status');
-    
+
     if (!response.ok) {
       return null;
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
@@ -549,16 +549,16 @@ function showPlanBanner(planData) {
   const banner = document.getElementById('planBanner');
   const planText = document.getElementById('planText');
   const upgradeBtn = document.getElementById('upgradePlan');
-  
+
   if (!banner || !planData) return;
-  
+
   const daysRemaining = planData.daysRemaining || 0;
   const planType = planData.planType || 'free';
   const isActive = planData.isActive;
-  
+
   banner.classList.remove('warning', 'expired');
   banner.style.display = 'flex';
-  
+
   if (!isActive || daysRemaining <= 0) {
     // Plan expirado
     banner.classList.add('expired');
@@ -578,7 +578,7 @@ function showPlanBanner(planData) {
     planText.textContent = `💎 Plan Pro - ${daysRemaining} día${daysRemaining !== 1 ? 's' : ''} restantes`;
     upgradeBtn.style.display = 'none';
   }
-  
+
   // Configurar botón de upgrade
   upgradeBtn.onclick = () => {
     if (confirm('Para obtener el Plan Pro, contacta con el administrador vía PayPal. ¿Deseas continuar?')) {
@@ -593,30 +593,54 @@ function showPlanBanner(planData) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log('DOMContentLoaded - Iniciando aplicación');
-  
-  // Inicializar UI (modales, menús, etc.)
-  console.log('Inicializando UI...');
-  initUI();
-  
-  console.log('Inicializando módulos...');
-  initializeModules();
-  
-  console.log('Cargando UI desde storage...');
-  loadUIFromStorage();
-  
-  console.log('Configurando event listeners...');
-  setupEventListeners();
-  
-  console.log('Actualizando controles...');
-  updateTimerControls();
-  updateConnectionUI();
-  
-  // Verificar estado del plan
-  console.log('Verificando estado del plan...');
-  const planStatus = await checkPlanStatus();
-  if (planStatus) {
-    showPlanBanner(planStatus);
+
+  try {
+    // Inicializar UI (modales, menús, etc.)
+    console.log('Inicializando UI...');
+    initUI();
+  } catch (e) {
+    console.error('Error inicializando UI:', e);
   }
-  
+
+  try {
+    console.log('Inicializando módulos...');
+    initializeModules();
+  } catch (e) {
+    console.error('Error inicializando módulos:', e);
+  }
+
+  try {
+    console.log('Cargando UI desde storage...');
+    loadUIFromStorage();
+  } catch (e) {
+    console.error('Error cargando UI desde storage:', e);
+  }
+
+  try {
+    console.log('Configurando event listeners...');
+    setupEventListeners();
+  } catch (e) {
+    console.error('Error configurando event listeners:', e);
+  }
+
+  try {
+    console.log('Actualizando controles...');
+    updateTimerControls();
+    updateConnectionUI();
+  } catch (e) {
+    console.error('Error actualizando controles:', e);
+  }
+
+  // Verificar estado del plan
+  try {
+    console.log('Verificando estado del plan...');
+    const planStatus = await checkPlanStatus();
+    if (planStatus) {
+      showPlanBanner(planStatus);
+    }
+  } catch (e) {
+    console.error('Error verificando plan:', e);
+  }
+
   console.log("TikToolStream inicializado correctamente");
 });
