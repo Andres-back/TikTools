@@ -158,16 +158,41 @@ async function login(req, res) {
     }
 
     // Verificar si el correo está confirmado
-    if (user.is_verified === false) { // Chequeo explícito por si es null (viejos usuarios asumen true si no tienen campo, pero aquí el campo existe)
-      // Para usuarios anteriores a la migración, is_verified podría ser NULL. Tratarlos como verificados o forzarlos.
-      // Asumiremos que si es false, requiere verificación. Si es null (viejos), se pase.
-      // Pero espera, acabamos de agregar la columna DEFAULT false. Entonces los viejos serán false.
-      // Como vamos a borrar todos los usuarios, no importa.
-
+    if (user.is_verified === false) {
       return res.status(403).json({
         error: 'Verificación requerida',
+        code: 'EMAIL_NOT_VERIFIED',
         message: 'Por favor verifica tu correo electrónico para iniciar sesión.'
       });
+    }
+
+    // Verificar estado del plan (bloquear si expiró y no es admin)
+    if (user.role !== 'admin') {
+      const planResult = await query(
+        `SELECT plan_type, plan_expires_at, plan_days_remaining FROM users WHERE id = $1`,
+        [user.id]
+      );
+      
+      if (planResult.rows.length > 0) {
+        const plan = planResult.rows[0];
+        const now = new Date();
+        let planExpired = true;
+        
+        if (plan.plan_expires_at) {
+          const expiresAt = new Date(plan.plan_expires_at);
+          planExpired = expiresAt <= now;
+        }
+        
+        if (planExpired && plan.plan_days_remaining <= 0) {
+          return res.status(403).json({
+            error: 'Plan expirado',
+            code: 'PLAN_EXPIRED',
+            message: 'Tu período de prueba ha finalizado. Actualiza a Pro para continuar usando la plataforma.',
+            planType: plan.plan_type,
+            upgradeUrl: '/upgrade.html'
+          });
+        }
+      }
     }
 
     // Actualizar último login
@@ -226,7 +251,7 @@ async function verifyEmail(req, res) {
     }
 
     const result = await query(
-      'SELECT id, email FROM users WHERE verification_token = $1',
+      'SELECT id, email, is_verified FROM users WHERE verification_token = $1',
       [token]
     );
 
@@ -236,20 +261,31 @@ async function verifyEmail(req, res) {
 
     const user = result.rows[0];
 
+    // Si ya está verificado
+    if (user.is_verified) {
+      return res.json({ 
+        success: true, 
+        message: 'Tu correo ya estaba verificado',
+        alreadyVerified: true 
+      });
+    }
+
+    // Marcar como verificado
     await query(
       'UPDATE users SET is_verified = true, verification_token = NULL WHERE id = $1',
       [user.id]
     );
 
-    // Redirigir al frontend con mensaje de éxito (o devolver JSON si se llama desde app)
-    // Pero el link del correo abrirá una pestaña del navegador, así que es mejor devolver HTML o redirigir.
-    // Como esto es una API JSON normalmente, vamos a devolver JSON si acepta JSON, o redirigir si no.
+    console.log(`✅ Usuario ${user.email} verificado exitosamente`);
 
-    // Asumiremos redirección a una página estática
-    res.redirect('/login.html?verified=true');
+    res.json({ 
+      success: true, 
+      message: 'Correo verificado exitosamente',
+      email: user.email
+    });
 
   } catch (error) {
-    console.error('Error verificado correo:', error);
+    console.error('Error verificando correo:', error);
     res.status(500).json({ error: 'Error interno al verificar correo' });
   }
 }

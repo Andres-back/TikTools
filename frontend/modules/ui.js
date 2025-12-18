@@ -288,15 +288,28 @@ async function loadChat() {
   chatMessages.innerHTML = '';
 
   try {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    // Obtener usuario y token de ambos storages
+    const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+    const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
-    if (!user || !user.id) {
+    if (!user || !user.id || !token) {
       chatLoading.style.display = 'none';
       chatMessages.innerHTML = '<p class="info-text">Debes iniciar sesión para ver el chat.</p>';
       return;
     }
 
-    const response = await fetch(`/api/chat/${user.id}`);
+    const response = await fetch(`/api/chat/${user.id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (response.status === 401) {
+      chatLoading.style.display = 'none';
+      chatMessages.innerHTML = '<p class="info-text">Sesión expirada. Por favor recarga la página.</p>';
+      return;
+    }
+    
     if (!response.ok) throw new Error('Error en la respuesta del servidor');
 
     const messages = await response.json();
@@ -360,22 +373,39 @@ function initChatInput() {
 
   if (!chatInput || !chatSendBtn) return;
 
+  // Obtener token
+  const getToken = () => localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
   // Enviar mensaje
   const sendMessage = async () => {
     const message = chatInput.value.trim();
     if (!message) return;
 
+    const token = getToken();
+    if (!token) {
+      alert('Sesión expirada. Por favor recarga la página.');
+      return;
+    }
+
     try {
-      await fetch('/api/chat', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ message })
       });
+
+      if (!response.ok) {
+        throw new Error('Error al enviar mensaje');
+      }
 
       chatInput.value = '';
       loadChat(); // Recargar chat
     } catch (error) {
       console.error('Error sending message:', error);
+      alert('Error al enviar el mensaje');
     }
   };
 
@@ -394,21 +424,35 @@ function initChatInput() {
       const file = e.target.files[0];
       if (!file) return;
 
+      const token = getToken();
+      if (!token) {
+        alert('Sesión expirada. Por favor recarga la página.');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('image', file);
       formData.append('message', chatInput.value.trim() || 'Imagen');
 
       try {
-        await fetch('/api/chat', {
+        const response = await fetch('/api/chat', {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
           body: formData
         });
+
+        if (!response.ok) {
+          throw new Error('Error al subir imagen');
+        }
 
         chatInput.value = '';
         chatFileInput.value = '';
         loadChat();
       } catch (error) {
         console.error('Error uploading image:', error);
+        alert('Error al subir la imagen');
       }
     });
   }

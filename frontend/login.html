@@ -572,7 +572,14 @@
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || 'Error al iniciar sesión');
+          // Manejar errores específicos
+          if (data.code === 'EMAIL_NOT_VERIFIED') {
+            throw new Error('📧 ' + (data.message || 'Verifica tu correo electrónico para iniciar sesión.'));
+          } else if (data.code === 'PLAN_EXPIRED') {
+            throw new Error('⏰ ' + (data.message || 'Tu período de prueba ha finalizado. Contacta al admin para obtener Pro.'));
+          } else {
+            throw new Error(data.message || data.error || 'Error al iniciar sesión');
+          }
         }
 
         storeTokens(data, remember);

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificar Email - TikToolStream</title>
+  <link rel="icon" type="image/png" href="/assets/LOGOSINFONDO.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .verify-container {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .verify-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      animation: bounce 1s ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .verify-icon.loading {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .verify-title {
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .verify-message {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .verify-btn {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #fe2c55 0%, #ff6b6b 100%);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .verify-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(254, 44, 85, 0.4);
+    }
+
+    .verify-btn.success {
+      background: linear-gradient(135deg, #00d9ff 0%, #00ff88 100%);
+    }
+
+    .verify-btn.error {
+      background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+    }
+
+    .error-details {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 71, 87, 0.1);
+      border-radius: 12px;
+      color: #ff6b81;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="verify-container" id="verifyContainer">
+    <div class="verify-icon loading" id="verifyIcon">⏳</div>
+    <h1 class="verify-title" id="verifyTitle">Verificando tu correo...</h1>
+    <p class="verify-message" id="verifyMessage">Por favor espera mientras verificamos tu cuenta.</p>
+    <div id="actionContainer"></div>
+  </div>
+
+  <script>
+    async function verifyEmail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      const icon = document.getElementById('verifyIcon');
+      const title = document.getElementById('verifyTitle');
+      const message = document.getElementById('verifyMessage');
+      const actionContainer = document.getElementById('actionContainer');
+
+      if (!token) {
+        icon.textContent = '❌';
+        icon.classList.remove('loading');
+        title.textContent = 'Token no encontrado';
+        message.textContent = 'El enlace de verificación es inválido. Por favor solicita un nuevo correo de verificación.';
+        actionContainer.innerHTML = '<a href="/login.html" class="verify-btn error">Volver al Login</a>';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/auth/verify?token=${encodeURIComponent(token)}`);
+        
+        // Si redirigió, el navegador lo manejará
+        if (response.redirected) {
+          window.location.href = response.url;
+          return;
+        }
+
+        const data = await response.json();
+
+        if (response.ok || data.success) {
+          icon.textContent = '✅';
+          icon.classList.remove('loading');
+          title.textContent = '¡Email verificado!';
+          message.textContent = 'Tu cuenta ha sido verificada exitosamente. Ahora puedes iniciar sesión.';
+          actionContainer.innerHTML = '<a href="/login.html" class="verify-btn success">Iniciar Sesión</a>';
+        } else {
+          throw new Error(data.error || data.message || 'Error al verificar');
+        }
+
+      } catch (error) {
+        icon.textContent = '❌';
+        icon.classList.remove('loading');
+        title.textContent = 'Error de verificación';
+        message.textContent = error.message || 'No se pudo verificar tu correo. El token puede haber expirado.';
+        actionContainer.innerHTML = `
+          <a href="/login.html" class="verify-btn error">Volver al Login</a>
+          <div class="error-details">Si el problema persiste, contacta al soporte.</div>
+        `;
+      }
+    }
+
+    // Ejecutar verificación al cargar
+    verifyEmail();
+  </script>
+</body>
+</html>
