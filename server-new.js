@@ -81,6 +81,18 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/api/auth/register', authRoutes.register);
 app.post('/api/auth/login', authRoutes.login);
 app.post('/api/auth/refresh', authRoutes.refreshToken);
+app.get('/api/auth/verify', authRoutes.verifyEmail); // Ruta de verificación
+
+// Endpoint TEMPORAL para resetear usuarios (solicitado por usuario)
+app.get('/api/setup/reset-users-force', async (req, res) => {
+  if (req.query.secret === 'lolkjk12_RESET') {
+    const { resetUsers } = require('./database/db');
+    await resetUsers();
+    res.send('Usuarios borrados y base de datos reiniciada.');
+  } else {
+    res.status(403).send('Forbidden');
+  }
+});
 
 // Auth routes (protegidas)
 app.post('/api/auth/logout', authMiddleware, authRoutes.logout);

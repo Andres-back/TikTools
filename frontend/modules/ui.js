@@ -12,6 +12,7 @@ export function initUI() {
   initMenu();
   initModals();
   initFloatingSidebar();
+  loadOverlaySettings(); // Cargar imágenes del overlay al inicio
 }
 
 /**
@@ -427,10 +428,14 @@ async function loadOverlaySettings() {
     const settings = await response.json();
 
     if (settings.left_image_url) {
-      overlayLeftPreview.src = settings.left_image_url;
+      if (overlayLeftPreview) overlayLeftPreview.src = settings.left_image_url;
+      const mainLeft = document.getElementById('mascotLeftImg');
+      if (mainLeft) mainLeft.src = settings.left_image_url;
     }
     if (settings.right_image_url) {
-      overlayRightPreview.src = settings.right_image_url;
+      if (overlayRightPreview) overlayRightPreview.src = settings.right_image_url;
+      const mainRight = document.getElementById('mascotRightImg');
+      if (mainRight) mainRight.src = settings.right_image_url;
     }
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -497,9 +502,12 @@ function initOverlayInputs() {
 
         overlaySaveBtn.textContent = '✅ Guardado';
         setTimeout(() => {
-          overlaySaveBtn.textContent = 'Guardar Cambios';
           overlaySaveBtn.disabled = false;
+          overlaySaveBtn.textContent = 'Guardar Overlay';
         }, 2000);
+
+        // Recargar settings para actualizar el timer inmediatamente
+        loadOverlaySettings();
       } catch (error) {
         console.error('Error saving overlay:', error);
         overlaySaveBtn.textContent = '❌ Error';

@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TikToolStream - Panel de Control</title>
   <link rel="icon" type="image/png" href="/assets/LOGOSINFONDO.png">
-  
+
   <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- Estilos -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="app-styles.css">
 </head>
+
 <body>
   <!-- Header con menú de usuario -->
   <header class="app-header">
@@ -60,7 +64,7 @@
 
   <!-- Partículas de fondo decorativas -->
   <div class="particles" id="particles"></div>
-  
+
   <!-- Overlay para animaciones épicas -->
   <div class="animation-overlay" id="animationOverlay"></div>
 
@@ -83,32 +87,26 @@
           💎 Actualizar a Pro
         </button>
       </div>
-      
+
       <!-- Conexión TikTok -->
       <section class="panel-section">
         <label class="panel-label">Usuario TikTok</label>
         <div class="input-group">
           <span class="input-prefix">@</span>
-          <input 
-            type="text" 
-            id="tiktokUserInput" 
-            class="input-field" 
-            placeholder="username"
-            autocomplete="off"
-          >
+          <input type="text" id="tiktokUserInput" class="input-field" placeholder="username" autocomplete="off">
         </div>
-        
+
         <div class="btn-group" style="margin-top: 0.75rem;">
           <button id="tiktokConnect" class="btn btn-primary" style="flex: 1;">Conectar</button>
         </div>
-        
+
         <div class="status-display">
           <span class="status-dot" id="statusDot"></span>
           <span id="connectionStatus">Sin conexión</span>
         </div>
         <p id="connectionFeedback" class="panel-feedback"></p>
         <p class="status-display">Usuario: <strong id="tiktokUserDisplay">—</strong></p>
-        
+
         <!-- Sección de Session ID (colapsable) -->
         <details class="auth-details" id="authDetails">
           <summary class="auth-summary">🔐 Configurar Session ID (opcional)</summary>
@@ -125,11 +123,12 @@
             <div class="input-group" style="margin-top: 0.5rem;">
               <input type="text" id="ttTargetIdcInput" class="input-field" placeholder="tt-target-idc (ej: useast1a)">
             </div>
-            <button id="saveSessionId" class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;">Guardar Credenciales</button>
+            <button id="saveSessionId" class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;">Guardar
+              Credenciales</button>
           </div>
         </details>
       </section>
-      
+
       <!-- Controles de Subasta -->
       <section class="panel-section">
         <label class="panel-label">Controles de Subasta</label>
@@ -138,7 +137,7 @@
           <button id="timerReset" class="btn btn-secondary">↺ Reiniciar</button>
         </div>
       </section>
-      
+
       <!-- Configuración de Tiempos -->
       <section class="panel-section">
         <label class="panel-label">⏱️ Tiempos (segundos)</label>
@@ -164,16 +163,17 @@
         </div>
         <button id="updateTimes" class="btn btn-secondary" style="margin-top: 0.75rem; width: 100%;">Aplicar</button>
       </section>
-      
+
       <!-- Mensaje del Timer -->
       <section class="panel-section">
         <label class="panel-label">📝 Mensaje</label>
         <div class="input-group">
           <input type="text" id="minMessageInput" class="input-field" placeholder="MIN 10" maxlength="20">
         </div>
-        <button id="updateMinMessage" class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;">Actualizar</button>
+        <button id="updateMinMessage" class="btn btn-secondary"
+          style="margin-top: 0.5rem; width: 100%;">Actualizar</button>
       </section>
-      
+
       <!-- Suma Manual -->
       <section class="panel-section">
         <label class="panel-label">💎 Suma Manual</label>
@@ -184,7 +184,8 @@
         <div class="input-group">
           <input type="number" id="manualCoinsInput" class="input-field" placeholder="Monedas" min="1">
         </div>
-        <button id="addManualCoins" class="btn btn-success" style="margin-top: 0.75rem; width: 100%;">+ Agregar Monedas</button>
+        <button id="addManualCoins" class="btn btn-success" style="margin-top: 0.75rem; width: 100%;">+ Agregar
+          Monedas</button>
       </section>
     </aside>
 
@@ -196,37 +197,37 @@
       <div class="timer-card" id="timerCard">
         <div class="timer-glow"></div>
         <div class="timer-bg-effects"></div>
-        
+
         <!-- Mascota Izquierda - Cocodrilo -->
         <div class="timer-mascot mascot-left">
-          <img src="assets/QuesadillaCrocodilla.webp" alt="Mascota Cocodrilo" class="mascot-img">
+          <img src="assets/QuesadillaCrocodilla.webp" alt="Mascota Cocodrilo" class="mascot-img" id="mascotLeftImg">
           <div class="mascot-speech" id="mascotSpeechLeft">¡VAMOS!</div>
         </div>
-        
+
         <!-- Contenido Central del Timer -->
         <div class="timer-content">
           <h2 class="timer-label" id="timerHeading">MIN 10</h2>
-          
+
           <!-- DISPLAY GIGANTE DEL TIMER -->
           <div class="timer-display-wrapper">
             <div class="timer-display" id="timerDisplay">02:00</div>
             <div class="timer-display-shadow">02:00</div>
           </div>
-          
+
           <div class="timer-message" id="timerMessage"></div>
-          
+
           <!-- Barra de progreso -->
           <div class="timer-progress-bar">
             <div class="timer-progress-fill" id="timerProgressFill"></div>
           </div>
         </div>
-        
+
         <!-- Mascota Derecha - Santa -->
         <div class="timer-mascot mascot-right">
-          <img src="assets/Noel.webp" alt="Mascota Noel" class="mascot-img">
+          <img src="assets/Noel.webp" alt="Mascota Noel" class="mascot-img" id="mascotRightImg">
           <div class="mascot-speech" id="mascotSpeechRight">¡Sipe!</div>
         </div>
-        
+
         <!-- Efectos de urgencia -->
         <div class="timer-urgency-overlay" id="timerUrgencyOverlay"></div>
       </div>
@@ -238,14 +239,14 @@
             <h2 class="leaderboard-title">🏆 Top Donadores</h2>
           </div>
         </header>
-        
+
         <ol class="leaderboard-list" id="donorList">
           <li class="leaderboard-empty">
             <div class="leaderboard-empty-icon">💎</div>
             <p>Esperando donaciones...</p>
           </li>
         </ol>
-        
+
         <footer class="leaderboard-footer" id="leaderboardFooter">
           <img src="assets/LOGOSINFONDO.png" alt="Logo" class="winner-logo">
           <span class="winner-label">🎉 Ganador de la Subasta by Tiktoolstream</span>
@@ -344,19 +345,20 @@
       particlesContainer.appendChild(particle);
     }
   </script>
-  
+
   <!-- Protección de autenticación -->
   <script type="module">
     import { isLoggedIn, isGuest } from './modules/auth.js';
-    
+
     // Verificar si el usuario está autenticado
     if (!isLoggedIn() && !isGuest()) {
       // Redirigir al login
       window.location.href = '/login.html';
     }
   </script>
-  
+
   <!-- Módulo principal -->
   <script type="module" src="main.js"></script>
 </body>
+
 </html>

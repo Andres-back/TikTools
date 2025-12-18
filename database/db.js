@@ -17,6 +17,26 @@ if (isProduction) {
   process.stdout.write(`  JWT_SECRET: ${process.env.JWT_SECRET ? 'SET' : 'NOT SET'}\n`);
 }
 
+/**
+ * Borra todos los usuarios (y datos relacionados por CASCADE)
+ * ¡USAR CON PRECAUCIÓN!
+ */
+async function resetUsers() {
+  if (!pool) return;
+
+  try {
+    if (process.env.DATABASE_URL) {
+      await pool.query('TRUNCATE TABLE users RESTART IDENTITY CASCADE');
+    } else {
+      pool.query('DELETE FROM users');
+      pool.query('DELETE FROM sqlite_sequence WHERE name="users"');
+    }
+    console.log('⚠️ TODOS LOS USUARIOS HAN SIDO BORRADOS');
+  } catch (error) {
+    console.error('Error reseteando usuarios:', error);
+  }
+}
+
 let pool = null;
 
 /**
@@ -57,6 +77,15 @@ async function initDatabase() {
 
       // Crear tablas si no existen
       await initPostgresSchema(pool);
+
+      // Aplicar migraciones (verificación de correo)
+      try {
+        await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT false');
+        await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_token TEXT');
+      } catch (err) {
+        console.warn('Migración de columnas falló (posiblemente ya existen):', err.message);
+      }
+
       process.stdout.write('✓ PostgreSQL schema initialized\n');
     } else {
       // Fallback a SQLite para desarrollo local
@@ -297,6 +326,8 @@ async function initPostgresSchema(pool) {
         tiktok_session_id TEXT,
         tiktok_target_idc TEXT,
         is_active BOOLEAN DEFAULT true,
+        is_verified BOOLEAN DEFAULT false,
+        verification_token TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_login TIMESTAMP
@@ -485,7 +516,8 @@ async function closeDatabase() {
 
 module.exports = {
   initDatabase,
-  getDB,
+  getDB: () => pool,
   query,
-  closeDatabase
+  closeDatabase,
+  resetUsers // Exportada para uso administrativo
 };

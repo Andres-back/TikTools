@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,8 +59,15 @@
     }
 
     @keyframes logoFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
     }
 
     .auth-title {
@@ -310,6 +318,7 @@
         opacity: 0;
         transform: translateY(-10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -360,6 +369,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="auth-container">
     <div class="auth-header">
@@ -425,7 +435,8 @@
       <div class="form-group">
         <label class="form-label">Contraseña</label>
         <div class="password-toggle">
-          <input type="password" class="form-input" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+          <input type="password" class="form-input" name="password" placeholder="Mínimo 6 caracteres" required
+            minlength="6">
           <button type="button" class="toggle-btn" onclick="togglePassword(this)">👁</button>
         </div>
         <div class="form-error" id="regPasswordError"></div>
@@ -468,13 +479,13 @@
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const tabName = tab.dataset.tab;
-        
+
         tabs.forEach(t => t.classList.remove('active'));
         forms.forEach(f => f.classList.remove('active'));
-        
+
         tab.classList.add('active');
         document.getElementById(tabName + 'Form').classList.add('active');
-        
+
         hideAlert();
       });
     });
@@ -566,7 +577,7 @@
 
         storeTokens(data, remember);
         showAlert('¡Bienvenido! Redirigiendo...', 'success');
-        
+
         setTimeout(() => {
           window.location.href = '/';
         }, 1000);
@@ -578,13 +589,24 @@
       }
     });
 
+    // Check for verification param
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('verified') === 'true') {
+      showAlert('✅ Correo verificado correctamente. ¡Inicia sesión!', 'success');
+    }
+
+    // Check auth on load
+    checkAuth();
+
+    // ... (El resto del código de login se mantiene igual)
+
     // Register
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert();
 
       const formData = new FormData(registerForm);
-      
+
       // Validate passwords match
       if (formData.get('password') !== formData.get('confirmPassword')) {
         showAlert('Las contraseñas no coinciden');
@@ -612,12 +634,20 @@
           throw new Error(data.error || 'Error al registrarse');
         }
 
-        storeTokens(data, true);
-        showAlert('¡Cuenta creada! Redirigiendo...', 'success');
-        
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 1000);
+        if (data.requireVerification) {
+          showAlert('✅ Cuenta creada. Por favor revisa tu correo para activarla.', 'success');
+          // Cambiar a tab de login
+          setTimeout(() => {
+            tabs[0].click();
+          }, 3000);
+        } else {
+          storeTokens(data, true);
+          showAlert('¡Cuenta creada! Redirigiendo...', 'success');
+
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
+        }
 
       } catch (error) {
         showAlert(error.message);
@@ -631,9 +661,7 @@
       sessionStorage.setItem('guest', 'true');
       window.location.href = '/';
     }
-
-    // Check auth on load
-    checkAuth();
   </script>
 </body>
+
 </html>

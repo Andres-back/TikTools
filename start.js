@@ -90,6 +90,18 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/api/auth/register', authRoutes.register);
 app.post('/api/auth/login', authRoutes.login);
 app.post('/api/auth/refresh', authRoutes.refreshToken);
+app.get('/api/auth/verify', authRoutes.verifyEmail);
+
+// Endpoint TEMPORAL para resetear usuarios
+app.get('/api/setup/reset-users-force', async (req, res) => {
+  if (req.query.secret === 'lolkjk12_RESET') {
+    const { resetUsers } = require('./database/db');
+    await resetUsers();
+    res.send('Usuarios borrados y base de datos reiniciada.');
+  } else {
+    res.status(403).send('Forbidden');
+  }
+});
 
 // Auth routes (protegidas)
 app.post('/api/auth/logout', authMiddleware, authRoutes.logout);
@@ -137,8 +149,8 @@ app.get('/api/health', async (req, res) => {
     if (process.env.DATABASE_URL) {
       await db.query('SELECT 1');
     }
-    res.json({ 
-      status: 'ok', 
+    res.json({
+      status: 'ok',
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '2.0.0',
       database: process.env.DATABASE_URL ? 'postgresql' : 'sqlite',
@@ -149,8 +161,8 @@ app.get('/api/health', async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(503).json({ 
-      status: 'error', 
+    res.status(503).json({
+      status: 'error',
       message: 'Database not available',
       error: error.message
     });
@@ -174,7 +186,7 @@ app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ error: 'Endpoint no encontrado' });
   }
-  
+
   const ext = path.extname(req.path);
   if (ext && ext !== '.html') {
     return res.sendFile(path.join(PUBLIC_DIR, req.path), (err) => {
@@ -183,7 +195,7 @@ app.use((req, res, next) => {
       }
     });
   }
-  
+
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 
@@ -346,7 +358,7 @@ function broadcast(uniqueId, data) {
 async function startServer() {
   try {
     console.log('🚀 Iniciando servidor...\n');
-    
+
     await initDatabase();
 
     server.listen(PORT, HOST, () => {
@@ -369,11 +381,11 @@ async function startServer() {
 process.on('SIGTERM', async () => {
   console.log('📥 Recibida señal SIGTERM, cerrando gracefully...');
   clearInterval(heartbeatTimer);
-  
+
   wss.clients.forEach((socket) => {
     socket.close();
   });
-  
+
   server.close(async () => {
     await closeDatabase();
     process.exit(0);
