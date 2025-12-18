@@ -583,10 +583,13 @@
         }
 
         storeTokens(data, remember);
-        showAlert('¡Bienvenido! Redirigiendo...', 'success');
+        
+        // Redirigir según el rol del usuario
+        const isAdmin = data.user?.role === 'admin';
+        showAlert(isAdmin ? '¡Bienvenido Admin! Redirigiendo al panel...' : '¡Bienvenido! Redirigiendo...', 'success');
 
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = isAdmin ? '/admin.html' : '/';
         }, 1000);
 
       } catch (error) {

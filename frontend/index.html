@@ -348,12 +348,18 @@
 
   <!-- Protección de autenticación -->
   <script type="module">
-    import { isLoggedIn, isGuest } from './modules/auth.js';
+    import { isLoggedIn, isGuest, getUser } from './modules/auth.js';
 
     // Verificar si el usuario está autenticado
     if (!isLoggedIn() && !isGuest()) {
       // Redirigir al login
       window.location.href = '/login.html';
+    } else if (isLoggedIn()) {
+      // Si es admin, redirigir al panel de administración
+      const user = getUser();
+      if (user?.role === 'admin') {
+        window.location.href = '/admin.html';
+      }
     }
   </script>
 

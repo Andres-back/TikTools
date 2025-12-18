@@ -499,13 +499,42 @@
     // Inicializar
     document.getElementById('modalConfirmBtn').addEventListener('click', confirmDaysAction);
     
-    // Verificar autenticación
-    if (!getToken()) {
-      window.location.href = '/login.html';
-    } else {
-      loadDashboard();
-      loadUsers();
+    // Verificar autenticación y rol de admin
+    async function checkAdminAccess() {
+      const token = getToken();
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      try {
+        // Verificar que sea admin
+        const response = await fetch('/api/auth/profile', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('No autorizado');
+        }
+
+        const user = await response.json();
+        
+        if (user.role !== 'admin') {
+          alert('Acceso denegado. Esta página es solo para administradores.');
+          window.location.href = '/';
+          return;
+        }
+
+        // Si es admin, cargar dashboard
+        loadDashboard();
+        loadUsers();
+      } catch (error) {
+        console.error('Error verificando acceso:', error);
+        window.location.href = '/login.html';
+      }
     }
+
+    checkAdminAccess();
   </script>
 </body>
 </html>
