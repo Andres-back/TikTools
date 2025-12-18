@@ -9,6 +9,14 @@ const path = require('path');
 // Detectar entorno
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Log de diagnóstico (solo en producción para debugging)
+if (isProduction) {
+  process.stdout.write(`🔍 Environment Check:\n`);
+  process.stdout.write(`  NODE_ENV: ${process.env.NODE_ENV}\n`);
+  process.stdout.write(`  DATABASE_URL: ${process.env.DATABASE_URL ? 'SET' : 'NOT SET'}\n`);
+  process.stdout.write(`  JWT_SECRET: ${process.env.JWT_SECRET ? 'SET' : 'NOT SET'}\n`);
+}
+
 let pool = null;
 
 /**
@@ -20,31 +28,38 @@ async function initDatabase() {
   try {
     if (process.env.DATABASE_URL) {
       // PostgreSQL (Digital Ocean, Heroku, etc.)
-      const connectionString = process.env.DATABASE_URL;
+      let connectionString = process.env.DATABASE_URL;
+      
+      // Asegurar que sslmode=require esté presente
+      if (!connectionString.includes('sslmode')) {
+        connectionString += (connectionString.includes('?') ? '&' : '?') + 'sslmode=require';
+      }
+      
+      process.stdout.write(`🔗 Connecting to PostgreSQL...\n`);
       
       // Configuración SSL para DigitalOcean Managed Databases
-      const sslConfig = isProduction ? {
+      // CRÍTICO: rejectUnauthorized: false acepta certificados auto-firmados
+      const sslConfig = {
         rejectUnauthorized: false,
-        // Aceptar certificados autofirmados de DO
+        // No validar el hostname del certificado
         checkServerIdentity: () => undefined
-      } : false;
+      };
 
       pool = new Pool({
         connectionString,
         ssl: sslConfig,
         max: 20,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 5000,
+        connectionTimeoutMillis: 10000,
       });
 
       // Verificar conexión
       await pool.query('SELECT NOW()');
       process.stdout.write('✓ PostgreSQL connected successfully\n');
       
-      // Crear tablas si no existen (en producción)
-      if (isProduction) {
-        await initPostgresSchema(pool);
-      }
+      // Crear tablas si no existen
+      await initPostgresSchema(pool);
+      process.stdout.write('✓ PostgreSQL schema initialized\n');
     } else {
     // Fallback a SQLite para desarrollo local
     const Database = require('better-sqlite3');

@@ -3,7 +3,10 @@
  * Con autenticación, planes de suscripción y API REST
  */
 
-require('dotenv').config();
+// Cargar dotenv solo en desarrollo, en producción usar variables del sistema
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const http = require('http');
 const express = require('express');

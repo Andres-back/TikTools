@@ -15,7 +15,10 @@
     "check": "node check-config.js",
     "setup": "node check-config.js",
     "test": "node test-coins-count.js",
-    "test:coins": "node test-coins-count.js"
+    "test:coins": "node test-coins-count.js",
+    "generate:jwt": "node generate-jwt-secret.js",
+    "diagnose": "node diagnose-env.js",
+    "diagnose:full": "node diagnose-env.js --test-connection"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

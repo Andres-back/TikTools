@@ -2,6 +2,10 @@
 .env
 .env.local
 .env.production
+.env.digitalocean
+DIGITAL-OCEAN-ENV.txt
+*credentials*
+*CREDENTIALS*
 
 # Node modules
 node_modules/

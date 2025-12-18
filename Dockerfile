@@ -40,5 +40,5 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodeuser
 USER nodeuser
 
-# Comando de inicio
-CMD ["node", "server-new.js"]
+# Comando de inicio - SIN dotenv, variables del sistema
+CMD ["node", "start.js"]
