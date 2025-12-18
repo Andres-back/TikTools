@@ -20,16 +20,26 @@ async function initDatabase() {
   try {
     if (process.env.DATABASE_URL) {
       // PostgreSQL (Digital Ocean, Heroku, etc.)
+      const connectionString = process.env.DATABASE_URL;
+      
+      // Configuración SSL para DigitalOcean Managed Databases
+      const sslConfig = isProduction ? {
+        rejectUnauthorized: false,
+        // Aceptar certificados autofirmados de DO
+        checkServerIdentity: () => undefined
+      } : false;
+
       pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
-        ssl: isProduction ? { rejectUnauthorized: false } : false,
+        connectionString,
+        ssl: sslConfig,
         max: 20,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000,
+        connectionTimeoutMillis: 5000,
       });
 
       // Verificar conexión
       await pool.query('SELECT NOW()');
+      process.stdout.write('✓ PostgreSQL connected successfully\n');
       
       // Crear tablas si no existen (en producción)
       if (isProduction) {
