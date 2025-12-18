@@ -10,9 +10,11 @@
  * - timer.js     → Temporizador con tie-breaker
  * - connection.js → WebSocket al servidor TikTok
  * - auth.js      → Autenticación y gestión de sesión
+ * - ui.js        → Gestión de interfaz (modales, menús, etc.)
  */
 
 import { apiCall, getUser, clearTokens } from "./modules/auth.js";
+import { initUI } from "./modules/ui.js";
 import { 
   loadUser, 
   saveUser,
@@ -504,6 +506,9 @@ function showPlanBanner(planData) {
 // ============================================
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Inicializar UI (modales, menús, etc.)
+  initUI();
+  
   initializeModules();
   loadUIFromStorage();
   setupEventListeners();

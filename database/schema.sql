@@ -149,6 +149,41 @@ CREATE INDEX IF NOT EXISTS idx_gifts_auction_id ON gifts(auction_id);
 CREATE INDEX IF NOT EXISTS idx_gifts_donor_id ON gifts(donor_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
 
+-- Tabla de noticias/novedades
+CREATE TABLE IF NOT EXISTS news (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    image_url TEXT,
+    author_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_news_created_at ON news(created_at DESC);
+
+-- Tabla de mensajes (chat usuario-admin)
+CREATE TABLE IF NOT EXISTS messages (
+    id SERIAL PRIMARY KEY,
+    sender_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    recipient_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    message TEXT NOT NULL,
+    image_url TEXT,
+    read BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_messages_sender ON messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient_id);
+CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at);
+
+-- Tabla de configuración de overlays por usuario
+CREATE TABLE IF NOT EXISTS overlays (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    left_image_url TEXT DEFAULT '/assets/QuesadillaCrocodilla.webp',
+    right_image_url TEXT DEFAULT '/assets/Noel.webp',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Función para actualizar updated_at automáticamente
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -170,3 +205,7 @@ CREATE TRIGGER update_user_settings_updated_at
     BEFORE UPDATE ON user_settings
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_overlays_updated_at ON overlays;
+CREATE TRIGGER update_overlays_updated_at
+    BEFORE UPDATE ON overlays

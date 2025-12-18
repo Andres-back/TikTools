@@ -107,7 +107,9 @@ module.exports = {
   generateTokens,
   verifyToken,
   authMiddleware,
+  authenticateToken: authMiddleware, // Alias
   adminMiddleware,
+  isAdmin: adminMiddleware, // Alias
   optionalAuth,
   JWT_SECRET
 };

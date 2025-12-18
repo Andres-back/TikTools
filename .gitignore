@@ -33,3 +33,6 @@ Thumbs.db
 # Build files
 dist/
 build/
+# Uploaded files
+uploads/
+!uploads/.gitkeep

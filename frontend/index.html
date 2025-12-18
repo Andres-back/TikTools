@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🏆 TikToolStream - Panel de Control</title>
+  <title>TikToolStream - Panel de Control</title>
+  <link rel="icon" type="image/png" href="/assets/LOGOSINFONDO.png">
   
   <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,8 +13,45 @@
   
   <!-- Estilos -->
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="app-styles.css">
 </head>
 <body>
+  <!-- Header con menú de usuario -->
+  <header class="app-header">
+    <div class="header-logo">
+      <img src="assets/LOGOSINFONDO.png" alt="Logo" class="header-logo-img">
+      <span class="header-title">TikToolStream</span>
+    </div>
+    <div class="header-user">
+      <button id="menuToggle" class="menu-toggle">
+        <span id="userName"></span>
+        <span class="menu-arrow">▼</span>
+      </button>
+      <div id="userMenu" class="user-menu" style="display: none;">
+        <a href="#" id="profileLink" class="menu-item">👤 Mi Perfil</a>
+        <a href="#" id="settingsLink" class="menu-item">⚙️ Configuración</a>
+        <div class="menu-divider"></div>
+        <a href="#" id="logoutBtn" class="menu-item logout">🚪 Cerrar Sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Barra flotante de acciones -->
+  <div class="floating-sidebar" id="floatingSidebar">
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+    <div class="sidebar-content" id="sidebarContent">
+      <button class="sidebar-btn" id="newsBtn" title="Novedades">
+        📰 <span>Novedades</span>
+      </button>
+      <button class="sidebar-btn" id="chatBtn" title="Chat con Admin">
+        💬 <span>Chat</span>
+      </button>
+      <button class="sidebar-btn" id="overlayBtn" title="Mi Overlay">
+        🎨 <span>Overlay</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Partículas de fondo decorativas -->
   <div class="particles" id="particles"></div>
   
@@ -203,11 +241,88 @@
         </ol>
         
         <footer class="leaderboard-footer" id="leaderboardFooter">
-          <span class="winner-label">🎉 Ganador de la Subasta, by Andrecchh Tools</span>
+          <img src="assets/LOGOSINFONDO.png" alt="Logo" class="winner-logo">
+          <span class="winner-label">🎉 Ganador de la Subasta by Tiktoolstream</span>
           <div class="winner-display" id="winnerDisplay">—</div>
         </footer>
       </div>
     </main>
+  </div>
+
+  <!-- Modal de Novedades -->
+  <div id="newsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📰 Novedades y Actualizaciones</h2>
+        <button class="modal-close" id="newsClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="newsList" class="news-list">
+          <p id="newsLoading" class="loading-text">Cargando novedades...</p>
+          <p id="newsEmpty" class="info-text" style="display: none;">No hay novedades publicadas</p>
+        </div>
+        <div id="newsForm" class="news-form" style="display: none;">
+          <h3>Publicar Novedad</h3>
+          <input type="text" id="newsTitle" placeholder="Título" class="modal-input">
+          <textarea id="newsContent" placeholder="Contenido..." class="modal-textarea"></textarea>
+          <input type="file" id="newsImage" accept="image/*" class="modal-file">
+          <button id="postNews" class="btn btn-primary">Publicar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Chat -->
+  <div id="chatModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💬 Chat con Administrador</h2>
+        <button class="modal-close" id="chatClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="chatMessages" class="chat-messages">
+          <p id="chatLoading" class="loading-text">Cargando mensajes...</p>
+        </div>
+        <div class="chat-input-area">
+          <input type="file" id="chatFileInput" accept="image/*" class="chat-file" style="display: none;">
+          <button id="chatFileBtn" class="btn-icon" title="Adjuntar imagen">📎</button>
+          <input type="text" id="chatInput" placeholder="Escribe un mensaje..." class="chat-input">
+          <button id="chatSendBtn" class="btn btn-primary">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Overlay Personalizado -->
+  <div id="overlayModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🎨 Mi Overlay Personalizado</h2>
+        <button class="modal-close" id="overlayClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="info-text">Personaliza las imágenes de tu overlay (brainrots laterales)</p>
+        <div class="overlay-settings">
+          <div class="overlay-setting">
+            <label>Imagen Izquierda (Actual: QuesadillaCrocodilla)</label>
+            <input type="file" id="overlayLeft" accept="image/*" class="modal-file">
+            <img id="overlayLeftPreview" src="assets/QuesadillaCrocodilla.webp" class="overlay-preview">
+          </div>
+          <div class="overlay-setting">
+            <label>Imagen Derecha (Actual: Noel)</label>
+            <input type="file" id="overlayRight" accept="image/*" class="modal-file">
+            <img id="overlayRightPreview" src="assets/Noel.webp" class="overlay-preview">
+          </div>
+          <button id="overlaySaveBtn" class="btn btn-primary">Guardar Overlay</button>
+          <button id="resetOverlay" class="btn btn-secondary">Restaurar Predeterminado</button>
+        </div>
+        <div class="overlay-link">
+          <label>URL de tu Overlay:</label>
+          <input type="text" id="overlayLinkInput" readonly class="modal-input">
+          <button id="copyOverlayBtn" class="btn btn-secondary">Copiar URL</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Script de partículas -->

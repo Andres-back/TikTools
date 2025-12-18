@@ -47,6 +47,9 @@ const authRoutes = require('./routes/auth');
 const auctionRoutes = require('./routes/auctions');
 const adminRoutes = require('./routes/admin');
 const paymentRoutes = require('./routes/payments');
+const newsRoutes = require('./routes/news');
+const chatRoutes = require('./routes/chat');
+const overlaysRoutes = require('./routes/overlays');
 
 // Configuración
 const HOST = process.env.HOST || '0.0.0.0';
@@ -122,6 +125,11 @@ app.post('/api/auctions/:id/finish', authMiddleware, auctionRoutes.finishAuction
 // Stats routes
 app.get('/api/stats', authMiddleware, auctionRoutes.getStats);
 
+// News, Chat y Overlay routes
+app.use('/api/news', newsRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/overlays', overlaysRoutes);
+
 // Health check
 app.get('/api/health', async (req, res) => {
   try {
@@ -151,7 +159,15 @@ app.get('/api/health', async (req, res) => {
 
 // ==================== STATIC FILES ====================
 
+// Servir archivos subidos
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use(express.static(PUBLIC_DIR));
+
+// Ruta especial para overlay personalizado
+app.get('/overlay/:userId', async (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'overlay.html'));
+});
 
 // SPA fallback - Express 5 compatible
 app.use((req, res, next) => {
