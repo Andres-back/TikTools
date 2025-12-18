@@ -242,6 +242,8 @@ async function changeRole(req, res) {
  */
 async function getDashboard(req, res) {
   try {
+    const adminId = req.user.userId;
+
     // Total usuarios
     const usersResult = await query(`
       SELECT 
@@ -249,6 +251,7 @@ async function getDashboard(req, res) {
         COUNT(*) FILTER (WHERE is_active = true) as active,
         COUNT(*) FILTER (WHERE plan_type = 'premium') as premium,
         COUNT(*) FILTER (WHERE plan_type = 'free') as free,
+        COUNT(*) FILTER (WHERE is_verified = true) as verified,
         COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '7 days') as new_last_week
       FROM users
     `);
@@ -257,8 +260,8 @@ async function getDashboard(req, res) {
     const paymentsResult = await query(`
       SELECT 
         COUNT(*) as total_payments,
-        SUM(amount) as total_revenue,
-        SUM(amount) FILTER (WHERE created_at > NOW() - INTERVAL '30 days') as revenue_last_month
+        COALESCE(SUM(amount), 0) as total_revenue,
+        COALESCE(SUM(amount) FILTER (WHERE created_at > NOW() - INTERVAL '30 days'), 0) as revenue_last_month
       FROM payments
       WHERE status = 'completed'
     `);
@@ -267,9 +270,17 @@ async function getDashboard(req, res) {
     const auctionsResult = await query(`
       SELECT 
         COUNT(*) as total,
-        COUNT(*) FILTER (WHERE started_at > NOW() - INTERVAL '7 days') as last_week
+        COUNT(*) FILTER (WHERE started_at > NOW() - INTERVAL '7 days') as last_week,
+        COUNT(*) FILTER (WHERE DATE(started_at) = CURRENT_DATE) as today
       FROM auctions
     `);
+
+    // Mensajes sin leer (para el admin)
+    const messagesResult = await query(`
+      SELECT COUNT(*) as unread
+      FROM messages
+      WHERE recipient_id = $1 AND read = false
+    `, [adminId]);
 
     // Usuarios recientes
     const recentUsersResult = await query(`
@@ -292,11 +303,13 @@ async function getDashboard(req, res) {
       users: usersResult.rows[0],
       payments: paymentsResult.rows[0],
       auctions: auctionsResult.rows[0],
+      messages: messagesResult.rows[0],
       recentUsers: recentUsersResult.rows,
       recentPayments: recentPaymentsResult.rows
     });
 
   } catch (error) {
+    console.error('Error getting dashboard:', error);
     res.status(500).json({ error: 'Error al obtener dashboard' });
   }
 }
@@ -421,6 +434,189 @@ async function resetPassword(req, res) {
   }
 }
 
+/**
+ * Actualizar usuario completo
+ * PUT /api/admin/users/:id
+ */
+async function updateUser(req, res) {
+  try {
+    const { id } = req.params;
+    const { username, email, displayName, role, planType, days, isActive, isVerified, password } = req.body;
+    const bcrypt = require('bcryptjs');
+
+    // Verificar que el usuario existe
+    const existing = await query('SELECT id, role FROM users WHERE id = $1', [id]);
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    // No permitir cambiar rol de admin a no-admin si es el propio usuario
+    if (existing.rows[0].role === 'admin' && role !== 'admin' && req.user.userId === parseInt(id)) {
+      return res.status(400).json({ error: 'No puedes quitarte el rol de administrador' });
+    }
+
+    // Construir la actualización
+    let updateFields = [];
+    let params = [];
+    let paramIndex = 1;
+
+    if (username) {
+      updateFields.push(`username = $${paramIndex++}`);
+      params.push(username.toLowerCase());
+    }
+    if (email) {
+      updateFields.push(`email = $${paramIndex++}`);
+      params.push(email.toLowerCase());
+    }
+    if (displayName !== undefined) {
+      updateFields.push(`display_name = $${paramIndex++}`);
+      params.push(displayName);
+    }
+    if (role) {
+      updateFields.push(`role = $${paramIndex++}`);
+      params.push(role);
+    }
+    if (planType) {
+      updateFields.push(`plan_type = $${paramIndex++}`);
+      params.push(planType);
+    }
+    if (days !== undefined) {
+      updateFields.push(`plan_days_remaining = $${paramIndex++}`);
+      params.push(days);
+      
+      // Actualizar fecha de expiración
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + days);
+      updateFields.push(`plan_expires_at = $${paramIndex++}`);
+      params.push(expiresAt.toISOString());
+    }
+    if (typeof isActive === 'boolean') {
+      updateFields.push(`is_active = $${paramIndex++}`);
+      params.push(isActive);
+    }
+    if (typeof isVerified === 'boolean') {
+      updateFields.push(`is_verified = $${paramIndex++}`);
+      params.push(isVerified);
+    }
+    if (password && password.length >= 6) {
+      const passwordHash = await bcrypt.hash(password, 12);
+      updateFields.push(`password_hash = $${paramIndex++}`);
+      params.push(passwordHash);
+    }
+
+    updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
+    params.push(id);
+
+    const sql = `UPDATE users SET ${updateFields.join(', ')} WHERE id = $${paramIndex} RETURNING *`;
+    const result = await query(sql, params);
+
+    // Registrar en historial
+    await query(
+      `INSERT INTO plan_history (user_id, action, plan_type, days_changed, admin_id, notes)
+       VALUES ($1, 'admin_update', $2, $3, $4, 'Usuario actualizado por administrador')`,
+      [id, planType || null, days || 0, req.user.userId]
+    );
+
+    res.json({
+      message: 'Usuario actualizado',
+      user: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Error al actualizar usuario' });
+  }
+}
+
+/**
+ * Obtener todas las conversaciones (bandeja de chat admin)
+ * GET /api/admin/chats
+ */
+async function getChats(req, res) {
+  try {
+    // Obtener ID del admin actual
+    const adminId = req.user.userId;
+
+    // Obtener lista de usuarios que han enviado mensajes al admin
+    const result = await query(`
+      SELECT 
+        u.id as user_id,
+        u.username,
+        u.email,
+        u.display_name,
+        (SELECT message FROM messages 
+         WHERE (sender_id = u.id AND recipient_id = $1) OR (sender_id = $1 AND recipient_id = u.id)
+         ORDER BY created_at DESC LIMIT 1) as last_message,
+        (SELECT created_at FROM messages 
+         WHERE (sender_id = u.id AND recipient_id = $1) OR (sender_id = $1 AND recipient_id = u.id)
+         ORDER BY created_at DESC LIMIT 1) as last_message_at,
+        (SELECT COUNT(*) FROM messages 
+         WHERE sender_id = u.id AND recipient_id = $1 AND read = false)::int as unread_count
+      FROM users u
+      WHERE EXISTS (
+        SELECT 1 FROM messages m 
+        WHERE (m.sender_id = u.id AND m.recipient_id = $1) 
+           OR (m.sender_id = $1 AND m.recipient_id = u.id)
+      )
+      AND u.id != $1
+      ORDER BY last_message_at DESC NULLS LAST
+    `, [adminId]);
+
+    res.json({ conversations: result.rows });
+
+  } catch (error) {
+    console.error('Error getting chats:', error);
+    res.status(500).json({ error: 'Error al obtener conversaciones' });
+  }
+}
+
+/**
+ * Marcar mensajes como leídos
+ * POST /api/admin/chats/:userId/read
+ */
+async function markChatAsRead(req, res) {
+  try {
+    const { userId } = req.params;
+    const adminId = req.user.userId;
+
+    await query(
+      `UPDATE messages SET read = true 
+       WHERE sender_id = $1 AND recipient_id = $2 AND read = false`,
+      [userId, adminId]
+    );
+
+    res.json({ message: 'Mensajes marcados como leídos' });
+
+  } catch (error) {
+    console.error('Error marking chat as read:', error);
+    res.status(500).json({ error: 'Error al marcar mensajes como leídos' });
+  }
+}
+
+/**
+ * Eliminar conversación (cerrar caso)
+ * DELETE /api/admin/chats/:userId
+ */
+async function deleteChat(req, res) {
+  try {
+    const { userId } = req.params;
+    const adminId = req.user.userId;
+
+    await query(
+      `DELETE FROM messages 
+       WHERE (sender_id = $1 AND recipient_id = $2) 
+          OR (sender_id = $2 AND recipient_id = $1)`,
+      [userId, adminId]
+    );
+
+    res.json({ message: 'Conversación eliminada' });
+
+  } catch (error) {
+    console.error('Error deleting chat:', error);
+    res.status(500).json({ error: 'Error al eliminar conversación' });
+  }
+}
+
 module.exports = {
   getUsers,
   getUser,
@@ -431,5 +627,9 @@ module.exports = {
   getDashboard,
   createUser,
   deleteUser,
-  resetPassword
+  resetPassword,
+  updateUser,
+  getChats,
+  markChatAsRead,
+  deleteChat
 };

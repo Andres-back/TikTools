@@ -348,19 +348,49 @@
 
   <!-- Protección de autenticación -->
   <script type="module">
-    import { isLoggedIn, isGuest, getUser } from './modules/auth.js';
+    import { isLoggedIn, isGuest, getUser, getAccessToken } from './modules/auth.js';
 
-    // Verificar si el usuario está autenticado
-    if (!isLoggedIn() && !isGuest()) {
-      // Redirigir al login
-      window.location.href = '/login.html';
-    } else if (isLoggedIn()) {
-      // Si es admin, redirigir al panel de administración
-      const user = getUser();
-      if (user?.role === 'admin') {
-        window.location.href = '/admin.html';
+    // Función para verificar si el usuario es admin (incluye llamada API)
+    async function checkAndRedirect() {
+      if (!isLoggedIn() && !isGuest()) {
+        window.location.href = '/login.html';
+        return;
+      }
+      
+      if (isLoggedIn()) {
+        // Primero verificar localStorage
+        const user = getUser();
+        if (user?.role === 'admin') {
+          window.location.href = '/admin.html';
+          return;
+        }
+        
+        // Si no hay rol en localStorage, verificar con API (una sola vez)
+        if (!user?.role && !sessionStorage.getItem('roleChecked')) {
+          try {
+            sessionStorage.setItem('roleChecked', 'true');
+            const token = getAccessToken();
+            const response = await fetch('/api/auth/profile', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+              const profile = await response.json();
+              if (profile.role === 'admin') {
+                // Actualizar localStorage y redirigir
+                const storage = localStorage.getItem('accessToken') ? localStorage : sessionStorage;
+                const existingUser = user || {};
+                storage.setItem('user', JSON.stringify({ ...existingUser, role: 'admin' }));
+                window.location.href = '/admin.html';
+              }
+            }
+          } catch (e) {
+            console.error('Error verificando rol:', e);
+          }
+        }
       }
     }
+    
+    checkAndRedirect();
   </script>
 
   <!-- Módulo principal -->

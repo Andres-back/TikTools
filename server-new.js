@@ -198,12 +198,18 @@ app.get('/api/admin/dashboard', authMiddleware, adminMiddleware, adminRoutes.get
 app.get('/api/admin/users', authMiddleware, adminMiddleware, adminRoutes.getUsers);
 app.get('/api/admin/users/:id', authMiddleware, adminMiddleware, adminRoutes.getUser);
 app.post('/api/admin/users', authMiddleware, adminMiddleware, adminRoutes.createUser);
+app.put('/api/admin/users/:id', authMiddleware, adminMiddleware, adminRoutes.updateUser);
 app.delete('/api/admin/users/:id', authMiddleware, adminMiddleware, adminRoutes.deleteUser);
 app.post('/api/admin/users/:id/add-days', authMiddleware, adminMiddleware, adminRoutes.addDays);
 app.post('/api/admin/users/:id/remove-days', authMiddleware, adminMiddleware, adminRoutes.removeDays);
 app.post('/api/admin/users/:id/toggle-status', authMiddleware, adminMiddleware, adminRoutes.toggleStatus);
 app.post('/api/admin/users/:id/reset-password', authMiddleware, adminMiddleware, adminRoutes.resetPassword);
 app.put('/api/admin/users/:id/role', authMiddleware, adminMiddleware, adminRoutes.changeRole);
+
+// Admin chat routes
+app.get('/api/admin/chats', authMiddleware, adminMiddleware, adminRoutes.getChats);
+app.post('/api/admin/chats/:userId/read', authMiddleware, adminMiddleware, adminRoutes.markChatAsRead);
+app.delete('/api/admin/chats/:userId', authMiddleware, adminMiddleware, adminRoutes.deleteChat);
 
 // Auction routes (protegidas + verificación de plan)
 app.get('/api/auctions', authMiddleware, auctionRoutes.getAuctions);

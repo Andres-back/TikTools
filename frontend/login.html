@@ -543,7 +543,20 @@
     function checkAuth() {
       const token = getAccessToken();
       if (token) {
-        // Ya está logueado, redirigir
+        // Verificar rol del usuario almacenado
+        const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            if (user.role === 'admin') {
+              window.location.href = '/admin.html';
+              return;
+            }
+          } catch (e) {
+            console.error('Error parsing user:', e);
+          }
+        }
+        // Usuario normal, ir a index
         window.location.href = '/';
       }
     }
