@@ -51,12 +51,12 @@ export function initTimer(elements) {
   timerCardEl = elements.timerCard;
   timerMessageEl = elements.timerMessage;
   timerHeadingEl = elements.timerHeading;
-  
+
   // Elementos de animación
   timerProgressFillEl = document.getElementById('timerProgressFill');
   mascotSpeechLeftEl = document.getElementById('mascotSpeechLeft');
   mascotSpeechRightEl = document.getElementById('mascotSpeechRight');
-  
+
   // Shadow del display (para efecto de profundidad)
   const shadowEl = document.querySelector('.timer-display-shadow');
   if (shadowEl) {
@@ -92,21 +92,21 @@ export function formatTime(seconds) {
  */
 function setMessage(message, { flash = false, snipe = false, final = false, tieBreak = false, delay = false } = {}) {
   if (!timerMessageEl || !timerCardEl) return;
-  
+
   timerMessageEl.textContent = message;
   timerMessageEl.className = "timer-message";
-  
+
   if (flash) timerMessageEl.classList.add("flash-message");
   if (snipe) timerMessageEl.classList.add("snipe-alert");
   if (final) timerMessageEl.classList.add("final-alert");
   if (tieBreak) timerMessageEl.classList.add("tie-break-alert");
   if (delay) timerMessageEl.classList.add("delay-alert");
-  
+
   timerCardEl.classList.toggle("snipe-phase", Boolean(snipe));
   timerCardEl.classList.toggle("final-phase", Boolean(final));
   timerCardEl.classList.toggle("tie-break-phase", Boolean(tieBreak));
   timerCardEl.classList.toggle("delay-alert-phase", Boolean(delay));
-  
+
   if (message) {
     timerCardEl.classList.add("show-message");
   } else {
@@ -119,21 +119,21 @@ function setMessage(message, { flash = false, snipe = false, final = false, tieB
  */
 function updateCardState() {
   if (!timerCardEl) return;
-  
+
   const thresholds = getWarningThresholds();
-  
+
   timerCardEl.classList.remove("warning", "danger");
   timerCardEl.classList.toggle("delay-phase", phase === TIMER_PHASES.DELAY);
   timerCardEl.classList.toggle("tie-break-phase", phase === TIMER_PHASES.TIE_BREAK);
   timerCardEl.classList.toggle("finished-phase", phase === TIMER_PHASES.FINISHED);
-  
+
   // Advertencias de tiempo
   if (timeRemaining <= thresholds.warning && timeRemaining > thresholds.danger) {
     if (phase === TIMER_PHASES.INITIAL || phase === TIMER_PHASES.TIE_BREAK) {
       timerCardEl.classList.add("warning");
     }
   }
-  
+
   if (timeRemaining <= thresholds.danger) {
     timerCardEl.classList.add("danger");
   }
@@ -146,43 +146,42 @@ function updateCardState() {
 function handleTieBreaker() {
   const config = getConfig();
   const tieResult = checkForTie();
-  
+
   if (!tieResult.isTie) {
     return false;
   }
-  
+
   if (tieExtensionCount >= MAX_TIE_EXTENSIONS) {
     return false;
   }
-  
+
   // ¡Hay empate! Extender tiempo
   tieExtensionCount++;
   const extensionTime = config.tieExtension || 30;
-  
-  `);
-  );
-  
+
+  console.log(`[TieBreaker] Extensión #${tieExtensionCount}: +${extensionTime}s`);
+
   // Descongelar leaderboard para permitir más donaciones
   unfreezeLeaderboard();
-  
+
   // Configurar fase de tie-break
   phase = TIMER_PHASES.TIE_BREAK;
   timeRemaining = extensionTime;
   initialTimeForProgress = extensionTime; // Actualizar para las barras de progreso
-  
+
   // Mostrar mensaje
   const tiedNames = tieResult.tiedUsers.map(u => `@${u.uniqueId}`).slice(0, 2).join(" vs ");
   setMessage(`¡EMPATE! ${tiedNames} - +${extensionTime}s`, { tieBreak: true });
-  
+
   // Notificar callback
   if (onTieExtension) {
     onTieExtension(tieResult.tiedUsers, extensionTime, tieExtensionCount);
   }
-  
+
   if (onPhaseChanged) {
     onPhaseChanged(phase);
   }
-  
+
   return true;
 }
 
@@ -191,30 +190,30 @@ function handleTieBreaker() {
  */
 function tick() {
   updateCardState();
-  
+
   // Actualizar animaciones
   updateProgressBar();
   updateMascotSpeech();
-  
+
   const timeText = formatTime(Math.max(timeRemaining, 0));
-  
+
   if (timerDisplayEl) {
     timerDisplayEl.textContent = timeText;
   }
-  
+
   // Sincronizar el shadow
   if (timerDisplayShadowEl) {
     timerDisplayShadowEl.textContent = timeText;
   }
-  
+
   // Callback de tick para sincronizar overlays
   if (onTimerTick) {
     onTimerTick(timeRemaining, timerMessageEl ? timerMessageEl.textContent : '');
   }
-  
+
   const config = getConfig();
   const thresholds = getWarningThresholds();
-  
+
   // Mensajes según fase y tiempo
   if (phase === TIMER_PHASES.INITIAL) {
     if (timeRemaining === config.initialTime) {
@@ -225,7 +224,7 @@ function tick() {
       setMessage("¡Últimos segundos!", { flash: true });
     }
   }
-  
+
   if (phase === TIMER_PHASES.DELAY) {
     if (timeRemaining === config.delayTime) {
       setMessage(`⚠️ ¡¡TIEMPO EXTRA!! +${config.delayTime}s ⚠️`, { flash: true, delay: true });
@@ -235,13 +234,13 @@ function tick() {
       setMessage("⏰ ¡DONA AHORA O PIERDE! ⏰", { flash: true, delay: true });
     }
   }
-  
+
   if (phase === TIMER_PHASES.TIE_BREAK) {
     if (timeRemaining <= thresholds.danger && timeRemaining > 0) {
       setMessage("¡Desempate final!", { tieBreak: true });
     }
   }
-  
+
   // Cuando el tiempo llega a 0
   if (timeRemaining <= 0) {
     if (phase === TIMER_PHASES.INITIAL) {
@@ -249,7 +248,7 @@ function tick() {
       phase = TIMER_PHASES.DELAY;
       timeRemaining = config.delayTime;
       initialTimeForProgress = config.delayTime; // Actualizar para la barra
-      
+
       if (config.delayTime > 0) {
         setMessage(`🔥 ¡¡SNIPE TIME!! +${config.delayTime}s 🔥`, { flash: true, delay: true });
         updateCardState();
@@ -258,19 +257,19 @@ function tick() {
       }
       // Si delay es 0, continuar a verificar empate
     }
-    
+
     if (phase === TIMER_PHASES.DELAY || phase === TIMER_PHASES.TIE_BREAK) {
       // Verificar empate antes de finalizar
       if (handleTieBreaker()) {
         return; // Se extendió el tiempo
       }
-      
+
       // Finalizar subasta
       finishTimer();
       return;
     }
   }
-  
+
   timeRemaining -= 1;
 }
 
@@ -280,24 +279,24 @@ function tick() {
 function finishTimer() {
   phase = TIMER_PHASES.FINISHED;
   setMessage("Tiempo agotado", { final: true });
-  
+
   clearInterval(intervalId);
   intervalId = null;
   timerActive = false;
-  
+
   if (timerDisplayEl) {
     timerDisplayEl.textContent = "00:00";
   }
-  
+
   updateCardState();
-  
+
   // Congelar leaderboard y obtener ganador
   const winner = freezeLeaderboard();
-  
+
   if (onTimerFinished) {
     onTimerFinished(winner);
   }
-  
+
   if (onPhaseChanged) {
     onPhaseChanged(phase);
   }
@@ -307,42 +306,43 @@ function finishTimer() {
  * Inicia el timer
  */
 export function startTimer() {
-  llamado");
+  console.log('[Timer] startTimer llamado');
   if (timerActive) {
     return false;
   }
-  
+
   const config = getConfig();
   phase = TIMER_PHASES.INITIAL;
   timeRemaining = config.initialTime;
   initialTimeForProgress = config.initialTime; // Para las barras de progreso
   tieExtensionCount = 0;
   timerActive = true;
-  
+
   updateCardState();
   updateProgressBar();
-  
+
   if (timerDisplayEl) {
     const timeText = formatTime(timeRemaining);
     timerDisplayEl.textContent = timeText;
-    
+
     // También actualizar el shadow
     if (timerDisplayShadowEl) {
       timerDisplayShadowEl.textContent = timeText;
     }
   } else {
-    }
-  
+    console.warn('[Timer] timerDisplayEl no encontrado');
+  }
+
   setMessage("Fase inicial", { flash: true });
-  
+
   // Descongelar leaderboard
   unfreezeLeaderboard();
-  
+
   intervalId = setInterval(tick, 1000);
   if (onPhaseChanged) {
     onPhaseChanged(phase);
   }
-  
+
   return true;
 }
 
@@ -353,12 +353,12 @@ export function pauseTimer() {
   if (!timerActive || !intervalId) {
     return false;
   }
-  
+
   clearInterval(intervalId);
   intervalId = null;
   timerActive = false;
-  
-  );
+
+  console.log('[Timer] Timer pausado');
   return true;
 }
 
@@ -369,10 +369,10 @@ export function resumeTimer() {
   if (timerActive || phase === TIMER_PHASES.FINISHED || phase === TIMER_PHASES.IDLE) {
     return false;
   }
-  
+
   timerActive = true;
   intervalId = setInterval(tick, 1000);
-  
+
   return true;
 }
 
@@ -384,25 +384,25 @@ export function resetTimer() {
   intervalId = null;
   timerActive = false;
   tieExtensionCount = 0;
-  
+
   const config = getConfig();
   phase = TIMER_PHASES.IDLE;
   timeRemaining = config.initialTime;
-  
+
   if (timerDisplayEl) {
     timerDisplayEl.textContent = formatTime(timeRemaining);
   }
-  
+
   if (timerCardEl) {
     timerCardEl.classList.remove("warning", "danger", "delay-phase", "tie-break-phase", "finished-phase");
   }
-  
+
   setMessage("", {});
-  
+
   if (onPhaseChanged) {
     onPhaseChanged(phase);
   }
-  
+
   return true;
 }
 
@@ -421,11 +421,11 @@ export function updateTimerHeading(message) {
  */
 export function refreshTimerUI() {
   const config = getConfig();
-  
+
   if (phase === TIMER_PHASES.IDLE && timerDisplayEl) {
     timerDisplayEl.textContent = formatTime(config.initialTime);
   }
-  
+
   if (timerHeadingEl) {
     timerHeadingEl.textContent = config.minMessage;
   }
@@ -466,7 +466,7 @@ export function getCurrentPhase() {
  */
 function updateProgressBar() {
   if (!timerProgressFillEl || initialTimeForProgress <= 0) return;
-  
+
   const progress = (timeRemaining / initialTimeForProgress) * 100;
   timerProgressFillEl.style.width = `${progress}%`;
 }
@@ -476,9 +476,9 @@ function updateProgressBar() {
  */
 function updateMascotSpeech() {
   if (!mascotSpeechLeftEl || !mascotSpeechRightEl) return;
-  
+
   const thresholds = getWarningThresholds();
-  
+
   if (timeRemaining <= thresholds.danger) {
     // Modo pánico - mensajes más intensos
     const panicMessages = [

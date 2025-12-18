@@ -28,12 +28,12 @@ function generateGiftKey(gift) {
   const giftId = gift.giftId || "0";
   const repeatEnd = gift.repeatEnd ? 1 : 0;
   const repeatCount = gift.repeatCount || 1;
-  
+
   // Usar groupId para agrupar eventos del mismo combo
   // logId es único por evento individual
   const groupId = gift.groupId || '';
   const logId = gift.logId || gift.orderId || '';
-  
+
   // La clave incluye:
   // - uniqueId: usuario
   // - giftId: tipo de regalo
@@ -42,7 +42,7 @@ function generateGiftKey(gift) {
   // - groupId: agrupa eventos del mismo combo
   // Si no hay groupId, usar logId o timestamp
   const eventId = groupId || logId || Date.now();
-  
+
   return `${uniqueId}_${giftId}_${repeatEnd}_${repeatCount}_${eventId}`;
 }
 
@@ -76,14 +76,14 @@ export function inferGiftCoins(gift) {
   // Extraer valores del regalo y asegurar que sean números
   const repeatEnd = gift.repeatEnd ? 1 : 0;
   const repeatCount = parseInt(gift.repeatCount, 10) || 1;
-  
+
   // Obtener diamantes del regalo - buscar en múltiples ubicaciones
   // IMPORTANTE: Convertir a número porque a veces llega como string
   let diamondCount = parseInt(
-    gift.giftDetails?.diamondCount 
-    ?? gift.extendedGiftInfo?.diamond_count 
-    ?? gift.extendedGiftInfo?.diamondCount 
-    ?? gift.diamondCount 
+    gift.giftDetails?.diamondCount
+    ?? gift.extendedGiftInfo?.diamond_count
+    ?? gift.extendedGiftInfo?.diamondCount
+    ?? gift.diamondCount
     ?? 0,
     10
   ) || 0;
@@ -91,7 +91,7 @@ export function inferGiftCoins(gift) {
   // DEBUG: Log detallado para diagnóstico
   const giftName = gift.giftDetails?.giftName || gift.giftName || gift.extendedGiftInfo?.name || 'Desconocido';
   const userId = gift.user?.uniqueId || gift.uniqueId;
-  
+
   // LÓGICA DE CONTEO:
   // - Regalos normales (< 99 diamantes): Envían repeatEnd=0 y luego repeatEnd=1
   //   → Solo contar cuando repeatEnd=1
@@ -101,25 +101,25 @@ export function inferGiftCoins(gift) {
   // Ejemplos:
   // - Rose (1💎), Doughnut (30💎): envían ambos eventos → contar solo repeatEnd=1
   // - Hat and Mustache (99💎), Heart Signal (100💎): solo repeatEnd=0 → contar
-  
+
   if (!repeatEnd) {
     // Solo contar regalos instantáneos de alto valor (>= 99 diamantes)
     const isInstantPremiumGift = diamondCount >= 99 && repeatCount === 1;
 
     if (isInstantPremiumGift) {
-      `);
+      console.log(`[Coins] Regalo premium instantáneo: ${giftName} (${diamondCount}💎) de @${userId}`);
     } else {
       // Regalos normales con repeatEnd=0 → esperar el repeatEnd=1
-      `);
+      console.log(`[Coins] Ignorando repeatEnd=0 para: ${giftName} de @${userId}`);
       return 0;
     }
   } else {
-    `);
+    console.log(`[Coins] Procesando regalo final: ${giftName} x${repeatCount} (${diamondCount}💎) de @${userId}`);
   }
 
   // Calcular monedas totales
   const totalCoins = diamondCount * repeatCount;
-  
+
   return totalCoins;
 }
 
@@ -130,33 +130,33 @@ export function inferGiftCoins(gift) {
  */
 export function processGiftEvent(event) {
   const gift = event.gift || event;
-  
+
   // Generar clave única para deduplicación
   const giftKey = generateGiftKey(gift);
-  
+
   // Verificar si ya procesamos este regalo
   if (isDuplicate(giftKey)) {
     return null;
   }
-  
+
   // Calcular monedas
   const coins = inferGiftCoins(gift);
-  
+
   // Si no hay monedas, no hay nada que registrar
   if (coins <= 0) {
     return null;
   }
-  
+
   // Extraer información del usuario
   // TikTok envía datos del usuario en diferentes ubicaciones
   const user = gift.user || gift;
   const uniqueId = user.uniqueId || gift.uniqueId || gift.userId || "anon";
   const nickname = user.nickname || gift.nickname || uniqueId;
-  
+
   // Extraer imagen de perfil - TikTok usa estructura Image { url: string[] }
   // avatarThumb.url[0] contiene la URL de la imagen
   let profilePictureUrl = null;
-  
+
   // Prioridad 1: avatarThumb del usuario (más común en v2)
   if (user.avatarThumb?.url?.[0]) {
     profilePictureUrl = user.avatarThumb.url[0];
@@ -180,18 +180,17 @@ export function processGiftEvent(event) {
   else if (typeof gift.profilePictureUrl === 'string') {
     profilePictureUrl = gift.profilePictureUrl;
   }
-  
-  `);
-  + '...' : 'No disponible'}`);
+
+  console.log(`[Coins] Imagen de perfil: ${profilePictureUrl ? profilePictureUrl.substring(0, 50) + '...' : 'No disponible'}`);
   if (!profilePictureUrl && user) {
-    );
+    console.log('[Coins] DEBUG user object:', Object.keys(user));
   }
-  
+
   // Notificar si hay callback registrado
   if (onCoinsRecorded) {
     onCoinsRecorded(uniqueId, nickname, coins, profilePictureUrl);
   }
-  
+
   return { uniqueId, label: nickname, coins, profilePictureUrl };
 }
 
