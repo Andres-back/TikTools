@@ -356,7 +356,8 @@ function setupEventListeners() {
     saveSessionId(sessionId);
     saveTtTargetIdc(ttTargetIdc);
     
-    }...` : "(vacío)",
+    console.log("Credenciales guardadas:", {
+      sessionId: sessionId ? sessionId.substring(0, 10) + "..." : "(vacío)",
       ttTargetIdc: ttTargetIdc || "(vacío)"
     });
     
@@ -381,8 +382,8 @@ function setupEventListeners() {
     if (state.active) {
       pauseTimer();
     } else if (state.phase === TIMER_PHASES.IDLE) {
-      const result = startTimer();
-      } else {
+      startTimer();
+    } else {
       resumeTimer();
     }
     
@@ -394,7 +395,7 @@ function setupEventListeners() {
     resetTimer();
     resetLeaderboard();
     updateTimerControls();
-    });
+  });
   
   // Actualizar tiempos
   elements.updateTimes?.addEventListener("click", () => {
@@ -413,7 +414,7 @@ function setupEventListeners() {
     }
     
     refreshTimerUI();
-    });
+  });
   
   // Actualizar mensaje mínimo
   elements.updateMinMessage?.addEventListener("click", () => {
@@ -421,7 +422,7 @@ function setupEventListeners() {
     if (message) {
       setMinMessage(message);
       updateTimerHeading(message);
-      }
+    }
   });
   
   // Enter en input de mensaje
@@ -589,4 +590,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     showPlanBanner(planStatus);
   }
   
-  });
+  console.log("TikToolStream inicializado correctamente");
+});
