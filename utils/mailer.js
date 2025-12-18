@@ -3,8 +3,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'tiktoolstreamstudio@gmail.com',
-        pass: 'lolkjk12'
+        user: 'resslow41@gmail.com', // Tu correo de Gmail
+        pass: 'zcfw oqqt bcmd mhsy'  // Tu App Password de Google
     }
 });
 
