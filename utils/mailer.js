@@ -14,7 +14,7 @@ const sendVerificationEmail = async (email, token) => {
     const verificationLink = `https://tiktoolstream.studio/verify-email.html?token=${token}`;
 
     const mailOptions = {
-        from: '"TikToolStream" <tiktoolstreamstudio@gmail.com>',
+        from: '"TikToolStream" <resslow41@gmail.com>', // Debe coincidir con el usuario autenticado
         to: email,
         subject: 'Verifica tu cuenta - TikToolStream',
         html: `
@@ -41,5 +41,6 @@ const sendVerificationEmail = async (email, token) => {
 };
 
 module.exports = {
-    sendVerificationEmail
+    sendVerificationEmail,
+    transporter // Exportar para diagnóstico
 };
