@@ -94,6 +94,17 @@ app.get('/api/setup/reset-users-force', async (req, res) => {
   }
 });
 
+// Endpoint TEMPORAL para verificar manualmente un usuario (Bypass de correo)
+app.get('/api/setup/manually-verify', async (req, res) => {
+  if (req.query.secret === 'lolkjk12_RESET' && req.query.email) {
+    const { query } = require('./database/db');
+    await query('UPDATE users SET is_verified = true WHERE email = $1', [req.query.email]);
+    res.send(`Usuario ${req.query.email} verificado manualmente. Ahora puedes hacer login.`);
+  } else {
+    res.status(403).send('Forbidden o falta email');
+  }
+});
+
 // Auth routes (protegidas)
 app.post('/api/auth/logout', authMiddleware, authRoutes.logout);
 app.get('/api/auth/profile', authMiddleware, authRoutes.getProfile);
