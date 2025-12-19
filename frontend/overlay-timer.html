@@ -546,8 +546,17 @@
       }
     });
 
-    // Obtener token
+    // Obtener token (desde URL o localStorage)
     function getToken() {
+      // Primero intentar obtener de la URL (pasado desde el panel principal)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      if (urlToken) {
+        // Guardar en localStorage para futuras requests
+        localStorage.setItem('accessToken', urlToken);
+        return urlToken;
+      }
+      // Fallback a localStorage/sessionStorage
       return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     }
 

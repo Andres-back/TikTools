@@ -87,8 +87,16 @@ router.get('/:userId', authenticateToken, async (req, res) => {
 /**
  * POST /api/chat
  * Enviar mensaje
+ * Soporta tanto JSON como multipart/form-data (para imágenes)
  */
-router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
+router.post('/', authenticateToken, (req, res, next) => {
+  // Si es JSON, continuar directamente
+  if (req.is('application/json')) {
+    return next();
+  }
+  // Si es multipart, usar multer
+  upload.single('image')(req, res, next);
+}, async (req, res) => {
   try {
     const senderId = req.user.userId;
     const { message } = req.body;

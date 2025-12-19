@@ -168,7 +168,8 @@ function initFloatingSidebar() {
   if (openTimerBtn) {
     openTimerBtn.addEventListener('click', () => {
       console.log('Open timer overlay');
-      const timerUrl = `${window.location.origin}/overlay-timer.html`;
+      const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+      const timerUrl = `${window.location.origin}/overlay-timer.html${token ? '?token=' + encodeURIComponent(token) : ''}`;
       window.open(timerUrl, '_blank', 'width=800,height=400');
     });
   }
