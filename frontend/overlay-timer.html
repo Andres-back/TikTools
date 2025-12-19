@@ -230,9 +230,147 @@
       0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
       50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
     }
+
+    /* Panel de configuración */
+    .config-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      z-index: 100;
+    }
+
+    .config-toggle:hover {
+      background: rgba(255, 215, 0, 0.4);
+    }
+
+    .config-panel {
+      position: fixed;
+      top: 50px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      width: 280px;
+      z-index: 100;
+      display: none;
+      backdrop-filter: blur(10px);
+    }
+
+    .config-panel.active {
+      display: block;
+    }
+
+    .config-title {
+      color: var(--gold);
+      font-size: 1rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .config-group {
+      margin-bottom: 15px;
+    }
+
+    .config-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 6px;
+    }
+
+    .config-preview {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.3);
+      margin-bottom: 8px;
+    }
+
+    .config-file {
+      width: 100%;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .config-file::file-selector-button {
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-right: 10px;
+    }
+
+    .config-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), #ffa500);
+      border: none;
+      color: #000;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .config-btn:hover {
+      opacity: 0.9;
+    }
+
+    .config-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .config-status {
+      font-size: 0.8rem;
+      margin-top: 10px;
+      text-align: center;
+      min-height: 1.2em;
+    }
+
+    .config-status.success { color: #2ed573; }
+    .config-status.error { color: #ff6b6b; }
   </style>
 </head>
 <body>
+  <!-- Botón para mostrar/ocultar configuración -->
+  <button class="config-toggle" id="configToggle">⚙️ Personalizar</button>
+  
+  <!-- Panel de configuración -->
+  <div class="config-panel" id="configPanel">
+    <div class="config-title">🎨 Personalizar Mascotas</div>
+    
+    <div class="config-group">
+      <label>Mascota Izquierda</label>
+      <img id="leftPreview" class="config-preview" src="assets/QuesadillaCrocodilla.webp">
+      <input type="file" id="leftImageInput" class="config-file" accept="image/*">
+    </div>
+    
+    <div class="config-group">
+      <label>Mascota Derecha</label>
+      <img id="rightPreview" class="config-preview" src="assets/Noel.webp">
+      <input type="file" id="rightImageInput" class="config-file" accept="image/*">
+    </div>
+    
+    <button class="config-btn" id="saveImagesBtn">💾 Guardar Cambios</button>
+    <div class="config-status" id="configStatus"></div>
+  </div>
+
   <div id="connectingScreen" class="connecting">
     <div class="spinner"></div>
     <p class="connecting-text">Conectando con el panel...</p>
@@ -379,6 +517,141 @@
         channel.postMessage({ type: 'ping' });
       }
     }, 10000);
+
+    // ========== CONFIGURACIÓN DE IMÁGENES ==========
+    const configToggle = document.getElementById('configToggle');
+    const configPanel = document.getElementById('configPanel');
+    const leftPreview = document.getElementById('leftPreview');
+    const rightPreview = document.getElementById('rightPreview');
+    const leftImageInput = document.getElementById('leftImageInput');
+    const rightImageInput = document.getElementById('rightImageInput');
+    const saveImagesBtn = document.getElementById('saveImagesBtn');
+    const configStatus = document.getElementById('configStatus');
+
+    // Toggle panel
+    configToggle.addEventListener('click', () => {
+      configPanel.classList.toggle('active');
+    });
+
+    // Preview de imágenes
+    leftImageInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        leftPreview.src = URL.createObjectURL(e.target.files[0]);
+      }
+    });
+
+    rightImageInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        rightPreview.src = URL.createObjectURL(e.target.files[0]);
+      }
+    });
+
+    // Obtener token
+    function getToken() {
+      return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    }
+
+    // Cargar imágenes guardadas del usuario
+    async function loadSavedImages() {
+      const token = getToken();
+      if (!token) return;
+
+      try {
+        const response = await fetch('/api/overlays/my', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.left_image_url) {
+            mascotLeft.src = data.left_image_url;
+            leftPreview.src = data.left_image_url;
+          }
+          if (data.right_image_url) {
+            mascotRight.src = data.right_image_url;
+            rightPreview.src = data.right_image_url;
+          }
+        }
+      } catch (error) {
+        console.error('Error loading saved images:', error);
+      }
+    }
+
+    // Guardar imágenes
+    saveImagesBtn.addEventListener('click', async () => {
+      const token = getToken();
+      if (!token) {
+        configStatus.textContent = '⚠️ Debes iniciar sesión';
+        configStatus.className = 'config-status error';
+        return;
+      }
+
+      const formData = new FormData();
+      if (leftImageInput.files[0]) {
+        formData.append('leftImage', leftImageInput.files[0]);
+      }
+      if (rightImageInput.files[0]) {
+        formData.append('rightImage', rightImageInput.files[0]);
+      }
+
+      if (!leftImageInput.files[0] && !rightImageInput.files[0]) {
+        configStatus.textContent = 'Selecciona al menos una imagen';
+        configStatus.className = 'config-status error';
+        return;
+      }
+
+      saveImagesBtn.disabled = true;
+      saveImagesBtn.textContent = 'Guardando...';
+      configStatus.textContent = '';
+
+      try {
+        const response = await fetch('/api/overlays', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Actualizar mascotas en el overlay
+          if (data.left_image_url) {
+            mascotLeft.src = data.left_image_url;
+            leftPreview.src = data.left_image_url;
+          }
+          if (data.right_image_url) {
+            mascotRight.src = data.right_image_url;
+            rightPreview.src = data.right_image_url;
+          }
+
+          // Notificar al panel principal
+          channel.postMessage({
+            type: 'overlay_images_updated',
+            leftImage: data.left_image_url,
+            rightImage: data.right_image_url
+          });
+
+          configStatus.textContent = '✅ Guardado exitosamente';
+          configStatus.className = 'config-status success';
+          
+          // Limpiar inputs
+          leftImageInput.value = '';
+          rightImageInput.value = '';
+        } else {
+          throw new Error('Error al guardar');
+        }
+      } catch (error) {
+        console.error('Error saving images:', error);
+        configStatus.textContent = '❌ Error al guardar';
+        configStatus.className = 'config-status error';
+      } finally {
+        saveImagesBtn.disabled = false;
+        saveImagesBtn.textContent = '💾 Guardar Cambios';
+      }
+    });
+
+    // Cargar imágenes al iniciar
+    loadSavedImages();
   </script>
 </body>
 </html>

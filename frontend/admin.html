@@ -835,7 +835,7 @@
 
         <div class="form-group" id="passwordGroup">
           <label>Password *</label>
-          <input type="password" id="userPassword" minlength="6">
+          <input type="password" id="userPassword" minlength="6" autocomplete="new-password">
         </div>
 
         <div class="form-row">
@@ -1081,7 +1081,7 @@
         document.getElementById('totalUsers').textContent = data.users?.total || 0;
         document.getElementById('activeUsers').textContent = data.users?.active || 0;
         document.getElementById('premiumUsers').textContent = data.users?.premium || 0;
-        document.getElementById('totalRevenue').textContent = `$${(data.payments?.total_revenue || 0).toFixed(2)}`;
+        document.getElementById('totalRevenue').textContent = `$${parseFloat(data.payments?.total_revenue || 0).toFixed(2)}`;
         document.getElementById('verifiedUsers').textContent = data.users?.verified || 0;
         document.getElementById('auctionsToday').textContent = data.auctions?.today || 0;
         document.getElementById('unreadMessages').textContent = data.messages?.unread || 0;

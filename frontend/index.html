@@ -56,9 +56,6 @@
       <button class="sidebar-btn" id="chatBtn" title="Chat con Admin">
         💬 <span>Chat</span>
       </button>
-      <button class="sidebar-btn" id="overlayBtn" title="Personalizar Overlay">
-        🎨 <span>Personalizar</span>
-      </button>
     </div>
   </div>
 
@@ -295,38 +292,6 @@
           <button id="chatFileBtn" class="btn-icon" title="Adjuntar imagen">📎</button>
           <input type="text" id="chatInput" placeholder="Escribe un mensaje..." class="chat-input">
           <button id="chatSendBtn" class="btn btn-primary">Enviar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal de Overlay Personalizado -->
-  <div id="overlayModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>🎨 Mi Overlay Personalizado</h2>
-        <button class="modal-close" id="overlayClose">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p class="info-text">Personaliza las imágenes de tu overlay (brainrots laterales)</p>
-        <div class="overlay-settings">
-          <div class="overlay-setting">
-            <label>Imagen Izquierda (Actual: QuesadillaCrocodilla)</label>
-            <input type="file" id="overlayLeft" accept="image/*" class="modal-file">
-            <img id="overlayLeftPreview" src="assets/QuesadillaCrocodilla.webp" class="overlay-preview">
-          </div>
-          <div class="overlay-setting">
-            <label>Imagen Derecha (Actual: Noel)</label>
-            <input type="file" id="overlayRight" accept="image/*" class="modal-file">
-            <img id="overlayRightPreview" src="assets/Noel.webp" class="overlay-preview">
-          </div>
-          <button id="overlaySaveBtn" class="btn btn-primary">Guardar Overlay</button>
-          <button id="resetOverlay" class="btn btn-secondary">Restaurar Predeterminado</button>
-        </div>
-        <div class="overlay-link">
-          <label>URL de tu Overlay:</label>
-          <input type="text" id="overlayLinkInput" readonly class="modal-input">
-          <button id="copyOverlayBtn" class="btn btn-secondary">Copiar URL</button>
         </div>
       </div>
     </div>

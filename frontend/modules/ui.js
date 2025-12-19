@@ -12,7 +12,6 @@ export function initUI() {
   initMenu();
   initModals();
   initFloatingSidebar();
-  loadOverlaySettings(); // Cargar imágenes del overlay al inicio
 }
 
 /**
@@ -79,8 +78,7 @@ function initMenu() {
 function initModals() {
   const modals = {
     news: document.getElementById('newsModal'),
-    chat: document.getElementById('chatModal'),
-    overlay: document.getElementById('overlayModal')
+    chat: document.getElementById('chatModal')
   };
 
   // Cerrar modal al hacer clic en el botón de cerrar
@@ -121,7 +119,6 @@ function initFloatingSidebar() {
   const sidebarContent = document.getElementById('sidebarContent');
   const newsBtn = document.getElementById('newsBtn');
   const chatBtn = document.getElementById('chatBtn');
-  const overlayBtn = document.getElementById('overlayBtn');
   const openLeaderboardBtn = document.getElementById('openLeaderboardBtn');
   const openTimerBtn = document.getElementById('openTimerBtn');
 
@@ -130,7 +127,6 @@ function initFloatingSidebar() {
     sidebarToggle: !!sidebarToggle,
     newsBtn: !!newsBtn,
     chatBtn: !!chatBtn,
-    overlayBtn: !!overlayBtn,
     openLeaderboardBtn: !!openLeaderboardBtn,
     openTimerBtn: !!openTimerBtn
   });
@@ -156,13 +152,6 @@ function initFloatingSidebar() {
     chatBtn.addEventListener('click', () => {
       console.log('Chat button clicked');
       openModal('chatModal');
-    });
-  }
-
-  if (overlayBtn) {
-    overlayBtn.addEventListener('click', () => {
-      console.log('Overlay button clicked');
-      openModal('overlayModal');
     });
   }
 
@@ -200,8 +189,6 @@ function openModal(modalId) {
     loadNews();
   } else if (modalId === 'chatModal') {
     loadChat();
-  } else if (modalId === 'overlayModal') {
-    loadOverlaySettings();
   }
 }
 
@@ -372,16 +359,19 @@ let chatInputInitialized = false;
  * Inicializa el input de chat (solo una vez)
  */
 function initChatInput() {
-  if (chatInputInitialized) return; // Evitar duplicados
-  
   const chatInput = document.getElementById('chatInput');
   const chatSendBtn = document.getElementById('chatSendBtn');
   const chatFileBtn = document.getElementById('chatFileBtn');
   const chatFileInput = document.getElementById('chatFileInput');
 
-  if (!chatInput || !chatSendBtn) return;
+  if (!chatInput || !chatSendBtn) {
+    console.warn('[Chat] Elementos no encontrados');
+    return;
+  }
 
-  chatInputInitialized = true; // Marcar como inicializado
+  // Si ya está inicializado, no duplicar listeners
+  if (chatInputInitialized) return;
+  chatInputInitialized = true;
 
   // Obtener token
   const getToken = () => localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -471,130 +461,6 @@ function initChatInput() {
       } catch (error) {
         console.error('Error uploading image:', error);
         alert('Error al subir la imagen');
-      }
-    });
-  }
-}
-
-/**
- * Carga la configuración de overlay
- */
-async function loadOverlaySettings() {
-  const overlayLeftPreview = document.getElementById('overlayLeftPreview');
-  const overlayRightPreview = document.getElementById('overlayRightPreview');
-  const overlayLink = document.getElementById('overlayLink');
-  const overlayLinkInput = document.getElementById('overlayLinkInput');
-
-  try {
-    const response = await fetch('/api/overlays/my');
-    const settings = await response.json();
-
-    if (settings.left_image_url) {
-      if (overlayLeftPreview) overlayLeftPreview.src = settings.left_image_url;
-      const mainLeft = document.getElementById('mascotLeftImg');
-      if (mainLeft) mainLeft.src = settings.left_image_url;
-    }
-    if (settings.right_image_url) {
-      if (overlayRightPreview) overlayRightPreview.src = settings.right_image_url;
-      const mainRight = document.getElementById('mascotRightImg');
-      if (mainRight) mainRight.src = settings.right_image_url;
-    }
-
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const identifier = user.username || user.id;
-    const overlayUrl = `${window.location.origin}/overlay/${identifier}`;
-    overlayLinkInput.value = overlayUrl;
-  } catch (error) {
-    console.error('Error loading overlay settings:', error);
-  }
-
-  // Inicializar inputs de archivo
-  initOverlayInputs();
-}
-
-/**
- * Inicializa los inputs de overlay
- */
-function initOverlayInputs() {
-  const overlayLeft = document.getElementById('overlayLeft');
-  const overlayRight = document.getElementById('overlayRight');
-  const overlayLeftPreview = document.getElementById('overlayLeftPreview');
-  const overlayRightPreview = document.getElementById('overlayRightPreview');
-  const overlaySaveBtn = document.getElementById('overlaySaveBtn');
-
-  // Preview de imágenes
-  if (overlayLeft) {
-    overlayLeft.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        overlayLeftPreview.src = URL.createObjectURL(file);
-      }
-    });
-  }
-
-  if (overlayRight) {
-    overlayRight.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        overlayRightPreview.src = URL.createObjectURL(file);
-      }
-    });
-  }
-
-  // Guardar overlay
-  if (overlaySaveBtn) {
-    overlaySaveBtn.addEventListener('click', async () => {
-      const formData = new FormData();
-
-      if (overlayLeft.files[0]) {
-        formData.append('leftImage', overlayLeft.files[0]);
-      }
-      if (overlayRight.files[0]) {
-        formData.append('rightImage', overlayRight.files[0]);
-      }
-
-      try {
-        overlaySaveBtn.disabled = true;
-        overlaySaveBtn.textContent = 'Guardando...';
-
-        await fetch('/api/overlays', {
-          method: 'POST',
-          body: formData
-        });
-
-        overlaySaveBtn.textContent = '✅ Guardado';
-        setTimeout(() => {
-          overlaySaveBtn.disabled = false;
-          overlaySaveBtn.textContent = 'Guardar Overlay';
-        }, 2000);
-
-        // Recargar settings para actualizar el timer inmediatamente
-        loadOverlaySettings();
-      } catch (error) {
-        console.error('Error saving overlay:', error);
-        overlaySaveBtn.textContent = '❌ Error';
-        setTimeout(() => {
-          overlaySaveBtn.textContent = 'Guardar Cambios';
-          overlaySaveBtn.disabled = false;
-        }, 2000);
-      }
-    });
-  }
-
-  // Copiar URL del overlay
-  const copyOverlayBtn = document.getElementById('copyOverlayBtn');
-  if (copyOverlayBtn) {
-    copyOverlayBtn.addEventListener('click', () => {
-      const overlayLinkInput = document.getElementById('overlayLinkInput');
-      if (overlayLinkInput) {
-        overlayLinkInput.select();
-        document.execCommand('copy');
-
-        const originalText = copyOverlayBtn.textContent;
-        copyOverlayBtn.textContent = '✅ Copiado';
-        setTimeout(() => {
-          copyOverlayBtn.textContent = originalText;
-        }, 2000);
       }
     });
   }
