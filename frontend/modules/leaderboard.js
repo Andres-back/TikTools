@@ -7,7 +7,8 @@ import {
   initAnimations, 
   analyzePositionChanges, 
   resetAnimations,
-  triggerWinnerCelebration 
+  triggerWinnerCelebration,
+  triggerTop1FireEffect
 } from './animations.js';
 
 import { broadcastLeaderboard } from './connection.js';
@@ -150,6 +151,16 @@ export function renderLeaderboard(updatedUserId = null) {
   // Verificar si hay nuevo líder (usando el sistema de animaciones)
   const currentLeader = top3[0]?.uniqueId?.toLowerCase();
   const isNewLeader = animationResult.newLeader;
+  
+  // Verificar si el top 1 está sumando puntos (disparar efecto de fuego)
+  const isTop1Update = updatedUserId && top3[0] && 
+    top3[0].uniqueId.toLowerCase() === updatedUserId.toLowerCase();
+  
+  if (isTop1Update && !isNewLeader) {
+    // El líder actual suma puntos - disparar efecto de fuego
+    setTimeout(() => triggerTop1FireEffect(), 100);
+  }
+  
   previousLeader = currentLeader;
   
   const rankIcons = ["👑", "🥈", "🥉"];

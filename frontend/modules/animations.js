@@ -143,52 +143,54 @@ function updateStreak(uniqueId, name, newPosition, jumped) {
 }
 
 /**
- * Animación épica de nuevo líder con corona y confetti
+ * Animación de fuego para el top 1 cuando suma puntos
+ * Reemplaza la alerta grande con un efecto más sutil
  */
 function triggerNewLeaderAnimation(name, uniqueId) {
-  if (!overlayContainer) return;
+  // Solo agregar efecto de fuego al item del top 1
+  triggerTop1FireEffect();
+}
+
+/**
+ * Efecto de fuego alrededor del puesto #1
+ */
+function triggerTop1FireEffect() {
+  const leaderboardItems = document.querySelectorAll('.leaderboard-item');
+  const firstItem = leaderboardItems[0];
   
-  // Crear overlay de celebración
-  const celebration = document.createElement('div');
-  celebration.className = 'new-leader-celebration';
-  celebration.innerHTML = `
-    <div class="crown-burst">
-      <div class="crown-icon">👑</div>
-      <div class="crown-particles"></div>
-    </div>
-    <div class="leader-announcement">
-      <div class="announcement-badge">¡NUEVO LÍDER!</div>
-      <div class="announcement-name">${escapeHtml(name)}</div>
-      <div class="announcement-subtitle">@${escapeHtml(uniqueId)}</div>
-      <div class="announcement-crown-row">
-        <span class="mini-crown">👑</span>
-        <span class="top-text">TOP 1</span>
-        <span class="mini-crown">👑</span>
-      </div>
-    </div>
-    <div class="confetti-container"></div>
-    <div class="sparkle-ring"></div>
-  `;
+  if (!firstItem) return;
   
-  overlayContainer.appendChild(celebration);
+  // Remover efecto anterior si existe
+  firstItem.querySelectorAll('.fire-ring').forEach(el => el.remove());
   
-  // Generar confetti
-  const confettiContainer = celebration.querySelector('.confetti-container');
-  generateConfetti(confettiContainer, ANIMATION_CONFIG.confettiCount);
+  // Crear contenedor de fuego
+  const fireRing = document.createElement('div');
+  fireRing.className = 'fire-ring';
   
-  // Generar partículas de corona
-  const crownParticles = celebration.querySelector('.crown-particles');
-  generateCrownParticles(crownParticles, ANIMATION_CONFIG.crownParticles);
+  // Generar llamas alrededor
+  for (let i = 0; i < 12; i++) {
+    const flame = document.createElement('div');
+    flame.className = 'fire-flame';
+    flame.style.setProperty('--rotation', `${i * 30}deg`);
+    flame.style.setProperty('--delay', `${i * 0.05}s`);
+    fireRing.appendChild(flame);
+  }
   
-  // Reproducir sonido (opcional)
-  playSound('fanfare');
+  firstItem.appendChild(fireRing);
+  firstItem.classList.add('on-fire');
   
   // Remover después de la animación
   setTimeout(() => {
-    celebration.classList.add('fade-out');
-    setTimeout(() => celebration.remove(), 500);
-  }, ANIMATION_CONFIG.newLeaderDuration);
+    fireRing.classList.add('fade-out');
+    setTimeout(() => {
+      fireRing.remove();
+      firstItem.classList.remove('on-fire');
+    }, 500);
+  }, 3000);
 }
+
+// Exportar función de fuego para uso externo
+export { triggerTop1FireEffect };
 
 /**
  * Alerta de racha de victorias

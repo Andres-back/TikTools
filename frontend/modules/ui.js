@@ -365,16 +365,23 @@ function createChatMessage(message, currentUserId) {
   return div;
 }
 
+// Flag para evitar duplicación de event listeners
+let chatInputInitialized = false;
+
 /**
- * Inicializa el input de chat
+ * Inicializa el input de chat (solo una vez)
  */
 function initChatInput() {
+  if (chatInputInitialized) return; // Evitar duplicados
+  
   const chatInput = document.getElementById('chatInput');
   const chatSendBtn = document.getElementById('chatSendBtn');
   const chatFileBtn = document.getElementById('chatFileBtn');
   const chatFileInput = document.getElementById('chatFileInput');
 
   if (!chatInput || !chatSendBtn) return;
+
+  chatInputInitialized = true; // Marcar como inicializado
 
   // Obtener token
   const getToken = () => localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -390,6 +397,10 @@ function initChatInput() {
       return;
     }
 
+    // Deshabilitar botón mientras envía
+    chatSendBtn.disabled = true;
+    chatSendBtn.textContent = 'Enviando...';
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -401,14 +412,18 @@ function initChatInput() {
       });
 
       if (!response.ok) {
-        throw new Error('Error al enviar mensaje');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Error al enviar mensaje');
       }
 
       chatInput.value = '';
-      loadChat(); // Recargar chat
+      await loadChat(); // Recargar chat
     } catch (error) {
       console.error('Error sending message:', error);
-      alert('Error al enviar el mensaje');
+      alert('Error al enviar el mensaje: ' + error.message);
+    } finally {
+      chatSendBtn.disabled = false;
+      chatSendBtn.textContent = 'Enviar';
     }
   };
 

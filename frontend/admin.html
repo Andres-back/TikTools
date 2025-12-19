@@ -529,6 +529,116 @@
       color: rgba(255,255,255,0.5);
     }
 
+    /* News Grid */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .news-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .news-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .news-card-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .news-card-body {
+      padding: 16px;
+    }
+
+    .news-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .news-card-content {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .news-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .news-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* News Form */
+    .news-form-group {
+      margin-bottom: 16px;
+    }
+
+    .news-form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .news-form-group input,
+    .news-form-group textarea {
+      width: 100%;
+      padding: 12px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .news-form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .news-image-preview {
+      margin-top: 10px;
+      max-width: 200px;
+      max-height: 150px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .news-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .news-empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .admin-layout { flex-direction: column; }
@@ -558,6 +668,11 @@
         <li class="nav-item">
           <a class="nav-link" onclick="showSection('users')">
             <span class="nav-icon">👥</span> Usuarios
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick="showSection('news')">
+            <span class="nav-icon">📰</span> Novedades
           </a>
         </li>
         <li class="nav-item">
@@ -640,6 +755,18 @@
 
         <div class="table-container" id="usersTable">
           <div class="loading">Cargando usuarios...</div>
+        </div>
+      </section>
+
+      <!-- News Section -->
+      <section id="newsSection" class="section">
+        <div class="section-header">
+          <h2 class="section-title">📰 Gestión de Novedades</h2>
+          <button class="btn primary" onclick="openNewsModal()">+ Nueva Novedad</button>
+        </div>
+
+        <div id="newsList" class="news-grid">
+          <div class="loading">Cargando novedades...</div>
         </div>
       </section>
 
@@ -784,6 +911,39 @@
     </div>
   </div>
 
+  <!-- Modal Novedades -->
+  <div class="modal" id="newsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">📰 Nueva Novedad</h3>
+        <button class="modal-close" onclick="closeModal('newsModal')">&times;</button>
+      </div>
+      
+      <form id="newsForm" onsubmit="saveNews(event)">
+        <div class="news-form-group">
+          <label>Título *</label>
+          <input type="text" id="newsTitle" required placeholder="Título de la novedad...">
+        </div>
+        
+        <div class="news-form-group">
+          <label>Contenido *</label>
+          <textarea id="newsContent" required placeholder="Escribe el contenido de la novedad..."></textarea>
+        </div>
+        
+        <div class="news-form-group">
+          <label>Imagen (opcional)</label>
+          <input type="file" id="newsImage" accept="image/*,video/mp4,video/webm" onchange="previewNewsImage(this)">
+          <img id="newsImagePreview" class="news-image-preview">
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" onclick="closeModal('newsModal')">Cancelar</button>
+          <button type="submit" class="btn primary">Publicar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal Confirmación -->
   <div class="modal" id="confirmModal">
     <div class="modal-content">
@@ -900,6 +1060,7 @@
       // Load data
       if (section === 'dashboard') loadDashboard();
       if (section === 'users') loadUsers();
+      if (section === 'news') loadNews();
       if (section === 'chat') loadChatList();
     }
 
@@ -936,6 +1097,145 @@
       } catch (error) {
         console.error('Error loading dashboard:', error);
       }
+    }
+
+    // ============ NEWS ============
+    async function loadNews() {
+      const container = document.getElementById('newsList');
+      container.innerHTML = '<div class="loading">Cargando novedades...</div>';
+      
+      try {
+        const data = await apiCall('/news');
+        if (!data || data.length === 0) {
+          container.innerHTML = `
+            <div class="news-empty">
+              <div class="news-empty-icon">📰</div>
+              <p>No hay novedades publicadas</p>
+              <button class="btn primary" onclick="openNewsModal()" style="margin-top:16px;">Crear Primera Novedad</button>
+            </div>
+          `;
+          return;
+        }
+        
+        container.innerHTML = data.map(news => `
+          <div class="news-card">
+            ${news.image_url ? `<img src="${news.image_url}" class="news-card-image" alt="${news.title}">` : ''}
+            <div class="news-card-body">
+              <h3 class="news-card-title">${escapeHtml(news.title)}</h3>
+              <p class="news-card-content">${escapeHtml(news.content)}</p>
+              <div class="news-card-meta">
+                <span>${formatDate(news.created_at)}</span>
+                <div class="news-card-actions">
+                  <button class="action-btn danger" onclick="deleteNews(${news.id})" title="Eliminar">🗑️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading news:', error);
+        container.innerHTML = '<div class="loading">Error al cargar novedades</div>';
+      }
+    }
+
+    function openNewsModal() {
+      document.getElementById('newsForm').reset();
+      document.getElementById('newsImagePreview').style.display = 'none';
+      openModal('newsModal');
+    }
+
+    function previewNewsImage(input) {
+      const preview = document.getElementById('newsImagePreview');
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
+    async function saveNews(event) {
+      event.preventDefault();
+      
+      const title = document.getElementById('newsTitle').value.trim();
+      const content = document.getElementById('newsContent').value.trim();
+      const imageFile = document.getElementById('newsImage').files[0];
+      
+      if (!title || !content) {
+        showAlert('Título y contenido son requeridos', 'error');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('content', content);
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+      
+      try {
+        const response = await fetch(`${API_URL}/news`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Error al publicar');
+        }
+        
+        showAlert('Novedad publicada exitosamente');
+        closeModal('newsModal');
+        loadNews();
+      } catch (error) {
+        console.error('Error saving news:', error);
+        showAlert(error.message, 'error');
+      }
+    }
+
+    async function deleteNews(id) {
+      if (!confirm('¿Estás seguro de eliminar esta novedad?')) return;
+      
+      try {
+        const response = await fetch(`${API_URL}/news/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        });
+        
+        if (!response.ok) throw new Error('Error al eliminar');
+        
+        showAlert('Novedad eliminada');
+        loadNews();
+      } catch (error) {
+        console.error('Error deleting news:', error);
+        showAlert('Error al eliminar la novedad', 'error');
+      }
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('es-ES', { 
+        day: 'numeric', 
+        month: 'short', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     // ============ USERS ============

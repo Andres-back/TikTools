@@ -68,7 +68,7 @@ router.get('/', async (req, res) => {
 router.post('/', authenticateToken, isAdmin, upload.single('image'), async (req, res) => {
   try {
     const { title, content } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     if (!title || !content) {
       return res.status(400).json({ error: 'Título y contenido son requeridos' });
