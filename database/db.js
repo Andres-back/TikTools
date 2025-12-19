@@ -51,6 +51,7 @@ async function initDatabase() {
       const connectionString = process.env.DATABASE_URL;
 
       process.stdout.write(`🔗 Connecting to PostgreSQL...\n`);
+      process.stdout.write(`   URL format: ${connectionString.split('@')[1]?.split('/')[0] || 'parsing...'}\n`);
 
       // Parsear la URL para extraer componentes
       const url = new URL(connectionString.replace('postgresql://', 'postgres://'));
@@ -59,20 +60,32 @@ async function initDatabase() {
       // Esto evita conflictos con sslmode en la URL
       pool = new Pool({
         user: url.username,
-        password: url.password,
+        password: decodeURIComponent(url.password), // Decodificar por si tiene caracteres especiales
         host: url.hostname,
         port: parseInt(url.port) || 5432,
         database: url.pathname.slice(1), // Remover el / inicial
         ssl: {
           rejectUnauthorized: false
         },
-        max: 20,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 10000,
+        max: 10,
+        idleTimeoutMillis: 60000,
+        connectionTimeoutMillis: 30000, // Aumentado a 30 segundos
+        query_timeout: 60000, // Timeout de queries
+        statement_timeout: 60000, // Timeout de statements
       });
 
-      // Verificar conexión
-      await pool.query('SELECT NOW()');
+      // Manejar errores del pool
+      pool.on('error', (err) => {
+        console.error('❌ Error inesperado en el pool de PostgreSQL:', err.message);
+      });
+
+      // Verificar conexión con timeout
+      const testQuery = await Promise.race([
+        pool.query('SELECT NOW()'),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Connection timeout after 30s')), 30000)
+        )
+      ]);
       process.stdout.write('✓ PostgreSQL connected successfully\n');
 
       // Crear tablas si no existen

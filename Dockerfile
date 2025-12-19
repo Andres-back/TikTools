@@ -20,8 +20,8 @@ RUN npm ci --only=production --ignore-scripts && npm cache clean --force
 # Copiar el resto del código
 COPY . .
 
-# Crear directorio para base de datos SQLite (dev)
-RUN mkdir -p /app/database/data
+# Crear directorio para base de datos SQLite (dev) y uploads
+RUN mkdir -p /app/database/data /app/uploads/news /app/uploads/chat /app/uploads/overlays
 
 # Exponer puerto
 EXPOSE 8080
@@ -38,6 +38,10 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Usuario no-root para seguridad
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodeuser
+
+# Dar permisos de escritura a los directorios necesarios
+RUN chown -R nodeuser:nodejs /app/uploads /app/database
+
 USER nodeuser
 
 # Comando de inicio - SIN dotenv, variables del sistema

@@ -306,9 +306,58 @@ app.use((err, req, res, next) => {
 
 const server = http.createServer(app);
 
+// Aumentar timeout del servidor para evitar 504
+server.timeout = 120000; // 2 minutos
+server.keepAliveTimeout = 65000;
+server.headersTimeout = 66000;
+
 // ==================== WEBSOCKET SERVER ====================
 
+// WebSocket principal para TikTok Live (/live)
 const wss = new WebSocket.Server({ server, path: WEBSOCKET_PATH });
+
+// WebSocket para sincronización de overlays (/sync)
+const syncWss = new WebSocket.Server({ server, path: '/sync' });
+
+// Manejar conexiones de sincronización
+syncWss.on('connection', (socket) => {
+  socket.isAlive = true;
+  console.log('[SyncWS] Cliente conectado');
+
+  socket.on('pong', () => {
+    socket.isAlive = true;
+  });
+
+  socket.on('message', (data) => {
+    try {
+      const msg = JSON.parse(data);
+      // Broadcast a todos los clientes de sync
+      syncWss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(msg));
+        }
+      });
+    } catch (e) {
+      console.warn('[SyncWS] Error parsing message');
+    }
+  });
+
+  socket.on('close', () => {
+    console.log('[SyncWS] Cliente desconectado');
+  });
+});
+
+// Heartbeat para sync WebSocket
+setInterval(() => {
+  syncWss.clients.forEach((socket) => {
+    if (!socket.isAlive) {
+      socket.terminate();
+      return;
+    }
+    socket.isAlive = false;
+    socket.ping();
+  });
+}, 30000);
 
 const listenersByUniqueId = new Map();
 const streams = new Map();
