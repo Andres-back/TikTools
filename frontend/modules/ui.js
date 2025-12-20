@@ -169,6 +169,12 @@ function initFloatingSidebar() {
     openTimerBtn.addEventListener('click', () => {
       console.log('Open timer overlay');
       const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
+      
+      // Asegurar que los tokens estén disponibles en localStorage para el overlay
+      if (token) localStorage.setItem('accessToken', token);
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+      
       const timerUrl = `${window.location.origin}/overlay-timer.html${token ? '?token=' + encodeURIComponent(token) : ''}`;
       window.open(timerUrl, '_blank', 'width=800,height=400');
     });

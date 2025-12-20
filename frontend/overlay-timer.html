@@ -552,23 +552,118 @@
       const urlParams = new URLSearchParams(window.location.search);
       const urlToken = urlParams.get('token');
       if (urlToken) {
-        // Guardar en localStorage para futuras requests
-        localStorage.setItem('accessToken', urlToken);
-        return urlToken;
+        // Verificar si el token es válido antes de usarlo
+        try {
+          const payload = JSON.parse(atob(urlToken.split('.')[1]));
+          const now = Math.floor(Date.now() / 1000);
+          if (payload.exp > now) {
+            // Token válido, guardarlo
+            localStorage.setItem('accessToken', urlToken);
+            return urlToken;
+          } else {
+            console.log('Token de URL expirado');
+          }
+        } catch (e) {
+          console.log('Token de URL inválido');
+        }
       }
+      
       // Fallback a localStorage/sessionStorage
-      return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+      const storedToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+      if (storedToken) {
+        try {
+          const payload = JSON.parse(atob(storedToken.split('.')[1]));
+          const now = Math.floor(Date.now() / 1000);
+          if (payload.exp > now) {
+            return storedToken;
+          } else {
+            console.log('Token almacenado expirado');
+            localStorage.removeItem('accessToken');
+            sessionStorage.removeItem('accessToken');
+          }
+        } catch (e) {
+          console.log('Token almacenado inválido');
+          localStorage.removeItem('accessToken');
+          sessionStorage.removeItem('accessToken');
+        }
+      }
+      
+      return null;
+    }
+
+    // Función para refrescar token
+    async function refreshToken() {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) return null;
+
+      try {
+        const response = await fetch('/api/auth/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem('accessToken', data.accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          return data.accessToken;
+        } else {
+          // Refresh token también expirado
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          sessionStorage.removeItem('accessToken');
+          sessionStorage.removeItem('refreshToken');
+          return null;
+        }
+      } catch (error) {
+        console.error('Error refreshing token:', error);
+        return null;
+      }
+    }
+
+    // Función mejorada para hacer requests con auto-refresh
+    async function apiCall(url, options = {}) {
+      let token = getToken();
+      
+      // Si no hay token válido, intentar refresh
+      if (!token) {
+        token = await refreshToken();
+        if (!token) {
+          throw new Error('No hay token válido');
+        }
+      }
+
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      // Si es 401, intentar refresh una vez
+      if (response.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          // Reintentar con nuevo token
+          return fetch(url, {
+            ...options,
+            headers: {
+              ...options.headers,
+              'Authorization': `Bearer ${newToken}`
+            }
+          });
+        }
+      }
+
+      return response;
     }
 
     // Cargar imágenes guardadas del usuario
     async function loadSavedImages() {
-      const token = getToken();
-      if (!token) return;
-
       try {
-        const response = await fetch('/api/overlays/my', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const response = await apiCall('/api/overlays/my');
         
         if (response.ok) {
           const data = await response.json();
@@ -580,21 +675,23 @@
             mascotRight.src = data.right_image_url;
             rightPreview.src = data.right_image_url;
           }
+        } else {
+          console.error('Error response loading images:', response.status, response.statusText);
+          if (response.status === 401) {
+            console.log('Token expired or invalid, user needs to login again');
+          }
         }
       } catch (error) {
         console.error('Error loading saved images:', error);
+        if (error.message.includes('No hay token válido')) {
+          configStatus.textContent = '⚠️ Sesión expirada. Cierra y abre de nuevo desde el panel principal.';
+          configStatus.className = 'config-status error';
+        }
       }
     }
 
     // Guardar imágenes
     saveImagesBtn.addEventListener('click', async () => {
-      const token = getToken();
-      if (!token) {
-        configStatus.textContent = '⚠️ Debes iniciar sesión';
-        configStatus.className = 'config-status error';
-        return;
-      }
-
       const formData = new FormData();
       if (leftImageInput.files[0]) {
         formData.append('leftImage', leftImageInput.files[0]);
@@ -614,9 +711,8 @@
       configStatus.textContent = '';
 
       try {
-        const response = await fetch('/api/overlays', {
+        const response = await apiCall('/api/overlays', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
           body: formData
         });
 
@@ -647,12 +743,23 @@
           leftImageInput.value = '';
           rightImageInput.value = '';
         } else {
-          throw new Error('Error al guardar');
+          console.error('Error response saving images:', response.status, response.statusText);
+          const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+          if (response.status === 401) {
+            throw new Error('Sesión expirada. Cierra y abre de nuevo desde el panel principal.');
+          }
+          throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
         }
       } catch (error) {
         console.error('Error saving images:', error);
-        configStatus.textContent = '❌ Error al guardar';
+        configStatus.textContent = '❌ Error: ' + error.message;
         configStatus.className = 'config-status error';
+        
+        if (error.message.includes('No hay token válido') || error.message.includes('Sesión expirada')) {
+          setTimeout(() => {
+            configStatus.textContent = '🔄 Intenta cerrar y abrir de nuevo desde el panel principal';
+          }, 3000);
+        }
       } finally {
         saveImagesBtn.disabled = false;
         saveImagesBtn.textContent = '💾 Guardar Cambios';

@@ -15,13 +15,17 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../uploads/overlays');
+    console.log(`[OVERLAY-UPLOAD] Destination check: ${uploadDir}`);
     if (!fs.existsSync(uploadDir)) {
+      console.log(`[OVERLAY-UPLOAD] Creating directory: ${uploadDir}`);
       fs.mkdirSync(uploadDir, { recursive: true });
     }
+    console.log(`[OVERLAY-UPLOAD] Directory ready for file: ${file.originalname}`);
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${path.extname(file.originalname)}`;
+    console.log(`[OVERLAY-UPLOAD] Generated filename: ${uniqueName} for original: ${file.originalname}`);
     cb(null, uniqueName);
   }
 });
@@ -48,6 +52,7 @@ const upload = multer({
 router.get('/my', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;
+    console.log(`[OVERLAY-MY] Request from user ${userId}`);
 
     const result = await db.query(
       'SELECT * FROM overlays WHERE user_id = $1',
@@ -55,15 +60,19 @@ router.get('/my', authenticateToken, async (req, res) => {
     );
 
     const overlay = result.rows ? result.rows[0] : result[0];
+    console.log(`[OVERLAY-MY] Found overlay for user ${userId}:`, overlay ? 'Yes' : 'No, using defaults');
 
     if (!overlay) {
       // Devolver configuración por defecto
-      return res.json({
+      const defaultConfig = {
         left_image_url: '/assets/QuesadillaCrocodilla.webp',
         right_image_url: '/assets/Noel.webp'
-      });
+      };
+      console.log(`[OVERLAY-MY] Returning default config for user ${userId}`);
+      return res.json(defaultConfig);
     }
 
+    console.log(`[OVERLAY-MY] Returning user config for user ${userId}`);
     res.json(overlay);
   } catch (error) {
     console.error('Error fetching overlay:', error);
@@ -127,6 +136,8 @@ router.post('/', authenticateToken, upload.fields([
 ]), async (req, res) => {
   try {
     const userId = req.user.userId;
+    console.log(`[OVERLAY-POST] Request from user ${userId}`);
+    console.log(`[OVERLAY-POST] Files received:`, req.files ? Object.keys(req.files) : 'none');
 
     // Obtener overlay actual para eliminar imágenes antiguas si se reemplazan
     const currentResult = await db.query(
@@ -140,34 +151,42 @@ router.post('/', authenticateToken, upload.fields([
 
     // Actualizar imagen izquierda si se subió
     if (req.files && req.files.leftImage) {
+      console.log(`[OVERLAY-POST] Processing left image: ${req.files.leftImage[0].filename}`);
       // Eliminar imagen anterior si existe
       if (currentOverlay?.left_image_url && !currentOverlay.left_image_url.startsWith('/assets/')) {
         const oldPath = path.join(__dirname, '..', currentOverlay.left_image_url);
         if (fs.existsSync(oldPath)) {
+          console.log(`[OVERLAY-POST] Deleting old left image: ${oldPath}`);
           fs.unlinkSync(oldPath);
         }
       }
       leftImageUrl = `/uploads/overlays/${req.files.leftImage[0].filename}`;
+      console.log(`[OVERLAY-POST] Left image URL set to: ${leftImageUrl}`);
+      console.log(`[OVERLAY-POST] File saved at: ${req.files.leftImage[0].path}`);
     }
 
     // Actualizar imagen derecha si se subió
     if (req.files && req.files.rightImage) {
+      console.log(`[OVERLAY-POST] Processing right image: ${req.files.rightImage[0].filename}`);
       // Eliminar imagen anterior si existe
       if (currentOverlay?.right_image_url && !currentOverlay.right_image_url.startsWith('/assets/')) {
         const oldPath = path.join(__dirname, '..', currentOverlay.right_image_url);
         if (fs.existsSync(oldPath)) {
+          console.log(`[OVERLAY-POST] Deleting old right image: ${oldPath}`);
           fs.unlinkSync(oldPath);
         }
       }
       rightImageUrl = `/uploads/overlays/${req.files.rightImage[0].filename}`;
+      console.log(`[OVERLAY-POST] Right image URL set to: ${rightImageUrl}`);
+      console.log(`[OVERLAY-POST] File saved at: ${req.files.rightImage[0].path}`);
     }
 
     // Insertar o actualizar
     const result = await db.query(
       `INSERT INTO overlays (user_id, left_image_url, right_image_url, updated_at)
        VALUES ($1, $2, $3, NOW())
-       ON CONFLICT (user_id) 
-       DO UPDATE SET 
+       ON CONFLICT (user_id)
+       DO UPDATE SET
          left_image_url = $2,
          right_image_url = $3,
          updated_at = NOW()
@@ -175,9 +194,10 @@ router.post('/', authenticateToken, upload.fields([
       [userId, leftImageUrl, rightImageUrl]
     );
 
+    console.log(`[OVERLAY-POST] Database updated successfully for user ${userId}`);
     res.json(result.rows ? result.rows[0] : result);
   } catch (error) {
-    console.error('Error saving overlay:', error);
+    console.error('[OVERLAY-POST] Error saving overlay:', error);
     res.status(500).json({ error: 'Error al guardar configuración de overlay' });
   }
 });

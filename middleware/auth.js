@@ -51,11 +51,14 @@ function verifyToken(token) {
  */
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
+  console.log(`[AUTH] Request to ${req.path} - Auth header present: ${!!authHeader}`);
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.log(`[AUTH] Missing or invalid auth header for ${req.path}`);
     return res.status(401).json({ 
       error: 'No autorizado',
-      message: 'Token de acceso requerido' 
+      message: 'Token de acceso requerido',
+      code: 'MISSING_TOKEN'
     });
   }
 
@@ -63,12 +66,15 @@ function authMiddleware(req, res, next) {
   const decoded = verifyToken(token);
 
   if (!decoded) {
+    console.log(`[AUTH] Invalid or expired token for ${req.path}`);
     return res.status(401).json({ 
       error: 'Token inválido',
-      message: 'El token ha expirado o es inválido' 
+      message: 'El token ha expirado o es inválido',
+      code: 'INVALID_TOKEN'
     });
   }
 
+  console.log(`[AUTH] Valid token for user ${decoded.userId} accessing ${req.path}`);
   req.user = decoded;
   next();
 }
