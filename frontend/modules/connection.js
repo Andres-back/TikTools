@@ -34,25 +34,21 @@ let onGiftReceived = null;
  * Inicializa WebSocket de sincronización para overlays (opcional)
  */
 function initSyncWebSocket() {
-  // Solo intentar en localhost o si hay configuración específica
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    try {
+  try {
+    // Solo intentar en localhost o si hay configuración específica
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsUrl = `${protocol}//${window.location.host}/sync`;
       
       console.log(`[SyncWS] Intentando conectar a: ${wsUrl}`);
       syncWs = new WebSocket(wsUrl);
-    } catch (e) {
-      console.log('[SyncWS] WebSocket de sincronización no disponible en este entorno');
+    } else {
+      console.log('[SyncWS] WebSocket de sincronización deshabilitado en producción');
       return;
     }
-  } else {
-    console.log('[SyncWS] WebSocket de sincronización deshabilitado en producción');
-    return;
-  }
 
-  if (!syncWs) return;
-    
+    if (!syncWs) return;
+      
     syncWs.onopen = () => {
       console.log('[SyncWS] Conectado');
     };
