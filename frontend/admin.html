@@ -1485,12 +1485,17 @@
     // ============ CHAT ============
     async function loadChatList() {
       try {
+        console.log('[ADMIN-CHAT] Cargando lista de conversaciones...');
         const data = await apiCall('/admin/chats');
-        if (!data) return;
+        if (!data) {
+          console.log('[ADMIN-CHAT] No data received');
+          return;
+        }
         
+        console.log('[ADMIN-CHAT] Conversaciones recibidas:', data.conversations?.length || 0);
         renderChatList(data.conversations || []);
       } catch (error) {
-        console.error('Error loading chats:', error);
+        console.error('[ADMIN-CHAT] Error loading chats:', error);
         document.getElementById('chatList').innerHTML = '<div class="loading">Error al cargar mensajes</div>';
       }
     }
@@ -1589,17 +1594,25 @@
       if (!message || !currentChatUserId) return;
       
       try {
+        console.log('[ADMIN-CHAT] Enviando mensaje a usuario:', currentChatUserId);
+        
         await apiCall('/chat', {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
             message,
             recipientId: currentChatUserId
           })
         });
         
+        console.log('[ADMIN-CHAT] Mensaje enviado exitosamente');
         input.value = '';
         await loadChatMessages(currentChatUserId);
+        await loadChatList(); // Actualizar lista de conversaciones
       } catch (error) {
+        console.error('[ADMIN-CHAT] Error enviando mensaje:', error);
         showAlert(error.message, 'error');
       }
     }

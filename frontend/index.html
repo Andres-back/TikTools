@@ -317,24 +317,43 @@
 
     // Verificar si el usuario está autenticado
     (async function checkAuth() {
-      if (!isLoggedIn() && !isGuest()) {
+      console.log('[AUTH] Verificando autenticación...');
+      
+      const loggedIn = isLoggedIn();
+      const guest = isGuest();
+      const token = getAccessToken();
+      
+      console.log('[AUTH] Estado:', { loggedIn, guest, hasToken: !!token });
+      
+      if (!loggedIn && !guest) {
+        console.log('[AUTH] No autenticado, redirigiendo a login');
         window.location.href = '/login.html';
         return;
       }
       
-      if (isLoggedIn()) {
+      if (loggedIn) {
         // Verificar rol directamente del localStorage primero
         const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
         if (userStr) {
           try {
             const user = JSON.parse(userStr);
+            console.log('[AUTH] Usuario logueado:', user.username, 'Rol:', user.role);
             if (user.role === 'admin') {
+              console.log('[AUTH] Admin detectado, redirigiendo...');
               window.location.href = '/admin.html';
               return;
             }
-          } catch (e) {}
+          } catch (e) {
+            console.error('[AUTH] Error parsing user data:', e);
+          }
         }
       }
+      
+      if (guest) {
+        console.log('[AUTH] Usuario invitado permitido');
+      }
+      
+      console.log('[AUTH] Autenticación OK, cargando aplicación...');
     })();
   </script>
 

@@ -21,7 +21,19 @@ export function getUser() {
 }
 
 export function isLoggedIn() {
-  return !!getAccessToken();
+  const token = getAccessToken();
+  if (!token) return false;
+  
+  try {
+    // Verificar que el token no esté expirado
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Math.floor(Date.now() / 1000);
+    return payload.exp > now;
+  } catch (e) {
+    console.warn('Token inválido, limpiando...');
+    clearTokens();
+    return false;
+  }
 }
 
 export function isGuest() {
