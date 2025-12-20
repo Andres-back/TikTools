@@ -468,14 +468,24 @@ function initChatInput() {
   const chatFileBtn = document.getElementById('chatFileBtn');
   const chatFileInput = document.getElementById('chatFileInput');
 
+  console.log('[CHAT-INIT] Inicializando chat input...', {
+    hasInput: !!chatInput,
+    hasBtn: !!chatSendBtn,
+    alreadyInit: chatInputInitialized
+  });
+
   if (!chatInput || !chatSendBtn) {
-    console.warn('[Chat] Elementos no encontrados');
+    console.warn('[CHAT-INIT] Elementos no encontrados');
     return;
   }
 
   // Si ya está inicializado, no duplicar listeners
-  if (chatInputInitialized) return;
+  if (chatInputInitialized) {
+    console.log('[CHAT-INIT] Ya estaba inicializado, saltando...');
+    return;
+  }
   chatInputInitialized = true;
+  console.log('[CHAT-INIT] Configurando event listeners...');
 
   // Obtener token
   const getToken = () => localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -483,14 +493,21 @@ function initChatInput() {
   // Enviar mensaje
   const sendMessage = async () => {
     const message = chatInput.value.trim();
-    if (!message) return;
+    console.log('[CHAT-SEND] Intentando enviar:', message);
+
+    if (!message) {
+      console.log('[CHAT-SEND] Mensaje vacío');
+      return;
+    }
 
     const token = getToken();
     if (!token) {
+      console.error('[CHAT-SEND] Sin token');
       alert('Sesión expirada. Por favor recarga la página.');
       return;
     }
 
+    console.log('[CHAT-SEND] Enviando mensaje...');
     // Deshabilitar botón mientras envía
     chatSendBtn.disabled = true;
     chatSendBtn.textContent = 'Enviando...';
@@ -498,36 +515,48 @@ function initChatInput() {
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ message })
       });
 
+      console.log('[CHAT-SEND] Respuesta:', response.status);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error('[CHAT-SEND] Error:', errorData);
         throw new Error(errorData.error || 'Error al enviar mensaje');
       }
 
+      console.log('[CHAT-SEND] Mensaje enviado exitosamente');
       chatInput.value = '';
       await loadChat(); // Recargar chat
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('[CHAT-SEND] Error:', error);
       alert('Error al enviar el mensaje: ' + error.message);
     } finally {
       chatSendBtn.disabled = false;
       chatSendBtn.textContent = 'Enviar';
+      console.log('[CHAT-SEND] Proceso finalizado');
     }
   };
 
-  chatSendBtn.addEventListener('click', sendMessage);
+  chatSendBtn.addEventListener('click', () => {
+    console.log('[CHAT-INIT] Click en botón enviar');
+    sendMessage();
+  });
+
   chatInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
+      console.log('[CHAT-INIT] Enter presionado');
       e.preventDefault();
       sendMessage();
     }
   });
+
+  console.log('[CHAT-INIT] Event listeners configurados correctamente');
 
   // Subir imagen
   if (chatFileBtn && chatFileInput) {
