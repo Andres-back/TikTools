@@ -277,13 +277,46 @@ function createNewsItem(news) {
     day: 'numeric'
   });
 
+  // Formatear URL de imagen correctamente
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // Si ya es una URL completa, usarla como está
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    
+    // Si empieza con /uploads, usarla directamente
+    if (imageUrl.startsWith('/uploads')) {
+      return imageUrl;
+    }
+    
+    // Si empieza con uploads (sin /), agregar la /
+    if (imageUrl.startsWith('uploads')) {
+      return '/' + imageUrl;
+    }
+    
+    // Para cualquier otro caso, asumir que es un path relativo
+    return '/uploads/news/' + imageUrl;
+  };
+
+  const imageUrl = getImageUrl(news.image_url);
+  
   div.innerHTML = `
     <div class="news-item-header">
       <h3 class="news-item-title">${escapeHtml(news.title)}</h3>
       <span class="news-item-date">${date}</span>
     </div>
     <p class="news-item-content">${escapeHtml(news.content)}</p>
-    ${news.image_url ? `<img src="${news.image_url}" class="news-item-image" alt="${escapeHtml(news.title)}">` : ''}
+    ${imageUrl ? `
+      <div class="news-item-image-container">
+        <img src="${imageUrl}" 
+             class="news-item-image" 
+             alt="${escapeHtml(news.title)}"
+             onerror="this.onerror=null; this.style.display='none'; console.error('Failed to load image:', '${imageUrl}');"
+             onload="console.log('Image loaded successfully:', '${imageUrl}');">
+      </div>
+    ` : ''}
   `;
 
   return div;

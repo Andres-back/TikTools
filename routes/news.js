@@ -16,15 +16,28 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../uploads/news');
     console.log(`[NEWS-UPLOAD] Destination check: ${uploadDir}`);
-    if (!fs.existsSync(uploadDir)) {
-      console.log(`[NEWS-UPLOAD] Creating directory: ${uploadDir}`);
-      fs.mkdirSync(uploadDir, { recursive: true });
+    
+    try {
+      if (!fs.existsSync(uploadDir)) {
+        console.log(`[NEWS-UPLOAD] Creating directory: ${uploadDir}`);
+        fs.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
+      }
+      
+      // Verificar que el directorio es escribible
+      fs.accessSync(uploadDir, fs.constants.W_OK);
+      console.log(`[NEWS-UPLOAD] Directory ready for file: ${file.originalname}`);
+      cb(null, uploadDir);
+    } catch (error) {
+      console.error(`[NEWS-UPLOAD] Error with directory ${uploadDir}:`, error);
+      cb(error);
     }
-    console.log(`[NEWS-UPLOAD] Directory ready for file: ${file.originalname}`);
-    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${path.extname(file.originalname)}`;
+    const timestamp = Date.now();
+    const randomId = Math.random().toString(36).substring(2, 9);
+    const ext = path.extname(file.originalname).toLowerCase();
+    const uniqueName = `${timestamp}-${randomId}${ext}`;
+    
     console.log(`[NEWS-UPLOAD] Generated filename: ${uniqueName} for original: ${file.originalname}`);
     cb(null, uniqueName);
   }
@@ -51,6 +64,8 @@ const upload = multer({
  */
 router.get('/', async (req, res) => {
   try {
+    console.log('[NEWS-GET] Fetching news...');
+    
     const result = await db.query(
       `SELECT n.*, u.username as author_name 
        FROM news n 
@@ -58,9 +73,29 @@ router.get('/', async (req, res) => {
        ORDER BY n.created_at DESC 
        LIMIT 50`
     );
-    res.json(result.rows || result);
+    
+    const news = result.rows || result;
+    console.log(`[NEWS-GET] Found ${news.length} news items`);
+    
+    // Verificar imágenes y añadir logging
+    const processedNews = news.map(item => {
+      if (item.image_url) {
+        console.log(`[NEWS-GET] News "${item.title}" has image: ${item.image_url}`);
+        
+        // Verificar si el archivo existe físicamente
+        const fullPath = path.join(__dirname, '..', item.image_url);
+        if (fs.existsSync(fullPath)) {
+          console.log(`[NEWS-GET] Image file exists: ${fullPath}`);
+        } else {
+          console.warn(`[NEWS-GET] Image file missing: ${fullPath}`);
+        }
+      }
+      return item;
+    });
+    
+    res.json(processedNews);
   } catch (error) {
-    console.error('Error fetching news:', error);
+    console.error('[NEWS-GET] Error fetching news:', error);
     res.status(500).json({ error: 'Error al obtener las novedades' });
   }
 });
@@ -126,6 +161,34 @@ router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
   } catch (error) {
     console.error('Error deleting news:', error);
     res.status(500).json({ error: 'Error al eliminar la novedad' });
+  }
+});
+
+/**
+ * GET /api/news/check/:filename
+ * Verificar si un archivo de noticia existe
+ */
+router.get('/check/:filename', async (req, res) => {
+  try {
+    const { filename } = req.params;
+    const filePath = path.join(__dirname, '../uploads/news', filename);
+    
+    console.log(`[NEWS-CHECK] Verificando archivo: ${filePath}`);
+    
+    if (fs.existsSync(filePath)) {
+      const stats = fs.statSync(filePath);
+      res.json({
+        exists: true,
+        size: stats.size,
+        lastModified: stats.mtime,
+        url: `/uploads/news/${filename}`
+      });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error('[NEWS-CHECK] Error:', error);
+    res.status(500).json({ error: 'Error verificando archivo' });
   }
 });
 

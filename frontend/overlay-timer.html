@@ -419,9 +419,65 @@
 
     let initialTime = 120;
     let connected = false;
+    let connectionAttempts = 0;
+    const MAX_CONNECTION_ATTEMPTS = 3;
 
-    // Solicitar datos iniciales
-    channel.postMessage({ type: 'request_sync' });
+    // Función para intentar conexión
+    function attemptConnection() {
+      connectionAttempts++;
+      console.log(`[OVERLAY] Intento de conexión ${connectionAttempts}/${MAX_CONNECTION_ATTEMPTS}`);
+      
+      // Solicitar datos iniciales
+      channel.postMessage({ type: 'request_sync', timestamp: Date.now() });
+      
+      // Si no hay respuesta en 2 segundos, verificar modo independiente
+      setTimeout(() => {
+        if (!connected) {
+          checkIndependentMode();
+        }
+      }, 2000);
+    }
+
+    // Función para verificar modo independiente
+    function checkIndependentMode() {
+      const token = getToken();
+      if (token) {
+        console.log('[OVERLAY] Activando modo independiente con token válido');
+        activateIndependentMode();
+      } else if (connectionAttempts < MAX_CONNECTION_ATTEMPTS) {
+        console.log('[OVERLAY] Sin token válido, reintentando conexión...');
+        setTimeout(attemptConnection, 1000);
+      } else {
+        console.log('[OVERLAY] No se puede establecer conexión ni modo independiente');
+        showConnectionError();
+      }
+    }
+
+    // Función para activar modo independiente
+    function activateIndependentMode() {
+      connected = 'independent'; // Marcar como conectado en modo independiente
+      connectingScreen.style.display = 'none';
+      timerOverlay.style.display = 'flex';
+      timerDisplay.textContent = '00:00';
+      timerLabel.textContent = 'Modo Independiente';
+      loadSavedImages();
+    }
+
+    // Función para mostrar error de conexión
+    function showConnectionError() {
+      connectingScreen.innerHTML = `
+        <p class="connecting-text">⚠️ No se detectó el panel principal</p>
+        <p class="connecting-text" style="font-size: 0.9rem; opacity: 0.7;">
+          Abre desde el panel de control para funcionar correctamente
+        </p>
+        <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #fe2c55; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+          🔄 Reintentar
+        </button>
+      `;
+    }
+
+    // Iniciar primer intento de conexión
+    attemptConnection();
 
     // Escuchar actualizaciones
     channel.onmessage = (event) => {
@@ -431,6 +487,7 @@
         connected = true;
         connectingScreen.style.display = 'none';
         timerOverlay.style.display = 'flex';
+        console.log('[OVERLAY] Conectado con panel principal');
       }
 
       switch (data.type) {
@@ -499,17 +556,6 @@
       }
     }
 
-    // Timeout para conexión
-    setTimeout(() => {
-      if (!connected) {
-        connectingScreen.innerHTML = `
-          <p class="connecting-text">⚠️ No se detectó el panel principal</p>
-          <p class="connecting-text" style="font-size: 0.9rem; opacity: 0.7;">
-            Abre el panel de control en otra pestaña
-          </p>
-        `;
-      }
-    }, 5000);
 
     // Mantener viva la conexión
     setInterval(() => {
