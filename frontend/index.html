@@ -47,9 +47,6 @@
       <button class="sidebar-btn" id="openLeaderboardBtn" title="Abrir Overlay Leaderboard">
         🏆 <span>Overlay Top</span>
       </button>
-      <button class="sidebar-btn" id="openTimerBtn" title="Abrir Overlay Timer">
-        ⏱️ <span>Overlay Timer</span>
-      </button>
       <button class="sidebar-btn" id="newsBtn" title="Novedades">
         📰 <span>Novedades</span>
       </button>
@@ -190,43 +187,45 @@
          CONTENIDO PRINCIPAL (Derecha)
          ======================================== -->
     <main class="main-content">
-      <!-- Timer Card - DISEÑO ÉPICO -->
+      <!-- Timer Card - OVERLAY EN VIVO -->
       <div class="timer-card" id="timerCard">
-        <div class="timer-glow"></div>
-        <div class="timer-bg-effects"></div>
+        <iframe
+          id="timerOverlayFrame"
+          src="/overlay-timer.html"
+          style="width: 100%; height: 100%; border: none; display: block; border-radius: 16px; background: transparent;"
+          allowtransparency="true"
+        ></iframe>
+      </div>
 
-        <!-- Mascota Izquierda - Cocodrilo -->
-        <div class="timer-mascot mascot-left">
-          <img src="assets/QuesadillaCrocodilla.webp" alt="Mascota Cocodrilo" class="mascot-img" id="mascotLeftImg">
-          <div class="mascot-speech" id="mascotSpeechLeft">¡VAMOS!</div>
+      <!-- URL del Overlay para OBS/TikTok Live Studio -->
+      <div class="overlay-url-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.5rem;">🎥</span>
+          <h3 style="margin: 0; font-size: 1rem; font-weight: 600; color: #fff;">URL para OBS / TikTok Live Studio</h3>
         </div>
-
-        <!-- Contenido Central del Timer -->
-        <div class="timer-content">
-          <h2 class="timer-label" id="timerHeading">MIN 10</h2>
-
-          <!-- DISPLAY GIGANTE DEL TIMER -->
-          <div class="timer-display-wrapper">
-            <div class="timer-display" id="timerDisplay">02:00</div>
-            <div class="timer-display-shadow">02:00</div>
-          </div>
-
-          <div class="timer-message" id="timerMessage"></div>
-
-          <!-- Barra de progreso -->
-          <div class="timer-progress-bar">
-            <div class="timer-progress-fill" id="timerProgressFill"></div>
-          </div>
+        <p style="margin: 0 0 0.75rem 0; font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.4;">
+          Copia esta URL y pégala en <strong>Browser Source</strong> de OBS o TikTok Live Studio
+        </p>
+        <div style="display: flex; gap: 0.5rem; align-items: stretch;">
+          <input
+            type="text"
+            id="overlayUrlInput"
+            readonly
+            value=""
+            style="flex: 1; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #00d9ff; font-family: 'Courier New', monospace; font-size: 0.9rem;"
+          >
+          <button
+            id="copyOverlayUrlBtn"
+            style="padding: 0.75rem 1.25rem; background: linear-gradient(135deg, #00d9ff, #0099cc); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; white-space: nowrap;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,217,255,0.4)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+          >
+            📋 Copiar URL
+          </button>
         </div>
-
-        <!-- Mascota Derecha - Santa -->
-        <div class="timer-mascot mascot-right">
-          <img src="assets/Noel.webp" alt="Mascota Noel" class="mascot-img" id="mascotRightImg">
-          <div class="mascot-speech" id="mascotSpeechRight">¡Sipe!</div>
+        <div id="copyFeedback" style="margin-top: 0.5rem; font-size: 0.85rem; color: #00ff88; opacity: 0; transition: opacity 0.3s;">
+          ✓ URL copiada al portapapeles
         </div>
-
-        <!-- Efectos de urgencia -->
-        <div class="timer-urgency-overlay" id="timerUrgencyOverlay"></div>
       </div>
 
       <!-- Leaderboard Card -->
@@ -355,6 +354,43 @@
       
       console.log('[AUTH] Autenticación OK, cargando aplicación...');
     })();
+  </script>
+
+  <!-- Script para URL del Overlay -->
+  <script>
+    // Configurar URL del overlay
+    document.addEventListener('DOMContentLoaded', () => {
+      const overlayUrlInput = document.getElementById('overlayUrlInput');
+      const copyOverlayUrlBtn = document.getElementById('copyOverlayUrlBtn');
+      const copyFeedback = document.getElementById('copyFeedback');
+
+      // Generar URL completa del overlay
+      const overlayUrl = `${window.location.origin}/overlay-timer.html`;
+      overlayUrlInput.value = overlayUrl;
+
+      console.log('[Overlay-URL] URL generada:', overlayUrl);
+
+      // Copiar URL al portapapeles
+      copyOverlayUrlBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(overlayUrl);
+          console.log('[Overlay-URL] URL copiada:', overlayUrl);
+
+          // Mostrar feedback
+          copyFeedback.style.opacity = '1';
+          copyOverlayUrlBtn.textContent = '✓ Copiado!';
+
+          // Resetear después de 2 segundos
+          setTimeout(() => {
+            copyFeedback.style.opacity = '0';
+            copyOverlayUrlBtn.textContent = '📋 Copiar URL';
+          }, 2000);
+        } catch (err) {
+          console.error('[Overlay-URL] Error al copiar:', err);
+          alert('Error al copiar la URL. Por favor cópiala manualmente.');
+        }
+      });
+    });
   </script>
 
   <!-- Módulo principal -->
