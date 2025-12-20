@@ -90,6 +90,9 @@ function sendOverlaySync() {
   const config = getConfig();
   const state = getTimerState();
   const winner = getWinner();
+  const sorted = getSortedDonors();
+
+  console.log('[Main-BroadcastChannel] Enviando sync completo - Timer + Donadores');
 
   overlayChannel.postMessage({
     type: 'sync',
@@ -102,7 +105,14 @@ function sendOverlaySync() {
       initialTime: config.initialTime,
       label: config.minMessage
     },
-    winner: winner ? winner.user : null
+    winner: winner ? winner.user : null,
+    // Agregar datos de donadores para overlay.html
+    donors: sorted.map(entry => ({
+      uniqueId: entry.uniqueId,
+      label: entry.label,
+      totalCoins: entry.total,
+      profilePictureUrl: entry.profilePictureUrl
+    }))
   });
 }
 
