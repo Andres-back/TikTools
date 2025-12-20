@@ -403,8 +403,9 @@
   </div>
 
   <script>
-    // Conexión con el panel principal via BroadcastChannel
-    const channel = new BroadcastChannel('tiktoolstream_overlay');
+    console.log('[Overlay-Timer] Inicializando overlay de timer...');
+
+    // Elementos DOM
     const connectingScreen = document.getElementById('connectingScreen');
     const timerOverlay = document.getElementById('timerOverlay');
     const timerDisplay = document.getElementById('timerDisplay');
@@ -419,76 +420,64 @@
 
     let initialTime = 120;
     let connected = false;
-    let connectionAttempts = 0;
-    const MAX_CONNECTION_ATTEMPTS = 3;
+    let ws = null;
+    let reconnectTimeout = null;
 
-    // Función para intentar conexión
-    function attemptConnection() {
-      connectionAttempts++;
-      console.log(`[OVERLAY] Intento de conexión ${connectionAttempts}/${MAX_CONNECTION_ATTEMPTS}`);
-      
-      // Solicitar datos iniciales
-      channel.postMessage({ type: 'request_sync', timestamp: Date.now() });
-      
-      // Si no hay respuesta en 2 segundos, verificar modo independiente
-      setTimeout(() => {
-        if (!connected) {
-          checkIndependentMode();
-        }
-      }, 2000);
-    }
+    // Conectar al WebSocket del servidor
+    function connectWebSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/sync`;
 
-    // Función para verificar modo independiente
-    function checkIndependentMode() {
-      const token = getToken();
-      if (token) {
-        console.log('[OVERLAY] Activando modo independiente con token válido');
-        activateIndependentMode();
-      } else if (connectionAttempts < MAX_CONNECTION_ATTEMPTS) {
-        console.log('[OVERLAY] Sin token válido, reintentando conexión...');
-        setTimeout(attemptConnection, 1000);
-      } else {
-        console.log('[OVERLAY] No se puede establecer conexión ni modo independiente');
-        showConnectionError();
+      console.log(`[Overlay-Timer] Conectando a WebSocket: ${wsUrl}`);
+
+      try {
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          console.log('[Overlay-Timer] ✅ Conectado al servidor');
+          connected = true;
+          connectingScreen.style.display = 'none';
+          timerOverlay.style.display = 'flex';
+
+          // Solicitar sincronización inicial
+          ws.send(JSON.stringify({ type: 'request_sync', timestamp: Date.now() }));
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            handleMessage(data);
+          } catch (err) {
+            console.error('[Overlay-Timer] Error parseando mensaje:', err);
+          }
+        };
+
+        ws.onerror = (error) => {
+          console.error('[Overlay-Timer] Error WebSocket:', error);
+        };
+
+        ws.onclose = () => {
+          console.log('[Overlay-Timer] Desconectado, reconectando en 3s...');
+          connected = false;
+
+          // Mostrar pantalla de conexión
+          connectingScreen.style.display = 'flex';
+          timerOverlay.style.display = 'none';
+
+          // Reintentar conexión
+          if (reconnectTimeout) clearTimeout(reconnectTimeout);
+          reconnectTimeout = setTimeout(connectWebSocket, 3000);
+        };
+
+      } catch (err) {
+        console.error('[Overlay-Timer] Error al crear WebSocket:', err);
+        setTimeout(connectWebSocket, 3000);
       }
     }
 
-    // Función para activar modo independiente
-    function activateIndependentMode() {
-      connected = 'independent'; // Marcar como conectado en modo independiente
-      connectingScreen.style.display = 'none';
-      timerOverlay.style.display = 'flex';
-      timerDisplay.textContent = '00:00';
-      timerLabel.textContent = 'Modo Independiente';
-      loadSavedImages();
-    }
-
-    // Función para mostrar error de conexión
-    function showConnectionError() {
-      connectingScreen.innerHTML = `
-        <p class="connecting-text">⚠️ No se detectó el panel principal</p>
-        <p class="connecting-text" style="font-size: 0.9rem; opacity: 0.7;">
-          Abre desde el panel de control para funcionar correctamente
-        </p>
-        <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #fe2c55; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
-          🔄 Reintentar
-        </button>
-      `;
-    }
-
-    // Iniciar primer intento de conexión
-    attemptConnection();
-
-    // Escuchar actualizaciones
-    channel.onmessage = (event) => {
-      const data = event.data;
-      
-      if (!connected && data.type !== 'error') {
-        connected = true;
-        connectingScreen.style.display = 'none';
-        timerOverlay.style.display = 'flex';
-        console.log('[OVERLAY] Conectado con panel principal');
-      }
+    // Manejar mensajes del servidor
+    function handleMessage(data) {
+      console.log('[Overlay-Timer] Mensaje recibido:', data.type);
 
       switch (data.type) {
         case 'timer_update':
@@ -507,6 +496,7 @@
           break;
         case 'sync':
           // Sincronización completa
+          console.log('[Overlay-Timer] Sincronización recibida:', data);
           if (data.timer) updateTimer(data.timer);
           if (data.config) {
             initialTime = data.config.initialTime || 120;
@@ -518,7 +508,7 @@
           }
           break;
       }
-    };
+    }
 
     function updateTimer(data) {
       const seconds = data.seconds || 0;
@@ -557,12 +547,15 @@
     }
 
 
-    // Mantener viva la conexión
+    // Mantener viva la conexión con pings
     setInterval(() => {
-      if (connected) {
-        channel.postMessage({ type: 'ping' });
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'ping', timestamp: Date.now() }));
       }
     }, 10000);
+
+    // Iniciar conexión WebSocket
+    connectWebSocket();
 
     // ========== CONFIGURACIÓN DE IMÁGENES ==========
     const configToggle = document.getElementById('configToggle');
