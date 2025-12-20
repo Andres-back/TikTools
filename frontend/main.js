@@ -62,7 +62,8 @@ import {
   isConnected,
   setCurrentUser,
   getCurrentUser,
-  CONNECTION_STATES
+  CONNECTION_STATES,
+  setOnSyncRequest
 } from "./modules/connection.js";
 import { processGiftEvent } from "./modules/coins.js";
 
@@ -258,6 +259,12 @@ function initializeModules() {
   initConnection({
     statusBadge: elements.connectionStatus,
     feedback: elements.connectionFeedback
+  });
+
+  // Registrar callback para sincronización con overlays
+  setOnSyncRequest(() => {
+    console.log('[Main] Overlay solicita sincronización via WebSocket, enviando datos...');
+    sendOverlaySync();
   });
 
   // Configurar callbacks de conexión

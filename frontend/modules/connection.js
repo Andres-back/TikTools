@@ -32,6 +32,7 @@ let feedbackEl = null;
 // Callbacks
 let onConnectionStateChange = null;
 let onGiftReceived = null;
+let onSyncRequest = null;
 
 /**
  * Inicializa WebSocket de sincronización para overlays
@@ -53,10 +54,15 @@ function initSyncWebSocket() {
     syncWs.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // Manejar mensajes de sincronización si es necesario
-        console.log('[SyncWS] Mensaje:', data.type);
+        console.log('[SyncWS] Mensaje recibido:', data.type);
+
+        // Responder a solicitudes de sincronización desde overlays
+        if (data.type === 'request_sync' && onSyncRequest) {
+          console.log('[SyncWS] Overlay solicita sincronización, llamando callback...');
+          onSyncRequest();
+        }
       } catch (e) {
-        console.warn('[SyncWS] Error parsing message');
+        console.warn('[SyncWS] Error parsing message:', e);
       }
     };
     
@@ -75,6 +81,14 @@ function initSyncWebSocket() {
     console.warn('[SyncWS] Error inicializando WebSocket de sincronización:', e);
     console.log('[SyncWS] La aplicación funcionará sin sincronización en tiempo real');
   }
+}
+
+/**
+ * Registra callback para solicitudes de sincronización
+ * @param {Function} callback - Función a llamar cuando se reciba request_sync
+ */
+export function setOnSyncRequest(callback) {
+  onSyncRequest = callback;
 }
 
 /**

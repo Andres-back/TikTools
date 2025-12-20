@@ -310,17 +310,7 @@ export function startTimer() {
   updateCardState();
   updateProgressBar();
 
-  if (timerDisplayEl) {
-    const timeText = formatTime(timeRemaining);
-    timerDisplayEl.textContent = timeText;
-
-    // También actualizar el shadow
-    if (timerDisplayShadowEl) {
-      timerDisplayShadowEl.textContent = timeText;
-    }
-  } else {
-    console.warn('[Timer] timerDisplayEl no encontrado');
-  }
+  // Ya no usamos timerDisplayEl, todo via WebSocket al overlay
 
   setMessage("Fase inicial", { flash: true });
 
