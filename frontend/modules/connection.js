@@ -424,4 +424,46 @@ export function broadcastLeaderboard(donors) {
   }
 }
 
+/**
+ * Envía actualización del timer a overlays via WebSocket
+ * @param {number} seconds - Segundos restantes
+ * @param {string} message - Mensaje del timer
+ * @param {string} phase - Fase actual del timer
+ * @param {boolean} active - Si el timer está activo
+ */
+export function broadcastTimerUpdate(seconds, message = '', phase = 'idle', active = false) {
+  console.log('[Connection] Broadcasting timer update:', { seconds, phase, active });
+
+  // Enviar por WebSocket (prioridad para overlays en OBS)
+  const wsToUse = (syncWs && syncWs.readyState === WebSocket.OPEN) ? syncWs : ws;
+  if (wsToUse && wsToUse.readyState === WebSocket.OPEN) {
+    try {
+      wsToUse.send(JSON.stringify({
+        type: 'timer_update',
+        seconds: seconds,
+        message: message,
+        phase: phase,
+        active: active,
+        timestamp: Date.now()
+      }));
+    } catch (err) {
+      console.warn('[WS] Error al enviar timer update:', err);
+    }
+  }
+
+  // También enviar por BroadcastChannel (para compatibilidad)
+  try {
+    overlayChannel.postMessage({
+      type: 'timer_update',
+      seconds: seconds,
+      message: message,
+      phase: phase,
+      active: active,
+      timestamp: Date.now()
+    });
+  } catch (err) {
+    console.warn('[Connection] Error al broadcast timer via BroadcastChannel:', err);
+  }
+}
+
 export { CONNECTION_STATES };

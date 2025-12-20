@@ -63,7 +63,8 @@ import {
   setCurrentUser,
   getCurrentUser,
   CONNECTION_STATES,
-  setOnSyncRequest
+  setOnSyncRequest,
+  broadcastTimerUpdate
 } from "./modules/connection.js";
 import { processGiftEvent } from "./modules/coins.js";
 
@@ -133,14 +134,8 @@ function sendLeaderboardSync() {
   });
 }
 
-// Función para enviar actualizaciones del timer a los overlays
-function broadcastTimerUpdate(seconds, message = '') {
-  overlayChannel.postMessage({
-    type: 'timer_update',
-    seconds: seconds,
-    message: message
-  });
-}
+// NOTA: broadcastTimerUpdate ahora se importa desde connection.js
+// Envía updates por WebSocket Y BroadcastChannel para máxima compatibilidad
 
 // Función para enviar el ganador a los overlays
 function broadcastWinner(winner) {
@@ -245,10 +240,14 @@ function initializeModules() {
     },
     onPhaseChange: (phase) => {
       updateTimerControls();
+      // Enviar update completo cuando cambia la fase
+      const state = getTimerState();
+      broadcastTimerUpdate(state.timeRemaining, '', state.phase, state.active);
     },
     onTick: (seconds, message) => {
-      // Enviar actualización a overlays cada segundo
-      broadcastTimerUpdate(seconds, message);
+      // Enviar actualización completa a overlays cada segundo
+      const state = getTimerState();
+      broadcastTimerUpdate(seconds, message, state.phase, state.active);
     },
     onTieExt: (tiedUsers, extensionTime, count) => {
       // Aquí se podría agregar una notificación visual adicional
