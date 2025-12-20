@@ -76,11 +76,23 @@ const EXTRA_HEADERS = process.env.TIKTOK_EXTRA_HEADERS
 
 const app = express();
 
-// Middleware
+// Middleware CORS con soporte para WebSocket
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Upgrade', 'Connection'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
 }));
+
+// Cabeceras adicionales para WebSocket
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -249,6 +261,10 @@ app.get('/api/health', async (req, res) => {
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '2.0.0',
       database: process.env.DATABASE_URL ? 'postgresql' : 'sqlite',
+      websocket: {
+        live_clients: wss ? wss.clients.size : 0,
+        sync_clients: syncWss ? syncWss.clients.size : 0
+      },
       env: {
         nodeEnv: process.env.NODE_ENV,
         hasDatabase: !!process.env.DATABASE_URL,
@@ -263,6 +279,46 @@ app.get('/api/health', async (req, res) => {
     });
   }
 });
+
+// WebSocket diagnostics (solo en desarrollo)
+if (!IS_PRODUCTION) {
+  app.get('/api/ws-test', (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+      <html><head><title>WebSocket Test</title></head><body>
+      <h1>WebSocket Test</h1>
+      <div id="status">Connecting...</div>
+      <div id="messages"></div>
+      <script>
+        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(protocol + '//' + location.host + '/live');
+        const status = document.getElementById('status');
+        const messages = document.getElementById('messages');
+        
+        ws.onopen = () => {
+          status.textContent = 'Connected ✓';
+          status.style.color = 'green';
+        };
+        
+        ws.onerror = (e) => {
+          status.textContent = 'Error ✗';
+          status.style.color = 'red';
+          messages.innerHTML += '<p>Error: ' + JSON.stringify(e) + '</p>';
+        };
+        
+        ws.onclose = () => {
+          status.textContent = 'Disconnected';
+          status.style.color = 'orange';
+        };
+        
+        ws.onmessage = (e) => {
+          messages.innerHTML += '<p>Message: ' + e.data + '</p>';
+        };
+      </script>
+      </body></html>
+    `);
+  });
+}
 
 // ==================== STATIC FILES ====================
 
@@ -353,11 +409,31 @@ server.headersTimeout = 66000;
 
 // ==================== WEBSOCKET SERVER ====================
 
-// WebSocket principal para TikTok Live (/live)
-const wss = new WebSocket.Server({ server, path: WEBSOCKET_PATH });
+// Configurar WebSocket servers sin path, manejaremos el upgrade manualmente
+const wss = new WebSocket.Server({ noServer: true });
+const syncWss = new WebSocket.Server({ noServer: true });
 
-// WebSocket para sincronización de overlays (/sync)
-const syncWss = new WebSocket.Server({ server, path: '/sync' });
+// Manejar upgrade de HTTP a WebSocket
+server.on('upgrade', (request, socket, head) => {
+  const pathname = new URL(request.url, `http://${request.headers.host}`).pathname;
+  
+  console.log(`[WebSocket] Upgrade request for: ${pathname}`);
+  
+  if (pathname === WEBSOCKET_PATH) {
+    // WebSocket principal para TikTok Live (/live)
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request);
+    });
+  } else if (pathname === '/sync') {
+    // WebSocket para sincronización de overlays
+    syncWss.handleUpgrade(request, socket, head, (ws) => {
+      syncWss.emit('connection', ws, request);
+    });
+  } else {
+    console.log(`[WebSocket] Unknown path: ${pathname}`);
+    socket.destroy();
+  }
+});
 
 // Manejar conexiones de sincronización
 syncWss.on('connection', (socket) => {
@@ -402,9 +478,12 @@ setInterval(() => {
 const listenersByUniqueId = new Map();
 const streams = new Map();
 
-wss.on('connection', (socket) => {
+wss.on('connection', (socket, request) => {
   socket.isAlive = true;
   socket.currentUniqueId = null;
+
+  const clientIp = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
+  console.log(`[WebSocket /live] Nueva conexión desde ${clientIp}`);
 
   socket.on('pong', () => {
     socket.isAlive = true;
@@ -415,10 +494,12 @@ wss.on('connection', (socket) => {
   });
 
   socket.on('close', () => {
+    console.log(`[WebSocket /live] Cliente desconectado: ${socket.currentUniqueId || 'unknown'}`);
     detachSocket(socket);
   });
 
-  socket.on('error', () => {
+  socket.on('error', (error) => {
+    console.error(`[WebSocket /live] Error:`, error.message);
     detachSocket(socket);
   });
 });
