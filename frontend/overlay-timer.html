@@ -768,12 +768,8 @@
             rightPreview.src = data.right_image_url;
           }
 
-          // Notificar al panel principal
-          channel.postMessage({
-            type: 'overlay_images_updated',
-            leftImage: data.left_image_url,
-            rightImage: data.right_image_url
-          });
+          // NOTA: El panel principal obtendrá las imágenes directamente del servidor
+          // No necesitamos notificar via BroadcastChannel (ya no existe)
 
           configStatus.textContent = '✅ Guardado exitosamente';
           configStatus.className = 'config-status success';
