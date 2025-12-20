@@ -998,30 +998,90 @@
     }
 
     async function checkAdminAccess() {
+      console.log('[ADMIN-ACCESS] Verificando acceso admin...');
+      
       const token = getToken();
       if (!token) {
+        console.log('[ADMIN-ACCESS] No token, redirigiendo a login');
         window.location.href = '/login.html';
         return false;
       }
 
+      // Verificar token localmente primero
       try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
+        
+        if (payload.exp <= now) {
+          console.log('[ADMIN-ACCESS] Token expirado, limpiando y redirigiendo');
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          sessionStorage.removeItem('accessToken');
+          sessionStorage.removeItem('refreshToken');
+          sessionStorage.removeItem('user');
+          window.location.href = '/login.html';
+          return false;
+        }
+
+        // Verificar rol desde localStorage primero
+        const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            console.log('[ADMIN-ACCESS] User from localStorage:', user.username, 'Role:', user.role);
+            
+            if (user.role !== 'admin') {
+              console.log('[ADMIN-ACCESS] No es admin, redirigiendo a index');
+              alert('Acceso denegado. Esta página es solo para administradores.');
+              window.location.href = '/';
+              return false;
+            }
+            
+            console.log('[ADMIN-ACCESS] Admin verificado exitosamente');
+            return true;
+          } catch (e) {
+            console.error('[ADMIN-ACCESS] Error parsing user data:', e);
+          }
+        }
+
+        // Como fallback, verificar con el servidor
+        console.log('[ADMIN-ACCESS] Verificando con servidor...');
         const response = await fetch('/api/auth/profile', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
-        if (!response.ok) throw new Error('No autorizado');
+        if (!response.ok) {
+          console.log('[ADMIN-ACCESS] Server auth failed, redirigiendo a login');
+          window.location.href = '/login.html';
+          return false;
+        }
 
         const user = await response.json();
+        console.log('[ADMIN-ACCESS] Server response user:', user.username, 'Role:', user.role);
         
         if (user.role !== 'admin') {
+          console.log('[ADMIN-ACCESS] Server confirms: not admin');
           alert('Acceso denegado. Esta página es solo para administradores.');
           window.location.href = '/';
           return false;
         }
 
+        // Actualizar datos del usuario en localStorage
+        const storage = localStorage.getItem('accessToken') ? localStorage : sessionStorage;
+        storage.setItem('user', JSON.stringify(user));
+
+        console.log('[ADMIN-ACCESS] Admin access confirmed');
         return true;
       } catch (error) {
-        console.error('Error verificando acceso:', error);
+        console.error('[ADMIN-ACCESS] Error verificando acceso:', error);
+        console.log('[ADMIN-ACCESS] Clearing tokens and redirecting to login');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('accessToken');
+        sessionStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('user');
         window.location.href = '/login.html';
         return false;
       }

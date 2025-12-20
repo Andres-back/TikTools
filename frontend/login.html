@@ -542,22 +542,59 @@
     // Check if logged in
     function checkAuth() {
       const token = getAccessToken();
+      console.log('[LOGIN-AUTH] Checking auth, token present:', !!token);
+      
       if (token) {
-        // Verificar rol del usuario almacenado
-        const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-        if (userStr) {
-          try {
-            const user = JSON.parse(userStr);
-            if (user.role === 'admin') {
-              window.location.href = '/admin.html';
-              return;
-            }
-          } catch (e) {
-            console.error('Error parsing user:', e);
+        // Verificar que el token no esté expirado
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const now = Math.floor(Date.now() / 1000);
+          
+          if (payload.exp <= now) {
+            console.log('[LOGIN-AUTH] Token expired, clearing...');
+            // Token expirado, limpiarlo
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('accessToken');
+            sessionStorage.removeItem('refreshToken');
+            sessionStorage.removeItem('user');
+            return; // Quedarse en login
           }
+          
+          console.log('[LOGIN-AUTH] Token valid, checking role...');
+          
+          // Token válido, verificar rol del usuario almacenado
+          const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+          if (userStr) {
+            try {
+              const user = JSON.parse(userStr);
+              console.log('[LOGIN-AUTH] User role:', user.role);
+              
+              if (user.role === 'admin') {
+                console.log('[LOGIN-AUTH] Redirecting admin to admin.html');
+                window.location.href = '/admin.html';
+                return;
+              }
+            } catch (e) {
+              console.error('[LOGIN-AUTH] Error parsing user:', e);
+            }
+          }
+          
+          // Usuario normal, ir a index
+          console.log('[LOGIN-AUTH] Redirecting user to index');
+          window.location.href = '/';
+        } catch (e) {
+          console.error('[LOGIN-AUTH] Token inválido, limpiando...');
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          sessionStorage.removeItem('accessToken');
+          sessionStorage.removeItem('refreshToken');
+          sessionStorage.removeItem('user');
         }
-        // Usuario normal, ir a index
-        window.location.href = '/';
+      } else {
+        console.log('[LOGIN-AUTH] No token, staying on login page');
       }
     }
 
