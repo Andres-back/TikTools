@@ -15,13 +15,17 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../uploads/news');
+    console.log(`[NEWS-UPLOAD] Destination check: ${uploadDir}`);
     if (!fs.existsSync(uploadDir)) {
+      console.log(`[NEWS-UPLOAD] Creating directory: ${uploadDir}`);
       fs.mkdirSync(uploadDir, { recursive: true });
     }
+    console.log(`[NEWS-UPLOAD] Directory ready for file: ${file.originalname}`);
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${path.extname(file.originalname)}`;
+    console.log(`[NEWS-UPLOAD] Generated filename: ${uniqueName} for original: ${file.originalname}`);
     cb(null, uniqueName);
   }
 });
@@ -69,12 +73,19 @@ router.post('/', authenticateToken, isAdmin, upload.single('image'), async (req,
   try {
     const { title, content } = req.body;
     const userId = req.user.userId;
+    console.log(`[NEWS-POST] Request from user ${userId}`);
+    console.log(`[NEWS-POST] File received:`, req.file ? req.file.filename : 'none');
 
     if (!title || !content) {
       return res.status(400).json({ error: 'Título y contenido son requeridos' });
     }
 
     const imageUrl = req.file ? `/uploads/news/${req.file.filename}` : null;
+
+    if (req.file) {
+      console.log(`[NEWS-POST] Image URL set to: ${imageUrl}`);
+      console.log(`[NEWS-POST] File saved at: ${req.file.path}`);
+    }
 
     const result = await db.query(
       `INSERT INTO news (title, content, image_url, author_id, created_at)
@@ -83,9 +94,10 @@ router.post('/', authenticateToken, isAdmin, upload.single('image'), async (req,
       [title, content, imageUrl, userId]
     );
 
+    console.log(`[NEWS-POST] Database updated successfully`);
     res.status(201).json(result.rows ? result.rows[0] : result);
   } catch (error) {
-    console.error('Error creating news:', error);
+    console.error('[NEWS-POST] Error creating news:', error);
     res.status(500).json({ error: 'Error al crear la novedad' });
   }
 });

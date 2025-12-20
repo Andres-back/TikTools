@@ -38,6 +38,7 @@ function initSyncWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/sync`;
     
+    console.log(`[SyncWS] Intentando conectar a: ${wsUrl}`);
     syncWs = new WebSocket(wsUrl);
     
     syncWs.onopen = () => {
@@ -55,15 +56,25 @@ function initSyncWebSocket() {
     };
     
     syncWs.onerror = (err) => {
-      console.warn('[SyncWS] Error de conexión');
+      console.warn('[SyncWS] Error de conexión:', err);
+      // No intentar reconectar inmediatamente en error
     };
     
-    syncWs.onclose = () => {
-      console.log('[SyncWS] Desconectado, reconectando en 3s...');
-      setTimeout(initSyncWebSocket, 3000);
+    syncWs.onclose = (event) => {
+      console.log('[SyncWS] Desconectado:', event.code, event.reason);
+      
+      // Solo reconectar si la conexión se cerró de forma inesperada
+      // No reconectar si es un error de configuración (1006, 1015, etc)
+      if (event.code !== 1000 && event.code !== 1001 && event.code !== 1006) {
+        console.log('[SyncWS] Reconectando en 5s...');
+        setTimeout(initSyncWebSocket, 5000);
+      } else {
+        console.log('[SyncWS] No se reconectará automáticamente');
+      }
     };
   } catch (e) {
     console.warn('[SyncWS] Error inicializando:', e);
+    // No intentar reconectar automáticamente en caso de error de inicialización
   }
 }
 

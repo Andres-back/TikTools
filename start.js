@@ -266,8 +266,48 @@ app.get('/api/health', async (req, res) => {
 
 // ==================== STATIC FILES ====================
 
-// Servir archivos subidos
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Crear directorio de uploads si no existe
+const fs = require('fs');
+const uploadsDir = path.join(__dirname, 'uploads');
+const overlaysDir = path.join(uploadsDir, 'overlays');
+const chatDir = path.join(uploadsDir, 'chat');
+const newsDir = path.join(uploadsDir, 'news');
+
+[uploadsDir, overlaysDir, chatDir, newsDir].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+    console.log(`[INIT] Created directory: ${dir}`);
+  }
+});
+
+// Servir archivos subidos con logging y headers seguros
+app.use('/uploads', (req, res, next) => {
+  console.log(`[UPLOADS] Request: ${req.method} ${req.path}`);
+  console.log(`[UPLOADS] Full URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`);
+  
+  // Verificar que el archivo existe antes de intentar servirlo
+  const requestedPath = path.join(__dirname, 'uploads', req.path);
+  if (!fs.existsSync(requestedPath)) {
+    console.log(`[UPLOADS] File not found: ${requestedPath}`);
+    return res.status(404).json({ 
+      error: 'Archivo no encontrado',
+      path: req.path,
+      fullPath: requestedPath
+    });
+  }
+  
+  console.log(`[UPLOADS] Serving file: ${requestedPath}`);
+  next();
+}, express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res, filePath) => {
+    console.log(`[UPLOADS] Setting headers for: ${filePath}`);
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 día
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  },
+  fallthrough: false // No continuar si el archivo no existe
+}));
 
 app.use(express.static(PUBLIC_DIR));
 

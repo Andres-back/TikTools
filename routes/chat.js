@@ -15,13 +15,17 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../uploads/chat');
+    console.log(`[CHAT-UPLOAD] Destination check: ${uploadDir}`);
     if (!fs.existsSync(uploadDir)) {
+      console.log(`[CHAT-UPLOAD] Creating directory: ${uploadDir}`);
       fs.mkdirSync(uploadDir, { recursive: true });
     }
+    console.log(`[CHAT-UPLOAD] Directory ready for file: ${file.originalname}`);
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${path.extname(file.originalname)}`;
+    console.log(`[CHAT-UPLOAD] Generated filename: ${uniqueName} for original: ${file.originalname}`);
     cb(null, uniqueName);
   }
 });
@@ -90,17 +94,23 @@ router.get('/:userId', authenticateToken, async (req, res) => {
  * Soporta tanto JSON como multipart/form-data (para imágenes)
  */
 router.post('/', authenticateToken, (req, res, next) => {
+  console.log(`[CHAT-POST] Content-Type: ${req.get('content-type')}`);
   // Si es JSON, continuar directamente
   if (req.is('application/json')) {
+    console.log(`[CHAT-POST] Using JSON mode`);
     return next();
   }
   // Si es multipart, usar multer
+  console.log(`[CHAT-POST] Using multipart mode`);
   upload.single('image')(req, res, next);
 }, async (req, res) => {
   try {
     const senderId = req.user.userId;
     const { message } = req.body;
     const isAdminUser = req.user.role === 'admin';
+    console.log(`[CHAT-POST] Request from user ${senderId} (admin: ${isAdminUser})`);
+    console.log(`[CHAT-POST] Message: "${message}"`);
+    console.log(`[CHAT-POST] File received:`, req.file ? req.file.filename : 'none');
 
     if (!message && !req.file) {
       return res.status(400).json({ error: 'Mensaje o imagen requeridos' });
@@ -114,6 +124,7 @@ router.post('/', authenticateToken, (req, res, next) => {
       if (!recipientId) {
         return res.status(400).json({ error: 'recipientId requerido para admin' });
       }
+      console.log(`[CHAT-POST] Admin sending to user ${recipientId}`);
     } else {
       // Si es usuario normal, siempre envía al admin
       const adminResult = await db.query(`SELECT id FROM users WHERE role = 'admin' LIMIT 1`);
@@ -122,9 +133,15 @@ router.post('/', authenticateToken, (req, res, next) => {
         return res.status(404).json({ error: 'No se encontró un administrador' });
       }
       recipientId = admin.id;
+      console.log(`[CHAT-POST] User sending to admin ${recipientId}`);
     }
 
     const imageUrl = req.file ? `/uploads/chat/${req.file.filename}` : null;
+
+    if (req.file) {
+      console.log(`[CHAT-POST] Image URL set to: ${imageUrl}`);
+      console.log(`[CHAT-POST] File saved at: ${req.file.path}`);
+    }
 
     const result = await db.query(
       `INSERT INTO messages (sender_id, recipient_id, message, image_url, created_at, read)
@@ -133,9 +150,10 @@ router.post('/', authenticateToken, (req, res, next) => {
       [senderId, recipientId, message || '', imageUrl]
     );
 
+    console.log(`[CHAT-POST] Message saved successfully with ID ${result.rows ? result.rows[0].id : result.id}`);
     res.status(201).json(result.rows ? result.rows[0] : result);
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('[CHAT-POST] Error sending message:', error);
     res.status(500).json({ error: 'Error al enviar el mensaje' });
   }
 });

@@ -16,15 +16,28 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../uploads/overlays');
     console.log(`[OVERLAY-UPLOAD] Destination check: ${uploadDir}`);
-    if (!fs.existsSync(uploadDir)) {
-      console.log(`[OVERLAY-UPLOAD] Creating directory: ${uploadDir}`);
-      fs.mkdirSync(uploadDir, { recursive: true });
+    
+    try {
+      if (!fs.existsSync(uploadDir)) {
+        console.log(`[OVERLAY-UPLOAD] Creating directory: ${uploadDir}`);
+        fs.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
+      }
+      
+      // Verificar que el directorio es escribible
+      fs.accessSync(uploadDir, fs.constants.W_OK);
+      console.log(`[OVERLAY-UPLOAD] Directory ready for file: ${file.originalname}`);
+      cb(null, uploadDir);
+    } catch (error) {
+      console.error(`[OVERLAY-UPLOAD] Error with directory ${uploadDir}:`, error);
+      cb(error);
     }
-    console.log(`[OVERLAY-UPLOAD] Directory ready for file: ${file.originalname}`);
-    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${path.extname(file.originalname)}`;
+    const timestamp = Date.now();
+    const randomId = Math.random().toString(36).substring(2, 9);
+    const ext = path.extname(file.originalname).toLowerCase();
+    const uniqueName = `${timestamp}-${randomId}${ext}`;
+    
     console.log(`[OVERLAY-UPLOAD] Generated filename: ${uniqueName} for original: ${file.originalname}`);
     cb(null, uniqueName);
   }
@@ -199,6 +212,34 @@ router.post('/', authenticateToken, upload.fields([
   } catch (error) {
     console.error('[OVERLAY-POST] Error saving overlay:', error);
     res.status(500).json({ error: 'Error al guardar configuración de overlay' });
+  }
+});
+
+/**
+ * GET /api/overlays/check/:filename
+ * Verificar si un archivo existe
+ */
+router.get('/check/:filename', async (req, res) => {
+  try {
+    const { filename } = req.params;
+    const filePath = path.join(__dirname, '../uploads/overlays', filename);
+    
+    console.log(`[OVERLAY-CHECK] Verificando archivo: ${filePath}`);
+    
+    if (fs.existsSync(filePath)) {
+      const stats = fs.statSync(filePath);
+      res.json({
+        exists: true,
+        size: stats.size,
+        lastModified: stats.mtime,
+        url: `/uploads/overlays/${filename}`
+      });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error('[OVERLAY-CHECK] Error:', error);
+    res.status(500).json({ error: 'Error verificando archivo' });
   }
 });
 

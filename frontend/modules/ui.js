@@ -215,20 +215,35 @@ async function loadNews() {
   const newsLoading = document.getElementById('newsLoading');
   const newsEmpty = document.getElementById('newsEmpty');
 
-  if (!newsList) return;
+  if (!newsList) {
+    console.warn('loadNews: newsList element not found');
+    return;
+  }
 
-  newsLoading.style.display = 'block';
-  newsEmpty.style.display = 'none';
+  // Verificar que todos los elementos necesarios existan
+  if (newsLoading) {
+    newsLoading.style.display = 'block';
+  }
+  if (newsEmpty) {
+    newsEmpty.style.display = 'none';
+  }
   newsList.innerHTML = '';
 
   try {
     const response = await fetch('/api/news');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const news = await response.json();
 
-    newsLoading.style.display = 'none';
+    if (newsLoading) {
+      newsLoading.style.display = 'none';
+    }
 
     if (!news || news.length === 0) {
-      newsEmpty.style.display = 'block';
+      if (newsEmpty) {
+        newsEmpty.style.display = 'block';
+      }
       return;
     }
 
@@ -238,9 +253,14 @@ async function loadNews() {
     });
   } catch (error) {
     console.error('Error loading news:', error);
-    newsLoading.style.display = 'none';
-    newsEmpty.textContent = 'Error al cargar las novedades';
-    newsEmpty.style.display = 'block';
+    
+    if (newsLoading) {
+      newsLoading.style.display = 'none';
+    }
+    if (newsEmpty) {
+      newsEmpty.textContent = 'Error al cargar las novedades';
+      newsEmpty.style.display = 'block';
+    }
   }
 }
 
