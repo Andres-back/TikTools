@@ -31,15 +31,27 @@ let onConnectionStateChange = null;
 let onGiftReceived = null;
 
 /**
- * Inicializa WebSocket de sincronización para overlays
+ * Inicializa WebSocket de sincronización para overlays (opcional)
  */
 function initSyncWebSocket() {
-  try {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/sync`;
-    
-    console.log(`[SyncWS] Intentando conectar a: ${wsUrl}`);
-    syncWs = new WebSocket(wsUrl);
+  // Solo intentar en localhost o si hay configuración específica
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    try {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/sync`;
+      
+      console.log(`[SyncWS] Intentando conectar a: ${wsUrl}`);
+      syncWs = new WebSocket(wsUrl);
+    } catch (e) {
+      console.log('[SyncWS] WebSocket de sincronización no disponible en este entorno');
+      return;
+    }
+  } else {
+    console.log('[SyncWS] WebSocket de sincronización deshabilitado en producción');
+    return;
+  }
+
+  if (!syncWs) return;
     
     syncWs.onopen = () => {
       console.log('[SyncWS] Conectado');
@@ -63,18 +75,12 @@ function initSyncWebSocket() {
     syncWs.onclose = (event) => {
       console.log('[SyncWS] Desconectado:', event.code, event.reason);
       
-      // Solo reconectar si la conexión se cerró de forma inesperada
-      // No reconectar si es un error de configuración (1006, 1015, etc)
-      if (event.code !== 1000 && event.code !== 1001 && event.code !== 1006) {
-        console.log('[SyncWS] Reconectando en 5s...');
-        setTimeout(initSyncWebSocket, 5000);
-      } else {
-        console.log('[SyncWS] No se reconectará automáticamente');
-      }
+      // No reconectar automáticamente para evitar spam en logs
+      console.log('[SyncWS] WebSocket cerrado, no reconectando automáticamente');
     };
   } catch (e) {
-    console.warn('[SyncWS] Error inicializando:', e);
-    // No intentar reconectar automáticamente en caso de error de inicialización
+    console.warn('[SyncWS] Error inicializando WebSocket de sincronización:', e);
+    console.log('[SyncWS] La aplicación funcionará sin sincronización en tiempo real');
   }
 }
 

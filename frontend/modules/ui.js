@@ -313,13 +313,57 @@ function createNewsItem(news) {
         <img src="${imageUrl}" 
              class="news-item-image" 
              alt="${escapeHtml(news.title)}"
-             onerror="this.onerror=null; this.style.display='none'; console.error('Failed to load image:', '${imageUrl}');"
+             onerror="handleImageError(this, '${imageUrl}');"
              onload="console.log('Image loaded successfully:', '${imageUrl}');">
       </div>
     ` : ''}
   `;
 
   return div;
+}
+
+/**
+ * Maneja errores de carga de imagen
+ */
+window.handleImageError = function(img, originalUrl) {
+  console.error('Failed to load image:', originalUrl);
+  
+  // Intentar diferentes variantes de URL
+  const alternatives = [
+    originalUrl.replace('/uploads/', '/uploads/news/'),
+    originalUrl.replace('/uploads/news/', '/uploads/'),
+    originalUrl.startsWith('/') ? originalUrl : '/' + originalUrl
+  ];
+  
+  // Si ya intentamos todas las alternativas, ocultar imagen
+  if (img.dataset.attempts) {
+    const attempts = parseInt(img.dataset.attempts);
+    if (attempts >= alternatives.length) {
+      img.style.display = 'none';
+      
+      // Mostrar mensaje de error más amigable
+      const container = img.parentElement;
+      if (container) {
+        container.innerHTML = `
+          <div style="padding: 20px; background: rgba(255,71,87,0.1); border-radius: 8px; text-align: center; color: #ff4757;">
+            <div style="font-size: 32px; margin-bottom: 8px;">🚫</div>
+            <div style="font-size: 14px;">Imagen no disponible</div>
+          </div>
+        `;
+      }
+      return;
+    }
+    img.dataset.attempts = (attempts + 1).toString();
+  } else {
+    img.dataset.attempts = '1';
+  }
+  
+  // Intentar siguiente alternativa
+  const nextUrl = alternatives[parseInt(img.dataset.attempts) - 1];
+  if (nextUrl && nextUrl !== img.src) {
+    console.log(`Intentando URL alternativa: ${nextUrl}`);
+    img.src = nextUrl;
+  }
 }
 
 /**

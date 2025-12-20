@@ -192,4 +192,48 @@ router.get('/check/:filename', async (req, res) => {
   }
 });
 
+/**
+ * POST /api/news/cleanup
+ * Limpiar referencias a imágenes que no existen físicamente (solo admin)
+ */
+router.post('/cleanup', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    console.log('[NEWS-CLEANUP] Iniciando limpieza de imágenes faltantes...');
+    
+    // Obtener todas las noticias con imágenes
+    const result = await db.query('SELECT id, title, image_url FROM news WHERE image_url IS NOT NULL');
+    const newsWithImages = result.rows || result;
+    
+    let fixed = 0;
+    let errors = 0;
+    
+    for (const news of newsWithImages) {
+      if (news.image_url) {
+        const fullPath = path.join(__dirname, '..', news.image_url);
+        
+        if (!fs.existsSync(fullPath)) {
+          console.log(`[NEWS-CLEANUP] Imagen faltante: ${news.image_url} en noticia "${news.title}"`);
+          
+          // Limpiar referencia de imagen en la base de datos
+          await db.query('UPDATE news SET image_url = NULL WHERE id = $1', [news.id]);
+          fixed++;
+        }
+      }
+    }
+    
+    console.log(`[NEWS-CLEANUP] Completado. ${fixed} referencias limpiadas, ${errors} errores`);
+    
+    res.json({
+      message: 'Limpieza completada',
+      fixed,
+      errors,
+      total: newsWithImages.length
+    });
+    
+  } catch (error) {
+    console.error('[NEWS-CLEANUP] Error:', error);
+    res.status(500).json({ error: 'Error en limpieza' });
+  }
+});
+
 module.exports = router;
