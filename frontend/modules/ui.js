@@ -9,9 +9,12 @@ import { clearTokens } from './auth.js';
  * Inicializa todos los elementos de UI
  */
 export function initUI() {
+  console.log('[UI] Inicializando módulo de UI...');
   initMenu();
   initModals();
   initFloatingSidebar();
+  initChatInput(); // Inicializar event listeners del chat
+  console.log('[UI] Módulo UI inicializado correctamente');
 }
 
 /**
