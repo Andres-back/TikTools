@@ -192,11 +192,7 @@ const elements = {
   manualCoinsInput: document.getElementById("manualCoinsInput"),
   addManualCoins: document.getElementById("addManualCoins"),
 
-  // Timer
-  timerCard: document.getElementById("timerCard"),
-  timerDisplay: document.getElementById("timerDisplay"),
-  timerMessage: document.getElementById("timerMessage"),
-  timerHeading: document.getElementById("timerHeading"),
+  // Timer - Solo controles (el overlay está en iframe)
   timerPlay: document.getElementById("timerPlay"),
   timerReset: document.getElementById("timerReset"),
 
@@ -234,13 +230,8 @@ function initializeModules() {
     animationOverlay: elements.animationOverlay
   });
 
-  // Inicializar timer
-  initTimer({
-    timerDisplay: elements.timerDisplay,
-    timerCard: elements.timerCard,
-    timerMessage: elements.timerMessage,
-    timerHeading: elements.timerHeading
-  });
+  // Inicializar timer (sin elementos DOM, solo lógica)
+  initTimer();
 
   // Configurar callbacks del timer
   setTimerCallbacks({

@@ -43,25 +43,14 @@ let onTieExtension = null;
 let onTimerTick = null;
 
 /**
- * Inicializa el módulo con referencias DOM
- * @param {Object} elements - { timerDisplay, timerCard, timerMessage, timerHeading }
+ * Inicializa el módulo del timer
+ * NOTA: Ya no usa elementos DOM del panel, el timer se muestra en iframe (overlay-timer.html)
+ * Las actualizaciones se envían via WebSocket a través de los callbacks
  */
-export function initTimer(elements) {
-  timerDisplayEl = elements.timerDisplay;
-  timerCardEl = elements.timerCard;
-  timerMessageEl = elements.timerMessage;
-  timerHeadingEl = elements.timerHeading;
-
-  // Elementos de animación
-  timerProgressFillEl = document.getElementById('timerProgressFill');
-  mascotSpeechLeftEl = document.getElementById('mascotSpeechLeft');
-  mascotSpeechRightEl = document.getElementById('mascotSpeechRight');
-
-  // Shadow del display (para efecto de profundidad)
-  const shadowEl = document.querySelector('.timer-display-shadow');
-  if (shadowEl) {
-    timerDisplayShadowEl = shadowEl;
-  }
+export function initTimer() {
+  console.log('[Timer] Inicializado en modo solo-lógica (UI via WebSocket)');
+  // Ya no necesitamos elementos DOM, todo se maneja via WebSocket
+  // El overlay-timer.html se encarga de mostrar el timer
 }
 
 /**
@@ -338,6 +327,11 @@ export function startTimer() {
   // Descongelar leaderboard
   unfreezeLeaderboard();
 
+  // Enviar estado inicial inmediatamente via WebSocket
+  if (onTimerTick) {
+    onTimerTick(timeRemaining, 'Fase inicial');
+  }
+
   intervalId = setInterval(tick, 1000);
   if (onPhaseChanged) {
     onPhaseChanged(phase);
@@ -358,6 +352,11 @@ export function pauseTimer() {
   intervalId = null;
   timerActive = false;
 
+  // Enviar estado actual via WebSocket
+  if (onTimerTick) {
+    onTimerTick(timeRemaining, 'Pausado');
+  }
+
   console.log('[Timer] Timer pausado');
   return true;
 }
@@ -371,6 +370,12 @@ export function resumeTimer() {
   }
 
   timerActive = true;
+
+  // Enviar estado actual via WebSocket
+  if (onTimerTick) {
+    onTimerTick(timeRemaining, 'Reanudado');
+  }
+
   intervalId = setInterval(tick, 1000);
 
   return true;
@@ -398,6 +403,11 @@ export function resetTimer() {
   }
 
   setMessage("", {});
+
+  // Enviar estado reseteado inmediatamente via WebSocket
+  if (onTimerTick) {
+    onTimerTick(timeRemaining, '');
+  }
 
   if (onPhaseChanged) {
     onPhaseChanged(phase);
