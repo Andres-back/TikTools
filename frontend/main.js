@@ -38,7 +38,8 @@ import {
   resetLeaderboard,
   getWinner,
   getTop3,
-  isLeaderboardFrozen
+  isLeaderboardFrozen,
+  getSortedDonors
 } from "./modules/leaderboard.js";
 import {
   initTimer,
@@ -73,8 +74,15 @@ const overlayChannel = new BroadcastChannel('tiktoolstream_overlay');
 
 // Escuchar peticiones de sincronización de overlays
 overlayChannel.onmessage = (event) => {
+  console.log('[Main-BroadcastChannel] Mensaje recibido:', event.data.type);
+
   if (event.data.type === 'request_sync' || event.data.type === 'ping') {
     sendOverlaySync();
+  }
+
+  if (event.data.type === 'request_leaderboard_sync') {
+    console.log('[Main-BroadcastChannel] Solicitud de sincronización de leaderboard');
+    sendLeaderboardSync();
   }
 };
 
@@ -95,6 +103,22 @@ function sendOverlaySync() {
       label: config.minMessage
     },
     winner: winner ? winner.user : null
+  });
+}
+
+function sendLeaderboardSync() {
+  const sorted = getSortedDonors();
+
+  console.log('[Main-BroadcastChannel] Enviando leaderboard con', sorted.length, 'donadores');
+
+  overlayChannel.postMessage({
+    type: 'leaderboard_update',
+    donors: sorted.map(entry => ({
+      uniqueId: entry.uniqueId,
+      label: entry.label,
+      totalCoins: entry.total,
+      profilePictureUrl: entry.profilePictureUrl
+    }))
   });
 }
 

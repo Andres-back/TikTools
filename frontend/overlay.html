@@ -340,58 +340,35 @@
   </div>
 
   <script type="module">
-    // Conectar al WebSocket del servidor principal
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const WS_URL = `${protocol}//${window.location.host}/live`;
-    let ws = null;
-    
-    // Obtener usuario de la URL
-    const pathParts = window.location.pathname.split('/');
-    const username = pathParts[pathParts.length - 1];
+    console.log('[Overlay-Donadores] Inicializando...');
 
-    function connectWebSocket() {
-      try {
-        ws = new WebSocket(WS_URL);
+    // Usar BroadcastChannel para comunicación con la página principal
+    const overlayChannel = new BroadcastChannel('tiktoolstream_overlay');
+    let connected = false;
+    let connectionAttempts = 0;
+    const MAX_CONNECTION_ATTEMPTS = 3;
 
-        ws.addEventListener('open', () => {
-          console.log('[Overlay] Conectado al servidor');
-          // Identificarse si es necesario (futuro)
-          // ws.send(JSON.stringify({ type: 'identify', username }));
-        });
+    // Escuchar mensajes del panel principal
+    overlayChannel.onmessage = (event) => {
+      const data = event.data;
+      console.log('[Overlay-Donadores] Mensaje recibido:', data.type);
 
-        ws.addEventListener('message', (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            // console.log('[Overlay] Mensaje recibido:', data);
-            
-            // Aquí podríamos filtrar por usuario si el servidor enviara el target
-            // Por ahora aceptamos todo broadcast
-            
-            if (data.type === 'leaderboard-update') {
-              updateLeaderboard(data.donors);
-            }
-          } catch (err) {
-            console.error('[Overlay] Error parseando mensaje:', err);
-          }
-        });
+      if (data.type === 'sync' || data.type === 'leaderboard_update') {
+        connected = true;
+        connectionAttempts = 0;
 
-        ws.addEventListener('close', () => {
-          console.log('[Overlay] Desconectado. Reconectando en 3s...');
-          setTimeout(connectWebSocket, 3000);
-        });
-
-        ws.addEventListener('error', (error) => {
-          console.error('[Overlay] Error WebSocket:', error);
-        });
-      } catch (err) {
-        console.error('[Overlay] Error al conectar:', err);
-        setTimeout(connectWebSocket, 3000);
+        // Actualizar leaderboard si hay datos de donadores
+        if (data.donors && Array.isArray(data.donors)) {
+          console.log('[Overlay-Donadores] Actualizando con', data.donors.length, 'donadores');
+          updateLeaderboard(data.donors);
+        }
       }
-    }
+    };
 
+    // Función para actualizar el leaderboard
     function updateLeaderboard(donors) {
       const donorList = document.getElementById('donorList');
-      
+
       if (!donors || donors.length === 0) {
         donorList.innerHTML = `
           <li class="leaderboard-empty">
@@ -403,18 +380,18 @@
       }
 
       const rankClasses = ['first', 'second', 'third'];
-      
+
       donorList.innerHTML = donors.map((donor, index) => {
         const rankClass = rankClasses[index] || '';
         const initial = donor.uniqueId ? donor.uniqueId.charAt(0).toUpperCase() : '?';
         const showCrown = index === 0;
-        
+
         return `
           <li class="leaderboard-item ${rankClass}">
             ${showCrown ? '<span class="floating-crown">👑</span>' : ''}
             <div class="leaderboard-rank">${index + 1}</div>
             <div class="leaderboard-avatar-container">
-              ${donor.profilePictureUrl 
+              ${donor.profilePictureUrl
                 ? `<img src="${donor.profilePictureUrl}" alt="${donor.uniqueId}" class="leaderboard-avatar">`
                 : `<div class="leaderboard-avatar-fallback">${initial}</div>`
               }
@@ -431,8 +408,49 @@
       }).join('');
     }
 
-    // Iniciar conexión
-    connectWebSocket();
+    // Solicitar sincronización inicial
+    function requestSync() {
+      connectionAttempts++;
+      console.log('[Overlay-Donadores] Solicitando sincronización (intento', connectionAttempts, ')');
+      overlayChannel.postMessage({
+        type: 'request_leaderboard_sync',
+        timestamp: Date.now()
+      });
+
+      // Si no conecta después de 3 intentos, mostrar mensaje
+      if (connectionAttempts >= MAX_CONNECTION_ATTEMPTS && !connected) {
+        setTimeout(() => {
+          if (!connected) {
+            console.warn('[Overlay-Donadores] No se pudo conectar con el panel principal');
+            const donorList = document.getElementById('donorList');
+            donorList.innerHTML = `
+              <li class="leaderboard-empty">
+                <div class="leaderboard-empty-icon">⚠️</div>
+                <p>Abre el panel principal para sincronizar</p>
+              </li>
+            `;
+          }
+        }, 2000);
+      } else if (!connected) {
+        // Reintentar cada 2 segundos
+        setTimeout(requestSync, 2000);
+      }
+    }
+
+    // Solicitar sincronización al cargar
+    requestSync();
+
+    // Solicitar sincronización periódica cada 30 segundos
+    setInterval(() => {
+      if (connected) {
+        overlayChannel.postMessage({
+          type: 'request_leaderboard_sync',
+          timestamp: Date.now()
+        });
+      }
+    }, 30000);
+
+    console.log('[Overlay-Donadores] Listo y esperando sincronización');
   </script>
 </body>
 </html>

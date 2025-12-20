@@ -22,6 +22,9 @@ let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 3;
 const RECONNECT_DELAY_MS = 2000;
 
+// BroadcastChannel para comunicación con overlays
+const overlayChannel = new BroadcastChannel('tiktoolstream_overlay');
+
 // Referencias DOM
 let statusBadgeEl = null;
 let feedbackEl = null;
@@ -382,13 +385,25 @@ export function setCurrentUser(username) {
 }
 
 /**
- * Envía actualización del leaderboard al servidor para broadcast a overlays
+ * Envía actualización del leaderboard a overlays via BroadcastChannel
  * @param {Array} donors - Array de donadores con {uniqueId, totalCoins, profilePictureUrl}
  */
 export function broadcastLeaderboard(donors) {
-  // Usar syncWs (siempre activo) o ws (si está conectado)
-  const wsToUse = (syncWs && syncWs.readyState === WebSocket.OPEN) ? syncWs : ws;
+  console.log('[Connection] Broadcasting leaderboard con', donors.length, 'donadores');
 
+  // Usar BroadcastChannel para comunicación directa con overlays
+  try {
+    overlayChannel.postMessage({
+      type: 'leaderboard_update',
+      donors: donors,
+      timestamp: Date.now()
+    });
+  } catch (err) {
+    console.warn('[Connection] Error al broadcast leaderboard:', err);
+  }
+
+  // También enviar por WebSocket si está disponible (para otros propósitos)
+  const wsToUse = (syncWs && syncWs.readyState === WebSocket.OPEN) ? syncWs : ws;
   if (wsToUse && wsToUse.readyState === WebSocket.OPEN) {
     try {
       wsToUse.send(JSON.stringify({
@@ -396,10 +411,8 @@ export function broadcastLeaderboard(donors) {
         donors: donors
       }));
     } catch (err) {
-      console.warn('[WS] Error broadcast:', err);
+      console.warn('[WS] Error broadcast WS:', err);
     }
-  } else {
-    // console.debug('[WS] No hay conexión para broadcast');
   }
 }
 
