@@ -17,6 +17,102 @@
   <!-- Estilos -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="app-styles.css">
+
+  <!-- Estilos personalizados para layout amplio de subasta -->
+  <style>
+    /* Layout de 3 columnas para aprovechar pantalla ancha */
+    .app-container {
+      width: min(98vw, 1920px) !important;
+      max-width: 1920px !important;
+      grid-template-columns: 280px 1fr 420px !important;
+      gap: 1.5rem !important;
+      padding: 1.5rem !important;
+    }
+
+    /* Sidebar más compacto */
+    .control-panel {
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      position: sticky;
+      top: 80px;
+    }
+
+    /* Scrollbar personalizado para sidebar */
+    .control-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    .control-panel::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+    .control-panel::-webkit-scrollbar-thumb {
+      background: rgba(0,217,255,0.3);
+      border-radius: 3px;
+    }
+    .control-panel::-webkit-scrollbar-thumb:hover {
+      background: rgba(0,217,255,0.5);
+    }
+
+    /* Contenido central (timer y controles) */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Columna derecha para leaderboard */
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      position: sticky;
+      top: 80px;
+    }
+
+    /* Scrollbar para columna derecha */
+    .right-column::-webkit-scrollbar {
+      width: 6px;
+    }
+    .right-column::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: rgba(0,217,255,0.3);
+      border-radius: 3px;
+    }
+    .right-column::-webkit-scrollbar-thumb:hover {
+      background: rgba(0,217,255,0.5);
+    }
+
+    /* Timer más grande */
+    .timer-card {
+      min-height: 450px !important;
+    }
+
+    /* Responsive para pantallas más pequeñas */
+    @media (max-width: 1400px) {
+      .app-container {
+        grid-template-columns: 260px 1fr 380px !important;
+      }
+    }
+
+    @media (max-width: 1200px) {
+      .app-container {
+        grid-template-columns: 1fr !important;
+        width: 95vw !important;
+      }
+
+      .control-panel,
+      .right-column {
+        position: relative;
+        top: 0;
+        max-height: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -239,15 +335,21 @@
         </div>
       </div>
 
+    </main>
+
+    <!-- ========================================
+         COLUMNA DERECHA (Leaderboard)
+         ======================================== -->
+    <aside class="right-column">
       <!-- Leaderboard Card -->
-      <div class="leaderboard-card">
+      <div class="leaderboard-card" style="flex: 1; display: flex; flex-direction: column;">
         <header class="leaderboard-header">
           <div>
             <h2 class="leaderboard-title">🏆 Top Donadores</h2>
           </div>
         </header>
 
-        <ol class="leaderboard-list" id="donorList">
+        <ol class="leaderboard-list" id="donorList" style="flex: 1; overflow-y: auto;">
           <li class="leaderboard-empty">
             <div class="leaderboard-empty-icon">💎</div>
             <p>Esperando donaciones...</p>
@@ -260,7 +362,7 @@
           <div class="winner-display" id="winnerDisplay">—</div>
         </footer>
       </div>
-    </main>
+    </aside>
   </div>
 
   <!-- Modal de Novedades -->
