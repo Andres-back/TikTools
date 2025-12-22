@@ -139,8 +139,17 @@ router.post('/', authenticateToken, (req, res, next) => {
     const imageUrl = req.file ? `/uploads/chat/${req.file.filename}` : null;
 
     if (req.file) {
-      console.log(`[CHAT-POST] Image URL set to: ${imageUrl}`);
+      console.log(`[CHAT-POST] ✅ Image uploaded successfully`);
+      console.log(`[CHAT-POST] Image URL: ${imageUrl}`);
       console.log(`[CHAT-POST] File saved at: ${req.file.path}`);
+      console.log(`[CHAT-POST] File size: ${req.file.size} bytes`);
+      console.log(`[CHAT-POST] MIME type: ${req.file.mimetype}`);
+
+      // Verificar que el archivo realmente existe
+      if (!fs.existsSync(req.file.path)) {
+        console.error(`[CHAT-POST] ❌ ERROR: File was not saved to disk!`);
+        return res.status(500).json({ error: 'Error al guardar la imagen' });
+      }
     }
 
     const result = await db.query(
