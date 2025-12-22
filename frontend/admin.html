@@ -1631,15 +1631,23 @@
           return;
         }
         
-        container.innerHTML = messages.map(msg => `
-          <div class="message ${msg.sender_type === 'admin' ? 'own' : ''}">
-            <div class="message-bubble">
-              <div class="message-text">${msg.message || ''}</div>
-              ${msg.image_url ? `<img src="${msg.image_url}" class="message-image" alt="Imagen">` : ''}
-              <div class="message-time">${new Date(msg.created_at).toLocaleString()}</div>
+        container.innerHTML = messages.map(msg => {
+          // Normalizar la URL de la imagen (corregir rutas antiguas sin /uploads/chat/)
+          let imageUrl = msg.image_url;
+          if (imageUrl && !imageUrl.startsWith('/uploads/') && !imageUrl.startsWith('http')) {
+            imageUrl = `/uploads/chat/${imageUrl}`;
+          }
+
+          return `
+            <div class="message ${msg.sender_type === 'admin' ? 'own' : ''}">
+              <div class="message-bubble">
+                <div class="message-text">${msg.message || ''}</div>
+                ${imageUrl ? `<img src="${imageUrl}" class="message-image" alt="Imagen">` : ''}
+                <div class="message-time">${new Date(msg.created_at).toLocaleString()}</div>
+              </div>
             </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
         
         container.scrollTop = container.scrollHeight;
       } catch (error) {
