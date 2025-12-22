@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overlay - Ruleta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: transparent;
+      --text-primary: #f8f8f2;
+      --text-secondary: #a9a9b3;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: transparent;
+      color: var(--text-primary);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .roulette-container {
+      position: relative;
+      width: 80vh;
+      height: 80vh;
+      max-width: 650px;
+      max-height: 650px;
+    }
+
+    .roulette-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .roulette-arrow {
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      filter: drop-shadow(0px 5px 15px rgba(0, 0, 0, 0.5));
+    }
+
+    #rouletteCanvas, #giftsOverlayCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: transform 5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    #giftsOverlayCanvas {
+      pointer-events: none;
+    }
+
+    .roulette-message {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(27, 27, 43, 0.8);
+      backdrop-filter: blur(5px);
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      font-weight: 600;
+      font-size: 1rem;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      text-align: center;
+      color: #ffd700;
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+      min-width: 250px;
+    }
+
+    .roulette-message.show {
+      opacity: 1;
+    }
+
+    #soloCountdown {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      text-align: center;
+      display: none;
+    }
+
+    .countdown-text {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #f1fa8c;
+      text-shadow: 0 0 10px rgba(241, 250, 140, 0.6);
+      margin-bottom: 0.5rem;
+    }
+
+    .countdown-timer {
+      font-size: 8rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-primary);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .countdown-timer.warning {
+      color: #ffa07a;
+      text-shadow: 0 0 20px rgba(255, 160, 122, 0.5);
+    }
+
+    .countdown-timer.critical {
+      color: #ff5555;
+      text-shadow: 0 0 25px rgba(255, 85, 85, 0.8);
+      animation: pulse 0.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Animación de eliminación */
+    #eliminationWindow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #eliminationWindow.show {
+      opacity: 1;
+    }
+
+    .elimination-box {
+      background: linear-gradient(135deg, #1a1a2e 0%, #2d1b3d 100%);
+      border-radius: 24px;
+      padding: 3rem;
+      text-align: center;
+      border: 3px solid #ff4444;
+      box-shadow: 0 20px 60px rgba(255, 68, 68, 0.4);
+      position: relative;
+      z-index: 10;
+      max-width: 500px;
+    }
+
+    .elimination-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff4444, #cc0000);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+      font-weight: 700;
+      color: white;
+      margin: 0 auto 1.5rem;
+      border: 4px solid white;
+      box-shadow: 0 10px 30px rgba(255, 68, 68, 0.5);
+      background-size: cover;
+      background-position: center;
+    }
+
+    .elimination-avatar.has-image {
+      font-size: 0;
+    }
+
+    .elimination-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #ff4444;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+    }
+
+    .elimination-subtitle {
+      font-size: 1.2rem;
+      color: #a9a9b3;
+      margin-top: 0.5rem;
+    }
+
+    #eliminationName {
+      font-size: 2rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .elimination-particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .elimination-particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ff4444;
+      border-radius: 50%;
+      animation: fall 2s linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        top: -10%;
+        opacity: 1;
+      }
+      100% {
+        top: 110%;
+        opacity: 0;
+      }
+    }
+
+    .partial-elimination .elimination-title {
+      color: #ffa07a;
+    }
+
+    .partial-elimination .elimination-box {
+      border-color: #ffa07a;
+    }
+
+    .partial-elimination .elimination-avatar {
+      background: linear-gradient(135deg, #ffa07a, #ff7f50);
+      border-color: #ffa07a;
+    }
+
+    /* Toast de eliminación rápida */
+    #quickEliminationToast {
+      position: fixed;
+      top: 50px;
+      right: 50px;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(10px);
+      border: 3px solid #ff4444;
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 2000;
+      opacity: 0;
+      transform: translateX(150%);
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 10px 40px rgba(255, 68, 68, 0.4);
+    }
+
+    #quickEliminationToast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .quick-elimination-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff4444, #cc0000);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      border: 3px solid white;
+      flex-shrink: 0;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .quick-elimination-avatar.has-image {
+      font-size: 0;
+    }
+
+    .quick-elimination-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .quick-elimination-label {
+      font-size: 0.9rem;
+      color: #ff4444;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #quickEliminationName {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="roulette-container">
+    <div class="roulette-wrapper">
+      <div class="roulette-arrow">
+        <svg width="60" height="80" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M30 80L58.2866 35H1.7134L30 80Z" fill="#FFD700"/>
+          <circle cx="30" cy="30" r="24" fill="#FFD700" stroke="#1A1A2E" stroke-width="8"/>
+        </svg>
+      </div>
+      <canvas id="rouletteCanvas" width="800" height="800"></canvas>
+      <canvas id="giftsOverlayCanvas" width="800" height="800"></canvas>
+    </div>
+    <div id="rouletteMessage" class="roulette-message"></div>
+    <div id="soloCountdown">
+      <div class="countdown-text">SOLO QUEDA UNO</div>
+      <div id="countdownTimer" class="countdown-timer">30</div>
+    </div>
+  </div>
+
+  <!-- Ventana de eliminación -->
+  <div id="eliminationWindow">
+    <div class="elimination-particles"></div>
+    <div class="elimination-box">
+      <div id="eliminationAvatar" class="elimination-avatar">?</div>
+      <h3 class="elimination-title">¡ELIMINADO!</h3>
+      <p id="eliminationName">@Usuario</p>
+      <p class="elimination-subtitle">No te quedan más entradas.</p>
+    </div>
+  </div>
+
+  <!-- Toast de eliminación rápida -->
+  <div id="quickEliminationToast">
+    <div id="quickEliminationAvatar" class="quick-elimination-avatar">?</div>
+    <div class="quick-elimination-content">
+      <div class="quick-elimination-label">⚡ ELIMINADO</div>
+      <div id="quickEliminationName">@Usuario</div>
+    </div>
+  </div>
+
+  <script src="overlay-ruleta.js"></script>
+</body>
+</html>
