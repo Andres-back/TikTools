@@ -76,14 +76,11 @@ const overlayChannel = new BroadcastChannel('tiktoolstream_overlay');
 
 // Escuchar peticiones de sincronización de overlays
 overlayChannel.onmessage = (event) => {
-  console.log('[Main-BroadcastChannel] Mensaje recibido:', event.data.type);
-
   if (event.data.type === 'request_sync' || event.data.type === 'ping') {
     sendOverlaySync();
   }
 
   if (event.data.type === 'request_leaderboard_sync') {
-    console.log('[Main-BroadcastChannel] Solicitud de sincronización de leaderboard');
     sendLeaderboardSync();
   }
 };
@@ -93,8 +90,6 @@ function sendOverlaySync() {
   const state = getTimerState();
   const winner = getWinner();
   const sorted = getSortedDonors();
-
-  console.log('[Main-BroadcastChannel] Enviando sync completo - Timer + Donadores');
 
   overlayChannel.postMessage({
     type: 'sync',
@@ -120,8 +115,6 @@ function sendOverlaySync() {
 
 function sendLeaderboardSync() {
   const sorted = getSortedDonors();
-
-  console.log('[Main-BroadcastChannel] Enviando leaderboard con', sorted.length, 'donadores');
 
   overlayChannel.postMessage({
     type: 'leaderboard_update',
@@ -201,14 +194,7 @@ const elements = {
   animationOverlay: document.getElementById("animationOverlay")
 };
 
-// Log de elementos encontrados
-console.log('Elementos DOM cargados:', {
-  tiktokConnect: !!elements.tiktokConnect,
-  tiktokUserInput: !!elements.tiktokUserInput,
-  timerPlay: !!elements.timerPlay,
-  timerReset: !!elements.timerReset,
-  donorList: !!elements.donorList
-});
+// Elementos DOM cargados
 
 // ============================================
 // Inicialización de módulos
@@ -262,7 +248,6 @@ function initializeModules() {
 
   // Registrar callback para sincronización con overlays
   setOnSyncRequest(() => {
-    console.log('[Main] Overlay solicita sincronización via WebSocket, enviando datos...');
     sendOverlaySync();
   });
 
@@ -365,17 +350,12 @@ function loadUIFromStorage() {
 // ============================================
 
 function setupEventListeners() {
-  console.log('setupEventListeners - Configurando event listeners');
-
   // Conectar/Desconectar (ahora también guarda el usuario)
   elements.tiktokConnect?.addEventListener("click", () => {
-    console.log('Connect button clicked');
     if (isConnected()) {
-      console.log('Disconnecting...');
       disconnect();
     } else {
       const username = elements.tiktokUserInput?.value?.trim() || getCurrentUser();
-      console.log('Attempting to connect with username:', username);
       if (username) {
         // Guardar el usuario automáticamente al conectar
         saveUser(username);
@@ -387,10 +367,7 @@ function setupEventListeners() {
         // Obtener credenciales opcionales del localStorage
         const sessionId = loadSessionId() || null;
         const ttTargetIdc = loadTtTargetIdc() || null;
-        console.log('Connecting with credentials:', { username, hasSessionId: !!sessionId, hasTtTargetIdc: !!ttTargetIdc });
         connect(username, sessionId, ttTargetIdc);
-      } else {
-        console.warn('No username provided');
       }
     }
     updateConnectionUI();
@@ -623,39 +600,32 @@ function showPlanBanner(planData) {
 // ============================================
 
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log('DOMContentLoaded - Iniciando aplicación');
 
   try {
-    // Inicializar UI (modales, menús, etc.)
-    console.log('Inicializando UI...');
     initUI();
   } catch (e) {
     console.error('Error inicializando UI:', e);
   }
 
   try {
-    console.log('Inicializando módulos...');
     initializeModules();
   } catch (e) {
     console.error('Error inicializando módulos:', e);
   }
 
   try {
-    console.log('Cargando UI desde storage...');
     loadUIFromStorage();
   } catch (e) {
     console.error('Error cargando UI desde storage:', e);
   }
 
   try {
-    console.log('Configurando event listeners...');
     setupEventListeners();
   } catch (e) {
     console.error('Error configurando event listeners:', e);
   }
 
   try {
-    console.log('Actualizando controles...');
     updateTimerControls();
     updateConnectionUI();
   } catch (e) {
@@ -664,7 +634,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Verificar estado del plan
   try {
-    console.log('Verificando estado del plan...');
     const planStatus = await checkPlanStatus();
     if (planStatus) {
       showPlanBanner(planStatus);
@@ -673,5 +642,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error('Error verificando plan:', e);
   }
 
-  console.log("TikToolStream inicializado correctamente");
+  console.log("✓ TikToolStream iniciado");
 });

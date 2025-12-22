@@ -477,8 +477,6 @@
 
     // Manejar mensajes del servidor
     function handleMessage(data) {
-      console.log('[Overlay-Timer] Mensaje recibido:', data.type);
-
       switch (data.type) {
         case 'timer_update':
           updateTimer(data);

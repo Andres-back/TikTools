@@ -54,11 +54,9 @@ function initSyncWebSocket() {
     syncWs.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log('[SyncWS] Mensaje recibido:', data.type);
 
         // Responder a solicitudes de sincronización desde overlays
         if (data.type === 'request_sync' && onSyncRequest) {
-          console.log('[SyncWS] Overlay solicita sincronización, llamando callback...');
           onSyncRequest();
         }
       } catch (e) {
@@ -397,8 +395,6 @@ export function setCurrentUser(username) {
  * @param {Array} donors - Array de donadores con {uniqueId, totalCoins, profilePictureUrl}
  */
 export function broadcastLeaderboard(donors) {
-  console.log('[Connection] Broadcasting leaderboard con', donors.length, 'donadores');
-
   // Usar BroadcastChannel para comunicación directa con overlays
   try {
     overlayChannel.postMessage({
@@ -432,8 +428,6 @@ export function broadcastLeaderboard(donors) {
  * @param {boolean} active - Si el timer está activo
  */
 export function broadcastTimerUpdate(seconds, message = '', phase = 'idle', active = false) {
-  console.log('[Connection] Broadcasting timer update:', { seconds, phase, active });
-
   // Enviar por WebSocket (prioridad para overlays en OBS)
   const wsToUse = (syncWs && syncWs.readyState === WebSocket.OPEN) ? syncWs : ws;
   if (wsToUse && wsToUse.readyState === WebSocket.OPEN) {
