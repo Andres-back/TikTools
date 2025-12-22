@@ -133,63 +133,14 @@
         </details>
       </section>
 
-      <!-- Controles de Subasta -->
+      <!-- Información de Ruleta -->
       <section class="panel-section">
-        <label class="panel-label">Controles de Subasta</label>
-        <div class="btn-group">
-          <button id="timerPlay" class="btn btn-primary">▶ Iniciar</button>
-          <button id="timerReset" class="btn btn-secondary">↺ Reiniciar</button>
+        <label class="panel-label">ℹ️ Información</label>
+        <div style="background: rgba(0,217,255,0.1); border: 1px solid rgba(0,217,255,0.2); border-radius: 8px; padding: 1rem;">
+          <p style="margin: 0; font-size: 0.9rem; color: rgba(255,255,255,0.8); line-height: 1.6;">
+            Los participantes se agregan automáticamente desde el TikTok Live según las reglas configuradas.
+          </p>
         </div>
-      </section>
-
-      <!-- Configuración de Tiempos -->
-      <section class="panel-section">
-        <label class="panel-label">⏱️ Tiempos (segundos)</label>
-        <div class="time-inputs">
-          <div class="time-input">
-            <label class="panel-label" style="font-size: 0.65rem;">Inicial</label>
-            <div class="input-group">
-              <input type="number" id="initialTimeInput" class="input-field" value="120" min="10" max="600">
-            </div>
-          </div>
-          <div class="time-input">
-            <label class="panel-label" style="font-size: 0.65rem;">Delay</label>
-            <div class="input-group">
-              <input type="number" id="delayTimeInput" class="input-field" value="20" min="0" max="120">
-            </div>
-          </div>
-          <div class="time-input">
-            <label class="panel-label" style="font-size: 0.65rem;">Empate</label>
-            <div class="input-group">
-              <input type="number" id="tieExtensionInput" class="input-field" value="30" min="10" max="120">
-            </div>
-          </div>
-        </div>
-        <button id="updateTimes" class="btn btn-secondary" style="margin-top: 0.75rem; width: 100%;">Aplicar</button>
-      </section>
-
-      <!-- Mensaje del Timer -->
-      <section class="panel-section">
-        <label class="panel-label">📝 Mensaje</label>
-        <div class="input-group">
-          <input type="text" id="minMessageInput" class="input-field" placeholder="MIN 10" maxlength="20">
-        </div>
-        <button id="updateMinMessage" class="btn btn-secondary"
-          style="margin-top: 0.5rem; width: 100%;">Actualizar</button>
-      </section>
-
-      <!-- Suma Manual -->
-      <section class="panel-section">
-        <label class="panel-label">💎 Suma Manual</label>
-        <div class="input-group" style="margin-bottom: 0.5rem;">
-          <span class="input-prefix">@</span>
-          <input type="text" id="manualUserInput" class="input-field" placeholder="usuario">
-        </div>
-        <div class="input-group">
-          <input type="number" id="manualCoinsInput" class="input-field" placeholder="Monedas" min="1">
-        </div>
-        <button id="addManualCoins" class="btn btn-success" style="margin-top: 0.75rem; width: 100%;">+ Agregar
-          Monedas</button>
       </section>
     </aside>
 
