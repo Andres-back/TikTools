@@ -301,9 +301,69 @@
           </button>
         </div>
       </div>
+    </main>
+
+    <!-- ========================================
+         COLUMNA DERECHA (Estadísticas + Participantes + Configuración)
+         ======================================== -->
+    <aside class="right-column">
+      <!-- Panel de Estadísticas -->
+      <div class="stats-grid" style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+        <div class="stat-item" style="background: linear-gradient(135deg, rgba(0,217,255,0.2), rgba(0,153,204,0.2)); border: 1px solid rgba(0,217,255,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
+          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Participantes</span>
+          <div class="stat-value" style="font-size: 2.5rem; font-weight: 700; color: #00d9ff;">
+            <span id="participantCount">0</span>
+            <small id="minParticipantsStatus" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-top: 0.25rem;">mín: 2</small>
+          </div>
+        </div>
+        <div class="stat-item" style="background: linear-gradient(135deg, rgba(78,205,196,0.2), rgba(62,164,156,0.2)); border: 1px solid rgba(78,205,196,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
+          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Total Entradas</span>
+          <span id="totalEntriesEl" class="stat-value" style="font-size: 2.5rem; font-weight: 700; color: #4ECDC4;">0</span>
+        </div>
+        <div class="stat-item" style="background: linear-gradient(135deg, rgba(138,120,228,0.2), rgba(110,96,208,0.2)); border: 1px solid rgba(138,120,228,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
+          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Overlays OBS</span>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; justify-content: center;">
+            <a href="/overlay-ruleta.html" target="_blank" style="padding: 0.5rem 1rem; background: rgba(78,205,196,0.3); border: 1px solid rgba(78,205,196,0.5); border-radius: 6px; color: #4ECDC4; text-decoration: none; font-size: 0.75rem; font-weight: 600; transition: all 0.3s;">🎯 Ruleta</a>
+            <a href="/overlay-participantes.html" target="_blank" style="padding: 0.5rem 1rem; background: rgba(248,183,57,0.3); border: 1px solid rgba(248,183,57,0.5); border-radius: 6px; color: #F8B739; text-decoration: none; font-size: 0.75rem; font-weight: 600; transition: all 0.3s;">📋 Lista</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Participantes -->
+      <div class="participants-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1); max-height: 400px; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+          <h3 style="margin: 0; color: #fff; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>👥</span>
+            <span>Participantes</span>
+          </h3>
+          <span id="participantsListCount" style="background: rgba(0,217,255,0.2); color: #00d9ff; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">0</span>
+        </div>
+        <div id="participantsList" class="participants-list" style="flex: 1; overflow-y: auto; padding-right: 0.5rem;">
+          <style>
+            .participants-list::-webkit-scrollbar {
+              width: 6px;
+            }
+            .participants-list::-webkit-scrollbar-track {
+              background: rgba(0,0,0,0.2);
+              border-radius: 3px;
+            }
+            .participants-list::-webkit-scrollbar-thumb {
+              background: rgba(0,217,255,0.3);
+              border-radius: 3px;
+            }
+            .participants-list::-webkit-scrollbar-thumb:hover {
+              background: rgba(0,217,255,0.5);
+            }
+          </style>
+          <div class="empty-state" style="text-align: center; padding: 3rem 1rem; color: rgba(255,255,255,0.5);">
+            <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+            <p>Esperando participantes...</p>
+          </div>
+        </div>
+      </div>
 
       <!-- Configuración de Reglas -->
-      <details class="config-section" open style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">
+      <details class="config-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">
         <summary class="config-header" style="padding: 1.25rem; cursor: pointer; font-weight: 600; color: #fff; user-select: none;">⚙️ Reglas de Entrada</summary>
         <div class="config-content" style="padding: 0 1.25rem 1.25rem;">
           <div class="config-item" style="margin-bottom: 1rem;">
@@ -384,66 +444,6 @@
           <button id="addManualBtn" class="btn btn-secondary" style="width: 100%; padding: 1rem; font-weight: 600;">➕ Agregar Participante</button>
         </div>
       </details>
-    </main>
-
-    <!-- ========================================
-         COLUMNA DERECHA (Estadísticas + Participantes)
-         ======================================== -->
-    <aside class="right-column">
-      <!-- Panel de Estadísticas -->
-      <div class="stats-grid" style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
-        <div class="stat-item" style="background: linear-gradient(135deg, rgba(0,217,255,0.2), rgba(0,153,204,0.2)); border: 1px solid rgba(0,217,255,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
-          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Participantes</span>
-          <div class="stat-value" style="font-size: 2.5rem; font-weight: 700; color: #00d9ff;">
-            <span id="participantCount">0</span>
-            <small id="minParticipantsStatus" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-top: 0.25rem;">mín: 2</small>
-          </div>
-        </div>
-        <div class="stat-item" style="background: linear-gradient(135deg, rgba(78,205,196,0.2), rgba(62,164,156,0.2)); border: 1px solid rgba(78,205,196,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
-          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Total Entradas</span>
-          <span id="totalEntriesEl" class="stat-value" style="font-size: 2.5rem; font-weight: 700; color: #4ECDC4;">0</span>
-        </div>
-        <div class="stat-item" style="background: linear-gradient(135deg, rgba(138,120,228,0.2), rgba(110,96,208,0.2)); border: 1px solid rgba(138,120,228,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
-          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Overlays OBS</span>
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; justify-content: center;">
-            <a href="/overlay-ruleta.html" target="_blank" style="padding: 0.5rem 1rem; background: rgba(78,205,196,0.3); border: 1px solid rgba(78,205,196,0.5); border-radius: 6px; color: #4ECDC4; text-decoration: none; font-size: 0.75rem; font-weight: 600; transition: all 0.3s;">🎯 Ruleta</a>
-            <a href="/overlay-participantes.html" target="_blank" style="padding: 0.5rem 1rem; background: rgba(248,183,57,0.3); border: 1px solid rgba(248,183,57,0.5); border-radius: 6px; color: #F8B739; text-decoration: none; font-size: 0.75rem; font-weight: 600; transition: all 0.3s;">📋 Lista</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Lista de Participantes -->
-      <div class="participants-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1); flex: 1; display: flex; flex-direction: column;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-          <h3 style="margin: 0; color: #fff; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span>👥</span>
-            <span>Participantes</span>
-          </h3>
-          <span id="participantsListCount" style="background: rgba(0,217,255,0.2); color: #00d9ff; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">0</span>
-        </div>
-        <div id="participantsList" class="participants-list" style="flex: 1; overflow-y: auto; padding-right: 0.5rem; min-height: 300px;">
-          <style>
-            .participants-list::-webkit-scrollbar {
-              width: 6px;
-            }
-            .participants-list::-webkit-scrollbar-track {
-              background: rgba(0,0,0,0.2);
-              border-radius: 3px;
-            }
-            .participants-list::-webkit-scrollbar-thumb {
-              background: rgba(0,217,255,0.3);
-              border-radius: 3px;
-            }
-            .participants-list::-webkit-scrollbar-thumb:hover {
-              background: rgba(0,217,255,0.5);
-            }
-          </style>
-          <div class="empty-state" style="text-align: center; padding: 3rem 1rem; color: rgba(255,255,255,0.5);">
-            <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
-            <p>Esperando participantes...</p>
-          </div>
-        </div>
-      </div>
     </aside>
   </div>
 

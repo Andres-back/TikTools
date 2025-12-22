@@ -237,56 +237,6 @@
           <button id="timerReset" class="btn btn-secondary">↺ Reiniciar</button>
         </div>
       </section>
-
-      <!-- Configuración de Tiempos -->
-      <section class="panel-section">
-        <label class="panel-label">⏱️ Tiempos (segundos)</label>
-        <div class="time-inputs">
-          <div class="time-input">
-            <label class="panel-label" style="font-size: 0.65rem;">Inicial</label>
-            <div class="input-group">
-              <input type="number" id="initialTimeInput" class="input-field" value="120" min="10" max="600">
-            </div>
-          </div>
-          <div class="time-input">
-            <label class="panel-label" style="font-size: 0.65rem;">Delay</label>
-            <div class="input-group">
-              <input type="number" id="delayTimeInput" class="input-field" value="20" min="0" max="120">
-            </div>
-          </div>
-          <div class="time-input">
-            <label class="panel-label" style="font-size: 0.65rem;">Empate</label>
-            <div class="input-group">
-              <input type="number" id="tieExtensionInput" class="input-field" value="30" min="10" max="120">
-            </div>
-          </div>
-        </div>
-        <button id="updateTimes" class="btn btn-secondary" style="margin-top: 0.75rem; width: 100%;">Aplicar</button>
-      </section>
-
-      <!-- Mensaje del Timer -->
-      <section class="panel-section">
-        <label class="panel-label">📝 Mensaje</label>
-        <div class="input-group">
-          <input type="text" id="minMessageInput" class="input-field" placeholder="MIN 10" maxlength="20">
-        </div>
-        <button id="updateMinMessage" class="btn btn-secondary"
-          style="margin-top: 0.5rem; width: 100%;">Actualizar</button>
-      </section>
-
-      <!-- Suma Manual -->
-      <section class="panel-section">
-        <label class="panel-label">💎 Suma Manual</label>
-        <div class="input-group" style="margin-bottom: 0.5rem;">
-          <span class="input-prefix">@</span>
-          <input type="text" id="manualUserInput" class="input-field" placeholder="usuario">
-        </div>
-        <div class="input-group">
-          <input type="number" id="manualCoinsInput" class="input-field" placeholder="Monedas" min="1">
-        </div>
-        <button id="addManualCoins" class="btn btn-success" style="margin-top: 0.75rem; width: 100%;">+ Agregar
-          Monedas</button>
-      </section>
     </aside>
 
     <!-- ========================================
@@ -335,14 +285,31 @@
         </div>
       </div>
 
+      <!-- Suma Manual -->
+      <div style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.5rem;">💎</span>
+          <span>Suma Manual</span>
+        </h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="input-group">
+            <span class="input-prefix">@</span>
+            <input type="text" id="manualUserInput" class="input-field" placeholder="usuario">
+          </div>
+          <div class="input-group">
+            <input type="number" id="manualCoinsInput" class="input-field" placeholder="Monedas" min="1">
+          </div>
+        </div>
+        <button id="addManualCoins" class="btn btn-success" style="margin-top: 1rem; width: 100%; padding: 1rem; font-size: 1.1rem; font-weight: 600;">+ Agregar Monedas</button>
+      </div>
     </main>
 
     <!-- ========================================
-         COLUMNA DERECHA (Leaderboard)
+         COLUMNA DERECHA (Leaderboard + Controles)
          ======================================== -->
     <aside class="right-column">
       <!-- Leaderboard Card -->
-      <div class="leaderboard-card" style="flex: 1; display: flex; flex-direction: column;">
+      <div class="leaderboard-card" style="display: flex; flex-direction: column; max-height: 50vh;">
         <header class="leaderboard-header">
           <div>
             <h2 class="leaderboard-title">🏆 Top Donadores</h2>
@@ -362,6 +329,41 @@
           <div class="winner-display" id="winnerDisplay">—</div>
         </footer>
       </div>
+
+      <!-- Configuración de Tiempos -->
+      <section style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+        <label style="display: block; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600; color: #fff;">⏱️ Tiempos (segundos)</label>
+        <div class="time-inputs" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 0.75rem;">
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.7rem; text-align: center; display: block; margin-bottom: 0.25rem;">Inicial</label>
+            <div class="input-group">
+              <input type="number" id="initialTimeInput" class="input-field" value="120" min="10" max="600">
+            </div>
+          </div>
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.7rem; text-align: center; display: block; margin-bottom: 0.25rem;">Delay</label>
+            <div class="input-group">
+              <input type="number" id="delayTimeInput" class="input-field" value="20" min="0" max="120">
+            </div>
+          </div>
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.7rem; text-align: center; display: block; margin-bottom: 0.25rem;">Empate</label>
+            <div class="input-group">
+              <input type="number" id="tieExtensionInput" class="input-field" value="30" min="10" max="120">
+            </div>
+          </div>
+        </div>
+        <button id="updateTimes" class="btn btn-secondary" style="width: 100%;">Aplicar</button>
+      </section>
+
+      <!-- Mensaje del Timer -->
+      <section style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+        <label style="display: block; margin-bottom: 0.75rem; font-size: 1.1rem; font-weight: 600; color: #fff;">📝 Mensaje del Timer</label>
+        <div class="input-group" style="margin-bottom: 0.75rem;">
+          <input type="text" id="minMessageInput" class="input-field" placeholder="MIN 10" maxlength="20">
+        </div>
+        <button id="updateMinMessage" class="btn btn-secondary" style="width: 100%;">Actualizar</button>
+      </section>
     </aside>
   </div>
 
