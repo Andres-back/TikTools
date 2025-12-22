@@ -148,19 +148,25 @@
          CONTENIDO PRINCIPAL (Derecha)
          ======================================== -->
     <main class="main-content">
-      <!-- Links a Overlays de Ruleta -->
-      <div style="background: rgba(138, 120, 228, 0.1); border: 1px solid rgba(138, 120, 228, 0.3); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
-          <span style="font-size: 1.5rem;">📺</span>
-          <h3 style="margin: 0; font-size: 1rem; font-weight: 600; color: #fff;">Overlays para OBS</h3>
+      <!-- Panel de Estadísticas -->
+      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="stat-item" style="background: linear-gradient(135deg, rgba(0,217,255,0.2), rgba(0,153,204,0.2)); border: 1px solid rgba(0,217,255,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
+          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Participantes</span>
+          <div class="stat-value" style="font-size: 2.5rem; font-weight: 700; color: #00d9ff;">
+            <span id="participantCount">0</span>
+            <small id="minParticipantsStatus" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-top: 0.25rem;">mín: 2</small>
+          </div>
         </div>
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-          <a href="/overlay-ruleta.html" target="_blank" style="flex: 1; min-width: 200px; padding: 0.75rem 1rem; background: rgba(78, 205, 196, 0.2); border: 1px solid rgba(78, 205, 196, 0.3); border-radius: 8px; color: #4ECDC4; text-decoration: none; font-weight: 600; transition: all 0.3s;">
-            🎯 Ruleta
-          </a>
-          <a href="/overlay-participantes.html" target="_blank" style="flex: 1; min-width: 200px; padding: 0.75rem 1rem; background: rgba(248, 183, 57, 0.2); border: 1px solid rgba(248, 183, 57, 0.3); border-radius: 8px; color: #F8B739; text-decoration: none; font-weight: 600; transition: all 0.3s;">
-            📋 Participantes
-          </a>
+        <div class="stat-item" style="background: linear-gradient(135deg, rgba(78,205,196,0.2), rgba(62,164,156,0.2)); border: 1px solid rgba(78,205,196,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
+          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Total Entradas</span>
+          <span id="totalEntriesEl" class="stat-value" style="font-size: 2.5rem; font-weight: 700; color: #4ECDC4;">0</span>
+        </div>
+        <div class="stat-item" style="background: linear-gradient(135deg, rgba(138,120,228,0.2), rgba(110,96,208,0.2)); border: 1px solid rgba(138,120,228,0.3); border-radius: 12px; padding: 1.25rem; text-align: center;">
+          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Overlays OBS</span>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; justify-content: center;">
+            <a href="/overlay-ruleta.html" target="_blank" style="padding: 0.4rem 0.75rem; background: rgba(78,205,196,0.3); border: 1px solid rgba(78,205,196,0.5); border-radius: 6px; color: #4ECDC4; text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: all 0.3s;">🎯</a>
+            <a href="/overlay-participantes.html" target="_blank" style="padding: 0.4rem 0.75rem; background: rgba(248,183,57,0.3); border: 1px solid rgba(248,183,57,0.5); border-radius: 6px; color: #F8B739; text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: all 0.3s;">📋</a>
+          </div>
         </div>
       </div>
 
@@ -183,34 +189,41 @@
         </div>
 
         <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center; flex-wrap: wrap;">
-          <button id="spinBtn" class="btn btn-primary" disabled style="flex: 1; min-width: 200px; padding: 1rem; font-size: 1.1rem; font-weight: 700;">
+          <button id="spinBtn" class="btn btn-primary" disabled style="flex: 1; min-width: 200px; padding: 1.25rem; font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #00d9ff, #0099cc); border: none; border-radius: 12px; color: white; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,217,255,0.3);">
             ▶️ Activar Auto-Giro
           </button>
-          <button id="resetBtn" class="btn btn-secondary" style="flex: 1; min-width: 200px; padding: 1rem; font-size: 1.1rem; font-weight: 700;">
+          <button id="resetBtn" class="btn btn-secondary" style="flex: 1; min-width: 200px; padding: 1.25rem; font-size: 1.2rem; font-weight: 700; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white; cursor: pointer; transition: all 0.3s;">
             🔄 Reiniciar Juego
           </button>
         </div>
       </div>
 
-      <!-- Panel de Estadísticas -->
-      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-        <div class="stat-item" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 0.5rem;">Participantes</span>
-          <div class="stat-value" style="font-size: 2rem; font-weight: 700; color: #00d9ff;">
-            <span id="participantCount">0</span>
-            <small id="minParticipantsStatus" style="font-size: 0.9rem; color: rgba(255,255,255,0.5);">/ mín: 2</small>
-          </div>
-        </div>
-        <div class="stat-item" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 0.5rem;">Total Entradas</span>
-          <span id="totalEntriesEl" class="stat-value" style="font-size: 2rem; font-weight: 700; color: #4ECDC4;">0</span>
-        </div>
-      </div>
-
       <!-- Lista de Participantes -->
       <div class="participants-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
-        <h3 style="margin: 0 0 1rem 0; color: #fff; font-size: 1.1rem;">Lista de Participantes</h3>
-        <div id="participantsList" class="participants-list" style="max-height: 400px; overflow-y: auto;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+          <h3 style="margin: 0; color: #fff; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>👥</span>
+            <span>Lista de Participantes</span>
+          </h3>
+          <span id="participantsListCount" style="background: rgba(0,217,255,0.2); color: #00d9ff; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">0</span>
+        </div>
+        <div id="participantsList" class="participants-list" style="max-height: 350px; overflow-y: auto; padding-right: 0.5rem;">
+          <style>
+            .participants-list::-webkit-scrollbar {
+              width: 8px;
+            }
+            .participants-list::-webkit-scrollbar-track {
+              background: rgba(0,0,0,0.2);
+              border-radius: 4px;
+            }
+            .participants-list::-webkit-scrollbar-thumb {
+              background: rgba(0,217,255,0.3);
+              border-radius: 4px;
+            }
+            .participants-list::-webkit-scrollbar-thumb:hover {
+              background: rgba(0,217,255,0.5);
+            }
+          </style>
           <div class="empty-state" style="text-align: center; padding: 3rem 1rem; color: rgba(255,255,255,0.5);">
             <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
             <p>Esperando participantes...</p>

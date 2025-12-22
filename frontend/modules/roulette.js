@@ -38,6 +38,9 @@ let giftsData = [];
 // WebSocket para overlays
 let overlaySocket = null;
 
+// Caché de imágenes cargadas
+const imageCache = new Map();
+
 // Colores
 const COLORS = [
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#F8B739', '#A78BFA',
@@ -211,7 +214,14 @@ function addParticipant({ uniqueId, displayName, entries, profileImage }) {
 
 function updateParticipantsDisplay() {
   const participantsList = document.getElementById('participantsList');
+  const participantsListCount = document.getElementById('participantsListCount');
+
   if (!participantsList) return;
+
+  // Actualizar contador en el header
+  if (participantsListCount) {
+    participantsListCount.textContent = participants.size;
+  }
 
   if (participants.size === 0) {
     participantsList.innerHTML = `
@@ -226,17 +236,27 @@ function updateParticipantsDisplay() {
   const sortedParticipants = Array.from(participants.entries())
     .sort((a, b) => b[1].entries - a[1].entries);
 
-  participantsList.innerHTML = sortedParticipants.map(([uniqueId, data]) => `
-    <div class="participant-item" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem;">
-      <div style="width: 40px; height: 40px; border-radius: 50%; background: ${data.color}; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;">
-        ${data.displayName.charAt(0).toUpperCase()}
+  participantsList.innerHTML = sortedParticipants.map(([uniqueId, data]) => {
+    const hasImage = data.profileImage && data.profileImage.trim();
+    const avatarContent = hasImage
+      ? `<img src="${data.profileImage}" alt="${data.displayName}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentElement.innerHTML='${data.displayName.charAt(0).toUpperCase()}'; this.parentElement.style.display='flex'; this.parentElement.style.alignItems='center'; this.parentElement.style.justifyContent='center'; this.parentElement.style.fontWeight='700'; this.parentElement.style.color='white';">`
+      : `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-weight: 700; color: white;">${data.displayName.charAt(0).toUpperCase()}</div>`;
+
+    return `
+      <div class="participant-item" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border: 2px solid ${data.color}; border-radius: 12px; margin-bottom: 0.5rem; transition: all 0.3s;">
+        <div style="width: 48px; height: 48px; min-width: 48px; border-radius: 50%; background: ${data.color}; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          ${avatarContent}
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-weight: 600; color: #fff; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@${data.displayName}</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: ${data.color}; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600; color: white;">${data.entries}</span>
+            <span>entradas</span>
+          </div>
+        </div>
       </div>
-      <div style="flex: 1;">
-        <div style="font-weight: 600; color: #fff;">@${data.displayName}</div>
-        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">${data.entries} entradas</div>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function updateStats() {
@@ -256,10 +276,33 @@ function updateStats() {
 }
 
 // ============================================
+// CARGA DE IMÁGENES
+// ============================================
+
+function loadImage(url) {
+  if (!url) return Promise.resolve(null);
+
+  if (imageCache.has(url)) {
+    return Promise.resolve(imageCache.get(url));
+  }
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      imageCache.set(url, img);
+      resolve(img);
+    };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
+// ============================================
 // DIBUJADO DE RULETA
 // ============================================
 
-function drawRoulette() {
+async function drawRoulette() {
   if (!ctx || !rouletteCanvas) return;
 
   const width = rouletteCanvas.width;
@@ -300,11 +343,17 @@ function drawRoulette() {
 
   const anglePerEntry = (2 * Math.PI) / entries.length;
 
+  // Cargar todas las imágenes primero
+  const imagePromises = entries.map(entry => loadImage(entry.profileImage));
+  const images = await Promise.all(imagePromises);
+
   // Dibujar segmentos
   entries.forEach((entry, index) => {
     const startAngle = index * anglePerEntry - Math.PI / 2;
     const endAngle = startAngle + anglePerEntry;
+    const midAngle = startAngle + anglePerEntry / 2;
 
+    // Dibujar segmento de color
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
@@ -314,6 +363,53 @@ function drawRoulette() {
     ctx.strokeStyle = '#1a202c';
     ctx.lineWidth = 2;
     ctx.stroke();
+
+    // Dibujar imagen de perfil si existe
+    const img = images[index];
+    if (img && anglePerEntry > 0.2) { // Solo si el segmento es suficientemente grande
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(midAngle);
+
+      const imgSize = Math.min(radius * 0.3, 60);
+      const imgDistance = radius * 0.65;
+
+      // Dibujar círculo blanco de fondo
+      ctx.beginPath();
+      ctx.arc(imgDistance, 0, imgSize / 2 + 3, 0, 2 * Math.PI);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      // Clip circular para la imagen
+      ctx.beginPath();
+      ctx.arc(imgDistance, 0, imgSize / 2, 0, 2 * Math.PI);
+      ctx.clip();
+
+      // Dibujar imagen
+      ctx.drawImage(
+        img,
+        imgDistance - imgSize / 2,
+        -imgSize / 2,
+        imgSize,
+        imgSize
+      );
+
+      ctx.restore();
+    } else if (anglePerEntry > 0.15) {
+      // Si no hay imagen pero el segmento es visible, dibujar inicial
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(midAngle);
+
+      const textDistance = radius * 0.65;
+      ctx.font = 'bold 20px Arial';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(entry.displayName.charAt(0).toUpperCase(), textDistance, 0);
+
+      ctx.restore();
+    }
   });
 
   // Borde exterior
