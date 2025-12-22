@@ -201,8 +201,10 @@ async function loadNews() {
   const newsLoading = document.getElementById('newsLoading');
   const newsEmpty = document.getElementById('newsEmpty');
 
+  console.log('[NEWS] Iniciando carga de novedades...');
+
   if (!newsList) {
-    console.warn('loadNews: newsList element not found');
+    console.warn('[NEWS] newsList element not found');
     return;
   }
 
@@ -216,30 +218,40 @@ async function loadNews() {
   newsList.innerHTML = '';
 
   try {
+    console.log('[NEWS] Fetching /api/news...');
     const response = await fetch('/api/news');
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const news = await response.json();
+    console.log(`[NEWS] Recibidas ${news.length} novedades`);
 
     if (newsLoading) {
       newsLoading.style.display = 'none';
     }
 
     if (!news || news.length === 0) {
+      console.log('[NEWS] No hay novedades para mostrar');
       if (newsEmpty) {
         newsEmpty.style.display = 'block';
       }
       return;
     }
 
-    news.forEach(item => {
+    news.forEach((item, index) => {
+      console.log(`[NEWS] Procesando noticia ${index + 1}/${news.length}:`, {
+        title: item.title,
+        hasImage: !!item.image_url,
+        imageUrl: item.image_url
+      });
       const newsItem = createNewsItem(item);
       newsList.appendChild(newsItem);
     });
+
+    console.log('[NEWS] ✅ Novedades cargadas exitosamente');
   } catch (error) {
-    console.error('Error loading news:', error);
-    
+    console.error('[NEWS] ❌ Error loading news:', error);
+
     if (newsLoading) {
       newsLoading.style.display = 'none';
     }
@@ -263,31 +275,9 @@ function createNewsItem(news) {
     day: 'numeric'
   });
 
-  // Formatear URL de imagen correctamente
-  const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return null;
-    
-    // Si ya es una URL completa, usarla como está
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      return imageUrl;
-    }
-    
-    // Si empieza con /uploads, usarla directamente
-    if (imageUrl.startsWith('/uploads')) {
-      return imageUrl;
-    }
-    
-    // Si empieza con uploads (sin /), agregar la /
-    if (imageUrl.startsWith('uploads')) {
-      return '/' + imageUrl;
-    }
-    
-    // Para cualquier otro caso, asumir que es un path relativo
-    return '/uploads/news/' + imageUrl;
-  };
+  // Confiar en la URL de la base de datos (el backend guarda correctamente)
+  const imageUrl = news.image_url;
 
-  const imageUrl = getImageUrl(news.image_url);
-  
   div.innerHTML = `
     <div class="news-item-header">
       <h3 class="news-item-title">${escapeHtml(news.title)}</h3>
@@ -296,11 +286,11 @@ function createNewsItem(news) {
     <p class="news-item-content">${escapeHtml(news.content)}</p>
     ${imageUrl ? `
       <div class="news-item-image-container">
-        <img src="${imageUrl}" 
-             class="news-item-image" 
+        <img src="${escapeHtml(imageUrl)}"
+             class="news-item-image"
              alt="${escapeHtml(news.title)}"
-             onerror="handleImageError(this, '${imageUrl}');"
-             onload="console.log('Image loaded successfully:', '${imageUrl}');">
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\\'padding: 20px; background: rgba(255,71,87,0.1); border-radius: 8px; text-align: center; color: #ff4757;\\'><div style=\\'font-size: 32px; margin-bottom: 8px;\\'>🚫</div><div style=\\'font-size: 14px;\\'>Imagen no disponible</div></div>';"
+             onload="console.log('[NEWS] Image loaded:', '${escapeHtml(imageUrl)}');">
       </div>
     ` : ''}
   `;
@@ -309,48 +299,9 @@ function createNewsItem(news) {
 }
 
 /**
- * Maneja errores de carga de imagen
+ * NOTA: handleImageError eliminada - ahora usamos onerror inline más simple
+ * Las URLs se confían directamente de la BD ya que el backend las guarda correctamente
  */
-window.handleImageError = function(img, originalUrl) {
-  console.error('Failed to load image:', originalUrl);
-  
-  // Intentar diferentes variantes de URL
-  const alternatives = [
-    originalUrl.replace('/uploads/', '/uploads/news/'),
-    originalUrl.replace('/uploads/news/', '/uploads/'),
-    originalUrl.startsWith('/') ? originalUrl : '/' + originalUrl
-  ];
-  
-  // Si ya intentamos todas las alternativas, ocultar imagen
-  if (img.dataset.attempts) {
-    const attempts = parseInt(img.dataset.attempts);
-    if (attempts >= alternatives.length) {
-      img.style.display = 'none';
-      
-      // Mostrar mensaje de error más amigable
-      const container = img.parentElement;
-      if (container) {
-        container.innerHTML = `
-          <div style="padding: 20px; background: rgba(255,71,87,0.1); border-radius: 8px; text-align: center; color: #ff4757;">
-            <div style="font-size: 32px; margin-bottom: 8px;">🚫</div>
-            <div style="font-size: 14px;">Imagen no disponible</div>
-          </div>
-        `;
-      }
-      return;
-    }
-    img.dataset.attempts = (attempts + 1).toString();
-  } else {
-    img.dataset.attempts = '1';
-  }
-  
-  // Intentar siguiente alternativa
-  const nextUrl = alternatives[parseInt(img.dataset.attempts) - 1];
-  if (nextUrl && nextUrl !== img.src) {
-    console.log(`Intentando URL alternativa: ${nextUrl}`);
-    img.src = nextUrl;
-  }
-}
 
 /**
  * Carga el chat
@@ -359,7 +310,12 @@ async function loadChat() {
   const chatMessages = document.getElementById('chatMessages');
   const chatLoading = document.getElementById('chatLoading');
 
-  if (!chatMessages) return;
+  console.log('[CHAT] Iniciando carga de mensajes...');
+
+  if (!chatMessages) {
+    console.warn('[CHAT] chatMessages element not found');
+    return;
+  }
 
   if (chatLoading) chatLoading.style.display = 'block';
   chatMessages.innerHTML = '';
@@ -372,44 +328,58 @@ async function loadChat() {
     // El usuario puede tener 'id' o 'userId' dependiendo de cómo se guardó
     const userId = user.id || user.userId;
 
+    console.log('[CHAT] Usuario:', { username: user.username, userId, hasToken: !!token });
+
     if (!user || !userId || !token) {
+      console.warn('[CHAT] Sin autenticación válida');
       if (chatLoading) chatLoading.style.display = 'none';
       chatMessages.innerHTML = '<p class="info-text">Debes iniciar sesión para ver el chat.</p>';
       return;
     }
 
+    console.log(`[CHAT] Fetching /api/chat/${userId}...`);
     const response = await fetch(`/api/chat/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
-    
+
     if (response.status === 401) {
+      console.error('[CHAT] Sesión expirada (401)');
       if (chatLoading) chatLoading.style.display = 'none';
       chatMessages.innerHTML = '<p class="info-text">Sesión expirada. Por favor recarga la página.</p>';
       return;
     }
-    
+
     if (!response.ok) throw new Error('Error en la respuesta del servidor');
 
     const messages = await response.json();
+    console.log(`[CHAT] Recibidos ${messages.length} mensajes`);
 
     if (chatLoading) chatLoading.style.display = 'none';
 
     if (!messages || messages.length === 0) {
+      console.log('[CHAT] No hay mensajes para mostrar');
       chatMessages.innerHTML = '<p class="info-text">No hay mensajes aún. ¡Inicia la conversación!</p>';
       return;
     }
 
-    messages.forEach(message => {
+    messages.forEach((message, index) => {
+      console.log(`[CHAT] Procesando mensaje ${index + 1}/${messages.length}:`, {
+        sender: message.sender_id === userId ? 'Tú' : 'Admin',
+        hasImage: !!message.image_url,
+        imageUrl: message.image_url,
+        text: message.message?.substring(0, 30)
+      });
       const messageEl = createChatMessage(message, userId);
       chatMessages.appendChild(messageEl);
     });
 
     // Scroll al final
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    console.log('[CHAT] ✅ Mensajes cargados exitosamente');
   } catch (error) {
-    console.error('Error loading chat:', error);
+    console.error('[CHAT] ❌ Error loading chat:', error);
     if (chatLoading) chatLoading.style.display = 'none';
     chatMessages.innerHTML = '<p class="info-text">Error al cargar el chat</p>';
   }
@@ -430,11 +400,24 @@ function createChatMessage(message, currentUserId) {
     minute: '2-digit'
   });
 
+  // Manejo robusto de imagen con fallback
+  const imageHtml = message.image_url ? `
+    <img src="${escapeHtml(message.image_url)}"
+         class="chat-image"
+         alt="Imagen"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+         onload="console.log('[CHAT] Image loaded:', '${escapeHtml(message.image_url)}');">
+    <div style="display: none; padding: 20px; background: rgba(255,71,87,0.1); border-radius: 8px; text-align: center; color: #ff4757; flex-direction: column; align-items: center; margin-top: 8px;">
+      <div style="font-size: 32px; margin-bottom: 8px;">🖼️</div>
+      <div style="font-size: 12px;">Imagen no disponible</div>
+    </div>
+  ` : '';
+
   div.innerHTML = `
     <div class="chat-sender">${message.sender_id === currentUserId ? 'Tú' : 'Admin'}</div>
     <div class="chat-bubble">
       <p class="chat-text">${escapeHtml(message.message)}</p>
-      ${message.image_url ? `<img src="${message.image_url}" class="chat-image" alt="Imagen">` : ''}
+      ${imageHtml}
       <div class="chat-time">${time}</div>
     </div>
   `;
