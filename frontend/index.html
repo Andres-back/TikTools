@@ -72,6 +72,16 @@
         <h1 class="panel-title">Panel de Control</h1>
       </div>
 
+      <!-- Navegación -->
+      <nav class="panel-nav" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+        <a href="/index.html" class="nav-link active" style="flex: 1; padding: 0.75rem; background: linear-gradient(135deg, #00d9ff, #0099cc); color: white; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+          🎯 Subasta
+        </a>
+        <a href="/roulette.html" class="nav-link" style="flex: 1; padding: 0.75rem; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); text-align: center; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+          🎰 Ruleta
+        </a>
+      </nav>
+
       <!-- Banner de Plan/Trial -->
       <div id="planBanner" class="plan-banner" style="display: none;">
         <div class="plan-info">
@@ -187,18 +197,6 @@
          CONTENIDO PRINCIPAL (Derecha)
          ======================================== -->
     <main class="main-content">
-      <!-- Tabs de Modo -->
-      <div class="mode-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem; padding: 0.5rem; background: rgba(15,23,42,0.6); border-radius: 12px; backdrop-filter: blur(10px);">
-        <button class="mode-tab active" data-mode="auction" style="flex: 1; padding: 1rem; background: linear-gradient(135deg, #00d9ff, #0099cc); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-          🎯 Subasta
-        </button>
-        <button class="mode-tab" data-mode="roulette" style="flex: 1; padding: 1rem; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-          🎰 Ruleta
-        </button>
-      </div>
-
-      <!-- MODO SUBASTA -->
-      <div id="auction-mode" class="mode-content" style="display: block;">
       <!-- Timer Card - OVERLAY EN VIVO -->
       <div class="timer-card" id="timerCard" style="min-height: 400px; height: auto; overflow: hidden; position: relative;">
         <iframe
@@ -262,166 +260,6 @@
           <div class="winner-display" id="winnerDisplay">—</div>
         </footer>
       </div>
-      </div>
-      <!-- FIN MODO SUBASTA -->
-
-      <!-- MODO RULETA -->
-      <div id="roulette-mode" class="mode-content" style="display: none;">
-        <!-- Links a Overlays de Ruleta -->
-        <div style="background: rgba(138, 120, 228, 0.1); border: 1px solid rgba(138, 120, 228, 0.3); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem;">
-          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
-            <span style="font-size: 1.5rem;">📺</span>
-            <h3 style="margin: 0; font-size: 1rem; font-weight: 600; color: #fff;">Overlays para OBS</h3>
-          </div>
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="/overlay-ruleta.html" target="_blank" style="flex: 1; min-width: 200px; padding: 0.75rem 1rem; background: rgba(78, 205, 196, 0.2); border: 1px solid rgba(78, 205, 196, 0.3); border-radius: 8px; color: #4ECDC4; text-decoration: none; font-weight: 600; transition: all 0.3s;">
-              🎯 Ruleta
-            </a>
-            <a href="/overlay-participantes.html" target="_blank" style="flex: 1; min-width: 200px; padding: 0.75rem 1rem; background: rgba(248, 183, 57, 0.2); border: 1px solid rgba(248, 183, 57, 0.3); border-radius: 8px; color: #F8B739; text-decoration: none; font-weight: 600; transition: all 0.3s;">
-              📋 Participantes
-            </a>
-          </div>
-        </div>
-
-        <!-- Sección de Ruleta -->
-        <div class="roulette-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
-          <div id="rouletteMessage" class="roulette-message"></div>
-          <div id="soloCountdown" style="display: none; text-align: center; margin-bottom: 2rem;">
-            <div class="countdown-text" style="font-size: 1.5rem; font-weight: 700; color: #FFD700; margin-bottom: 0.5rem;">SOLO QUEDA UNO</div>
-            <div id="countdownTimer" class="countdown-timer" style="font-size: 3rem; font-weight: 900; color: #FF6B6B;">30</div>
-          </div>
-          <div class="roulette-wrapper" style="position: relative; max-width: 600px; margin: 0 auto;">
-            <div class="roulette-arrow" style="position: absolute; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10;">
-              <svg width="60" height="80" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M30 80L58.2866 35H1.7134L30 80Z" fill="#FFD700"/>
-                <circle cx="30" cy="30" r="24" fill="#FFD700" stroke="#1A1A2E" stroke-width="8"/>
-              </svg>
-            </div>
-            <canvas id="rouletteCanvas" width="800" height="800" style="width: 100%; max-width: 600px; display: block;"></canvas>
-            <canvas id="giftsOverlayCanvas" width="800" height="800" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; pointer-events: none;"></canvas>
-          </div>
-
-          <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center; flex-wrap: wrap;">
-            <button id="spinBtn" class="btn btn-primary" disabled style="flex: 1; min-width: 200px; padding: 1rem; font-size: 1.1rem; font-weight: 700;">
-              ▶️ Activar Auto-Giro
-            </button>
-            <button id="resetBtn" class="btn btn-secondary" style="flex: 1; min-width: 200px; padding: 1rem; font-size: 1.1rem; font-weight: 700;">
-              🔄 Reiniciar Juego
-            </button>
-          </div>
-        </div>
-
-        <!-- Panel de Estadísticas -->
-        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-          <div class="stat-item" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-            <span class="stat-label" style="display: block; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 0.5rem;">Participantes</span>
-            <div class="stat-value" style="font-size: 2rem; font-weight: 700; color: #00d9ff;">
-              <span id="participantCount">0</span>
-              <small id="minParticipantsStatus" style="font-size: 0.9rem; color: rgba(255,255,255,0.5);">/ mín: 2</small>
-            </div>
-          </div>
-          <div class="stat-item" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-            <span class="stat-label" style="display: block; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 0.5rem;">Total Entradas</span>
-            <span id="totalEntriesEl" class="stat-value" style="font-size: 2rem; font-weight: 700; color: #4ECDC4;">0</span>
-          </div>
-        </div>
-
-        <!-- Lista de Participantes -->
-        <div class="participants-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
-          <h3 style="margin: 0 0 1rem 0; color: #fff; font-size: 1.1rem;">Lista de Participantes</h3>
-          <div id="participantsList" class="participants-list" style="max-height: 400px; overflow-y: auto;">
-            <div class="empty-state" style="text-align: center; padding: 3rem 1rem; color: rgba(255,255,255,0.5);">
-              <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
-              <p>Esperando participantes...</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Configuración de Reglas -->
-        <details class="config-section" open style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">
-          <summary class="config-header" style="padding: 1.25rem; cursor: pointer; font-weight: 600; color: #fff; user-select: none;">⚙️ Reglas de Entrada</summary>
-          <div class="config-content" style="padding: 0 1.25rem 1.25rem;">
-            <div class="config-item" style="margin-bottom: 1rem;">
-              <label for="likesPerEntry" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">👍 Likes para 1 Entrada</label>
-              <div class="input-group" style="display: flex; gap: 0.5rem;">
-                <input id="likesPerEntry" type="number" value="1000" min="0" class="input-compact" style="flex: 1; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;" />
-                <button id="setLikesPerEntryBtn" class="btn-icon" style="padding: 0.75rem 1rem; background: rgba(0,217,255,0.2); border: 1px solid rgba(0,217,255,0.3); border-radius: 8px; color: #00d9ff; cursor: pointer;">✓</button>
-              </div>
-            </div>
-            <div class="config-item" style="margin-bottom: 1rem;">
-              <label for="validGiftSearchInput" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">🎁 Regalo para Participar</label>
-              <input id="validGiftSearchInput" type="text" placeholder="🔍 Buscar regalo por nombre o ID..." class="input-compact search-input" style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; margin-bottom: 0.5rem;"/>
-              <select id="validGiftSelector" class="select-compact" size="6" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;">
-                <option value="">🚫 Solo Heart Me</option>
-              </select>
-              <div id="validGiftInfo" class="gift-preview" style="display: none; margin-top: 0.5rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                <div id="validGiftInfoImage"></div>
-                <div id="validGiftInfoName"></div>
-              </div>
-            </div>
-            <div class="config-item" style="margin-bottom: 1rem;">
-              <label for="giftEntries" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">🎟️ Entradas por Regalo Válido</label>
-              <div class="input-group" style="display: flex; gap: 0.5rem;">
-                <input id="giftEntries" type="number" value="1" min="1" class="input-compact" style="flex: 1; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;" />
-                <button id="setGiftEntriesBtn" class="btn-icon" style="padding: 0.75rem 1rem; background: rgba(0,217,255,0.2); border: 1px solid rgba(0,217,255,0.3); border-radius: 8px; color: #00d9ff; cursor: pointer;">✓</button>
-              </div>
-            </div>
-            <div class="config-item" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
-              <label style="color: rgba(255,255,255,0.8);">💜 Heart Me Otorga 1 Entrada</label>
-              <div class="switch-control">
-                <span id="heartMeStatus" class="switch-label" style="margin-right: 0.75rem; color: rgba(255,255,255,0.6);">Activado</span>
-                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                  <input type="checkbox" id="heartMeEnabled" checked style="opacity: 0; width: 0; height: 0;" />
-                  <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #00d9ff; border-radius: 24px; transition: 0.4s;"></span>
-                </label>
-              </div>
-            </div>
-            <div class="config-item" style="display: flex; justify-content: space-between; align-items: center;">
-              <label style="color: rgba(255,255,255,0.8);">👥 Follow Otorga 1 Entrada</label>
-              <div class="switch-control">
-                <span id="followStatus" class="switch-label" style="margin-right: 0.75rem; color: rgba(255,255,255,0.6);">Desactivado</span>
-                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                  <input type="checkbox" id="followEnabled" style="opacity: 0; width: 0; height: 0;" />
-                  <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 24px; transition: 0.4s;"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </details>
-
-        <!-- Ajustes Generales -->
-        <details class="config-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">
-          <summary class="config-header" style="padding: 1.25rem; cursor: pointer; font-weight: 600; color: #fff; user-select: none;">🛠️ Ajustes Generales</summary>
-          <div class="config-content" style="padding: 0 1.25rem 1.25rem;">
-            <div class="config-item">
-              <label for="minParticipants" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">Mínimo de Participantes para Iniciar</label>
-              <div class="input-group" style="display: flex; gap: 0.5rem;">
-                <input id="minParticipants" type="number" value="2" min="1" class="input-compact" style="flex: 1; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;" />
-                <button id="setMinParticipantsBtn" class="btn-icon" style="padding: 0.75rem 1rem; background: rgba(0,217,255,0.2); border: 1px solid rgba(0,217,255,0.3); border-radius: 8px; color: #00d9ff; cursor: pointer;">✓</button>
-              </div>
-            </div>
-          </div>
-        </details>
-
-        <!-- Agregar Manualmente -->
-        <details class="config-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
-          <summary class="config-header" style="padding: 1.25rem; cursor: pointer; font-weight: 600; color: #fff; user-select: none;">➕ Agregar Manualmente</summary>
-          <div class="config-content" style="padding: 0 1.25rem 1.25rem;">
-            <input id="manualUsername" type="text" placeholder="@usuario" class="input-compact" style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; margin-bottom: 0.75rem;" />
-            <input id="giftSearchInput" type="text" placeholder="🔍 Buscar regalo..." class="input-compact search-input" style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; margin-bottom: 0.75rem;" />
-            <select id="manualGiftSelect" class="select-compact" size="5" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; margin-bottom: 0.75rem;">
-              <option value="" disabled selected>Selecciona un regalo...</option>
-            </select>
-            <div class="config-item" style="margin-bottom: 0.75rem;">
-              <label for="manualEntriesCount" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">Cantidad de Entradas</label>
-              <input id="manualEntriesCount" type="number" min="1" max="1000" value="1" class="input-compact" style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;"/>
-            </div>
-            <button id="addManualBtn" class="btn btn-secondary" style="width: 100%; padding: 1rem; font-weight: 600;">➕ Agregar Participante</button>
-          </div>
-        </details>
-      </div>
-      <!-- FIN MODO RULETA -->
-
     </main>
   </div>
 
@@ -562,58 +400,6 @@
           console.error('[Overlay-URL] Error al copiar:', err);
           alert('Error al copiar la URL. Por favor cópiala manualmente.');
         }
-      });
-    });
-  </script>
-
-  <!-- Script para cambio de tabs -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const tabs = document.querySelectorAll('.mode-tab');
-      const auctionMode = document.getElementById('auction-mode');
-      const rouletteMode = document.getElementById('roulette-mode');
-
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          const mode = tab.dataset.mode;
-
-          // Actualizar estilos de tabs
-          tabs.forEach(t => {
-            if (t.dataset.mode === mode) {
-              t.classList.add('active');
-              t.style.background = 'linear-gradient(135deg, #00d9ff, #0099cc)';
-              t.style.color = 'white';
-            } else {
-              t.classList.remove('active');
-              t.style.background = 'rgba(255,255,255,0.1)';
-              t.style.color = 'rgba(255,255,255,0.6)';
-            }
-          });
-
-          // Cambiar contenido visible
-          if (mode === 'auction') {
-            auctionMode.style.display = 'block';
-            rouletteMode.style.display = 'none';
-          } else if (mode === 'roulette') {
-            auctionMode.style.display = 'none';
-            rouletteMode.style.display = 'block';
-
-            // Cargar módulo de ruleta si no está cargado
-            if (!window.rouletteLoaded) {
-              import('./modules/roulette.js')
-                .then(module => {
-                  console.log('[TABS] Módulo de ruleta cargado');
-                  window.rouletteLoaded = true;
-                  if (module.init) module.init();
-                })
-                .catch(err => {
-                  console.error('[TABS] Error al cargar módulo de ruleta:', err);
-                });
-            }
-          }
-
-          console.log(`[TABS] Cambiado a modo: ${mode}`);
-        });
       });
     });
   </script>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikToolStream - Ruleta TikTok Live</title>
+  <link rel="icon" type="image/png" href="/assets/LOGOSINFONDO.png">
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="app-styles.css">
+</head>
+
+<body>
+  <!-- Header con menú de usuario -->
+  <header class="app-header">
+    <div class="header-logo">
+      <img src="assets/LOGOSINFONDO.png" alt="Logo" class="header-logo-img">
+      <span class="header-title">TikToolStream</span>
+    </div>
+    <div class="header-user">
+      <button id="menuToggle" class="menu-toggle">
+        <span id="userName"></span>
+        <span class="menu-arrow">▼</span>
+      </button>
+      <div id="userMenu" class="user-menu" style="display: none;">
+        <a href="#" id="profileLink" class="menu-item">👤 Mi Perfil</a>
+        <a href="#" id="settingsLink" class="menu-item">⚙️ Configuración</a>
+        <div class="menu-divider"></div>
+        <a href="#" id="logoutBtn" class="menu-item logout">🚪 Cerrar Sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Barra flotante de acciones -->
+  <div class="floating-sidebar active" id="floatingSidebar">
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+    <div class="sidebar-content" id="sidebarContent">
+      <button class="sidebar-btn" id="openLeaderboardBtn" title="Abrir Overlay Leaderboard">
+        🏆 <span>Overlay Top</span>
+      </button>
+      <button class="sidebar-btn" id="newsBtn" title="Novedades">
+        📰 <span>Novedades</span>
+      </button>
+      <button class="sidebar-btn" id="chatBtn" title="Chat con Admin">
+        💬 <span>Chat</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Partículas de fondo decorativas -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Overlay para animaciones épicas -->
+  <div class="animation-overlay" id="animationOverlay"></div>
+
+  <div class="app-container">
+    <!-- ========================================
+         PANEL DE CONTROL (Izquierda)
+         ======================================== -->
+    <aside class="control-panel">
+      <div class="panel-header">
+        <img src="assets/LOGOSINFONDO.png" alt="Logo" class="panel-logo">
+        <h1 class="panel-title">Panel de Control</h1>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="panel-nav" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+        <a href="/index.html" class="nav-link" style="flex: 1; padding: 0.75rem; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); text-align: center; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+          🎯 Subasta
+        </a>
+        <a href="/roulette.html" class="nav-link active" style="flex: 1; padding: 0.75rem; background: linear-gradient(135deg, #00d9ff, #0099cc); color: white; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+          🎰 Ruleta
+        </a>
+      </nav>
+
+      <!-- Banner de Plan/Trial -->
+      <div id="planBanner" class="plan-banner" style="display: none;">
+        <div class="plan-info">
+          <span id="planText"></span>
+        </div>
+        <button id="upgradePlan" class="btn-upgrade" style="display: none;">
+          💎 Actualizar a Pro
+        </button>
+      </div>
+
+      <!-- Conexión TikTok -->
+      <section class="panel-section">
+        <label class="panel-label">Usuario TikTok</label>
+        <div class="input-group">
+          <span class="input-prefix">@</span>
+          <input type="text" id="tiktokUserInput" class="input-field" placeholder="username" autocomplete="off">
+        </div>
+
+        <div class="btn-group" style="margin-top: 0.75rem;">
+          <button id="tiktokConnect" class="btn btn-primary" style="flex: 1;">Conectar</button>
+        </div>
+
+        <div class="status-display">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="connectionStatus">Sin conexión</span>
+        </div>
+        <p id="connectionFeedback" class="panel-feedback"></p>
+        <p class="status-display">Usuario: <strong id="tiktokUserDisplay">—</strong></p>
+
+        <!-- Sección de Session ID (colapsable) -->
+        <details class="auth-details" id="authDetails">
+          <summary class="auth-summary">🔐 Configurar Session ID (opcional)</summary>
+          <div class="auth-content">
+            <p class="auth-help">Si tienes problemas de conexión, configura tu Session ID de TikTok:</p>
+            <ol class="auth-steps">
+              <li>Abre <a href="https://www.tiktok.com" target="_blank">tiktok.com</a> e inicia sesión</li>
+              <li>Presiona F12 → Application → Cookies</li>
+              <li>Copia el valor de <code>sessionid</code></li>
+            </ol>
+            <div class="input-group" style="margin-top: 0.5rem;">
+              <input type="password" id="sessionIdInput" class="input-field" placeholder="Session ID">
+            </div>
+            <div class="input-group" style="margin-top: 0.5rem;">
+              <input type="text" id="ttTargetIdcInput" class="input-field" placeholder="tt-target-idc (ej: useast1a)">
+            </div>
+            <button id="saveSessionId" class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;">Guardar
+              Credenciales</button>
+          </div>
+        </details>
+      </section>
+
+      <!-- Controles de Subasta -->
+      <section class="panel-section">
+        <label class="panel-label">Controles de Subasta</label>
+        <div class="btn-group">
+          <button id="timerPlay" class="btn btn-primary">▶ Iniciar</button>
+          <button id="timerReset" class="btn btn-secondary">↺ Reiniciar</button>
+        </div>
+      </section>
+
+      <!-- Configuración de Tiempos -->
+      <section class="panel-section">
+        <label class="panel-label">⏱️ Tiempos (segundos)</label>
+        <div class="time-inputs">
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.65rem;">Inicial</label>
+            <div class="input-group">
+              <input type="number" id="initialTimeInput" class="input-field" value="120" min="10" max="600">
+            </div>
+          </div>
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.65rem;">Delay</label>
+            <div class="input-group">
+              <input type="number" id="delayTimeInput" class="input-field" value="20" min="0" max="120">
+            </div>
+          </div>
+          <div class="time-input">
+            <label class="panel-label" style="font-size: 0.65rem;">Empate</label>
+            <div class="input-group">
+              <input type="number" id="tieExtensionInput" class="input-field" value="30" min="10" max="120">
+            </div>
+          </div>
+        </div>
+        <button id="updateTimes" class="btn btn-secondary" style="margin-top: 0.75rem; width: 100%;">Aplicar</button>
+      </section>
+
+      <!-- Mensaje del Timer -->
+      <section class="panel-section">
+        <label class="panel-label">📝 Mensaje</label>
+        <div class="input-group">
+          <input type="text" id="minMessageInput" class="input-field" placeholder="MIN 10" maxlength="20">
+        </div>
+        <button id="updateMinMessage" class="btn btn-secondary"
+          style="margin-top: 0.5rem; width: 100%;">Actualizar</button>
+      </section>
+
+      <!-- Suma Manual -->
+      <section class="panel-section">
+        <label class="panel-label">💎 Suma Manual</label>
+        <div class="input-group" style="margin-bottom: 0.5rem;">
+          <span class="input-prefix">@</span>
+          <input type="text" id="manualUserInput" class="input-field" placeholder="usuario">
+        </div>
+        <div class="input-group">
+          <input type="number" id="manualCoinsInput" class="input-field" placeholder="Monedas" min="1">
+        </div>
+        <button id="addManualCoins" class="btn btn-success" style="margin-top: 0.75rem; width: 100%;">+ Agregar
+          Monedas</button>
+      </section>
+    </aside>
+
+    <!-- ========================================
+         CONTENIDO PRINCIPAL (Derecha)
+         ======================================== -->
+    <main class="main-content">
+      <!-- Links a Overlays de Ruleta -->
+      <div style="background: rgba(138, 120, 228, 0.1); border: 1px solid rgba(138, 120, 228, 0.3); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.5rem;">📺</span>
+          <h3 style="margin: 0; font-size: 1rem; font-weight: 600; color: #fff;">Overlays para OBS</h3>
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="/overlay-ruleta.html" target="_blank" style="flex: 1; min-width: 200px; padding: 0.75rem 1rem; background: rgba(78, 205, 196, 0.2); border: 1px solid rgba(78, 205, 196, 0.3); border-radius: 8px; color: #4ECDC4; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+            🎯 Ruleta
+          </a>
+          <a href="/overlay-participantes.html" target="_blank" style="flex: 1; min-width: 200px; padding: 0.75rem 1rem; background: rgba(248, 183, 57, 0.2); border: 1px solid rgba(248, 183, 57, 0.3); border-radius: 8px; color: #F8B739; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+            📋 Participantes
+          </a>
+        </div>
+      </div>
+
+      <!-- Sección de Ruleta -->
+      <div class="roulette-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+        <div id="rouletteMessage" class="roulette-message"></div>
+        <div id="soloCountdown" style="display: none; text-align: center; margin-bottom: 2rem;">
+          <div class="countdown-text" style="font-size: 1.5rem; font-weight: 700; color: #FFD700; margin-bottom: 0.5rem;">SOLO QUEDA UNO</div>
+          <div id="countdownTimer" class="countdown-timer" style="font-size: 3rem; font-weight: 900; color: #FF6B6B;">30</div>
+        </div>
+        <div class="roulette-wrapper" style="position: relative; max-width: 600px; margin: 0 auto;">
+          <div class="roulette-arrow" style="position: absolute; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10;">
+            <svg width="60" height="80" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30 80L58.2866 35H1.7134L30 80Z" fill="#FFD700"/>
+              <circle cx="30" cy="30" r="24" fill="#FFD700" stroke="#1A1A2E" stroke-width="8"/>
+            </svg>
+          </div>
+          <canvas id="rouletteCanvas" width="800" height="800" style="width: 100%; max-width: 600px; display: block;"></canvas>
+          <canvas id="giftsOverlayCanvas" width="800" height="800" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; pointer-events: none;"></canvas>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center; flex-wrap: wrap;">
+          <button id="spinBtn" class="btn btn-primary" disabled style="flex: 1; min-width: 200px; padding: 1rem; font-size: 1.1rem; font-weight: 700;">
+            ▶️ Activar Auto-Giro
+          </button>
+          <button id="resetBtn" class="btn btn-secondary" style="flex: 1; min-width: 200px; padding: 1rem; font-size: 1.1rem; font-weight: 700;">
+            🔄 Reiniciar Juego
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel de Estadísticas -->
+      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="stat-item" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 0.5rem;">Participantes</span>
+          <div class="stat-value" style="font-size: 2rem; font-weight: 700; color: #00d9ff;">
+            <span id="participantCount">0</span>
+            <small id="minParticipantsStatus" style="font-size: 0.9rem; color: rgba(255,255,255,0.5);">/ mín: 2</small>
+          </div>
+        </div>
+        <div class="stat-item" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+          <span class="stat-label" style="display: block; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 0.5rem;">Total Entradas</span>
+          <span id="totalEntriesEl" class="stat-value" style="font-size: 2rem; font-weight: 700; color: #4ECDC4;">0</span>
+        </div>
+      </div>
+
+      <!-- Lista de Participantes -->
+      <div class="participants-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+        <h3 style="margin: 0 0 1rem 0; color: #fff; font-size: 1.1rem;">Lista de Participantes</h3>
+        <div id="participantsList" class="participants-list" style="max-height: 400px; overflow-y: auto;">
+          <div class="empty-state" style="text-align: center; padding: 3rem 1rem; color: rgba(255,255,255,0.5);">
+            <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+            <p>Esperando participantes...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuración de Reglas -->
+      <details class="config-section" open style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">
+        <summary class="config-header" style="padding: 1.25rem; cursor: pointer; font-weight: 600; color: #fff; user-select: none;">⚙️ Reglas de Entrada</summary>
+        <div class="config-content" style="padding: 0 1.25rem 1.25rem;">
+          <div class="config-item" style="margin-bottom: 1rem;">
+            <label for="likesPerEntry" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">👍 Likes para 1 Entrada</label>
+            <div class="input-group" style="display: flex; gap: 0.5rem;">
+              <input id="likesPerEntry" type="number" value="1000" min="0" class="input-compact" style="flex: 1; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;" />
+              <button id="setLikesPerEntryBtn" class="btn-icon" style="padding: 0.75rem 1rem; background: rgba(0,217,255,0.2); border: 1px solid rgba(0,217,255,0.3); border-radius: 8px; color: #00d9ff; cursor: pointer;">✓</button>
+            </div>
+          </div>
+          <div class="config-item" style="margin-bottom: 1rem;">
+            <label for="validGiftSearchInput" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">🎁 Regalo para Participar</label>
+            <input id="validGiftSearchInput" type="text" placeholder="🔍 Buscar regalo por nombre o ID..." class="input-compact search-input" style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; margin-bottom: 0.5rem;"/>
+            <select id="validGiftSelector" class="select-compact" size="6" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;">
+              <option value="">🚫 Solo Heart Me</option>
+            </select>
+            <div id="validGiftInfo" class="gift-preview" style="display: none; margin-top: 0.5rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+              <div id="validGiftInfoImage"></div>
+              <div id="validGiftInfoName"></div>
+            </div>
+          </div>
+          <div class="config-item" style="margin-bottom: 1rem;">
+            <label for="giftEntries" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">🎟️ Entradas por Regalo Válido</label>
+            <div class="input-group" style="display: flex; gap: 0.5rem;">
+              <input id="giftEntries" type="number" value="1" min="1" class="input-compact" style="flex: 1; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;" />
+              <button id="setGiftEntriesBtn" class="btn-icon" style="padding: 0.75rem 1rem; background: rgba(0,217,255,0.2); border: 1px solid rgba(0,217,255,0.3); border-radius: 8px; color: #00d9ff; cursor: pointer;">✓</button>
+            </div>
+          </div>
+          <div class="config-item" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <label style="color: rgba(255,255,255,0.8);">💜 Heart Me Otorga 1 Entrada</label>
+            <div class="switch-control">
+              <span id="heartMeStatus" class="switch-label" style="margin-right: 0.75rem; color: rgba(255,255,255,0.6);">Activado</span>
+              <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                <input type="checkbox" id="heartMeEnabled" checked style="opacity: 0; width: 0; height: 0;" />
+                <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #00d9ff; border-radius: 24px; transition: 0.4s;"></span>
+              </label>
+            </div>
+          </div>
+          <div class="config-item" style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="color: rgba(255,255,255,0.8);">👥 Follow Otorga 1 Entrada</label>
+            <div class="switch-control">
+              <span id="followStatus" class="switch-label" style="margin-right: 0.75rem; color: rgba(255,255,255,0.6);">Desactivado</span>
+              <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                <input type="checkbox" id="followEnabled" style="opacity: 0; width: 0; height: 0;" />
+                <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 24px; transition: 0.4s;"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Ajustes Generales -->
+      <details class="config-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">
+        <summary class="config-header" style="padding: 1.25rem; cursor: pointer; font-weight: 600; color: #fff; user-select: none;">🛠️ Ajustes Generales</summary>
+        <div class="config-content" style="padding: 0 1.25rem 1.25rem;">
+          <div class="config-item">
+            <label for="minParticipants" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">Mínimo de Participantes para Iniciar</label>
+            <div class="input-group" style="display: flex; gap: 0.5rem;">
+              <input id="minParticipants" type="number" value="2" min="1" class="input-compact" style="flex: 1; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;" />
+              <button id="setMinParticipantsBtn" class="btn-icon" style="padding: 0.75rem 1rem; background: rgba(0,217,255,0.2); border: 1px solid rgba(0,217,255,0.3); border-radius: 8px; color: #00d9ff; cursor: pointer;">✓</button>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Agregar Manualmente -->
+      <details class="config-section" style="background: linear-gradient(135deg, rgba(30,40,60,0.95), rgba(20,30,50,0.98)); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+        <summary class="config-header" style="padding: 1.25rem; cursor: pointer; font-weight: 600; color: #fff; user-select: none;">➕ Agregar Manualmente</summary>
+        <div class="config-content" style="padding: 0 1.25rem 1.25rem;">
+          <input id="manualUsername" type="text" placeholder="@usuario" class="input-compact" style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; margin-bottom: 0.75rem;" />
+          <input id="giftSearchInput" type="text" placeholder="🔍 Buscar regalo..." class="input-compact search-input" style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; margin-bottom: 0.75rem;" />
+          <select id="manualGiftSelect" class="select-compact" size="5" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; margin-bottom: 0.75rem;">
+            <option value="" disabled selected>Selecciona un regalo...</option>
+          </select>
+          <div class="config-item" style="margin-bottom: 0.75rem;">
+            <label for="manualEntriesCount" style="display: block; margin-bottom: 0.5rem; color: rgba(255,255,255,0.8);">Cantidad de Entradas</label>
+            <input id="manualEntriesCount" type="number" min="1" max="1000" value="1" class="input-compact" style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff;"/>
+          </div>
+          <button id="addManualBtn" class="btn btn-secondary" style="width: 100%; padding: 1rem; font-weight: 600;">➕ Agregar Participante</button>
+        </div>
+      </details>
+    </main>
+  </div>
+
+  <!-- Modal de Novedades -->
+  <div id="newsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📰 Novedades y Actualizaciones</h2>
+        <button class="modal-close" id="newsClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="newsList" class="news-list">
+          <p id="newsLoading" class="loading-text">Cargando novedades...</p>
+          <p id="newsEmpty" class="info-text" style="display: none;">No hay novedades publicadas</p>
+        </div>
+        <div id="newsForm" class="news-form" style="display: none;">
+          <h3>Publicar Novedad</h3>
+          <input type="text" id="newsTitle" placeholder="Título" class="modal-input">
+          <textarea id="newsContent" placeholder="Contenido..." class="modal-textarea"></textarea>
+          <input type="file" id="newsImage" accept="image/*" class="modal-file">
+          <button id="postNews" class="btn btn-primary">Publicar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Chat -->
+  <div id="chatModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💬 Chat con Administrador</h2>
+        <button class="modal-close" id="chatClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="chatMessages" class="chat-messages">
+          <p id="chatLoading" class="loading-text">Cargando mensajes...</p>
+        </div>
+        <div class="chat-input-area">
+          <input type="file" id="chatFileInput" accept="image/*" class="chat-file" style="display: none;">
+          <button id="chatFileBtn" class="btn-icon" title="Adjuntar imagen">📎</button>
+          <input type="text" id="chatInput" placeholder="Escribe un mensaje..." class="chat-input">
+          <button id="chatSendBtn" class="btn btn-primary">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script de partículas -->
+  <script>
+    // Crear partículas decorativas
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 20 + 's';
+      particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+      particlesContainer.appendChild(particle);
+    }
+  </script>
+
+  <!-- Protección de autenticación -->
+  <script type="module">
+    import { isLoggedIn, isGuest, getAccessToken } from './modules/auth.js';
+
+    // Verificar si el usuario está autenticado
+    (async function checkAuth() {
+      console.log('[AUTH] Verificando autenticación...');
+      
+      const loggedIn = isLoggedIn();
+      const guest = isGuest();
+      const token = getAccessToken();
+      
+      console.log('[AUTH] Estado:', { loggedIn, guest, hasToken: !!token });
+      
+      if (!loggedIn && !guest) {
+        console.log('[AUTH] No autenticado, redirigiendo a login');
+        window.location.href = '/login.html';
+        return;
+      }
+      
+      if (loggedIn) {
+        // Verificar rol directamente del localStorage primero
+        const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            console.log('[AUTH] Usuario logueado:', user.username, 'Rol:', user.role);
+            if (user.role === 'admin') {
+              console.log('[AUTH] Admin detectado, redirigiendo...');
+              window.location.href = '/admin.html';
+              return;
+            }
+          } catch (e) {
+            console.error('[AUTH] Error parsing user data:', e);
+          }
+        }
+      }
+      
+      if (guest) {
+        console.log('[AUTH] Usuario invitado permitido');
+      }
+      
+      console.log('[AUTH] Autenticación OK, cargando aplicación...');
+    })();
+  </script>
+
+  <!-- Script para URL del Overlay -->
+  <script>
+    // Configurar URL del overlay
+    document.addEventListener('DOMContentLoaded', () => {
+      const overlayUrlInput = document.getElementById('overlayUrlInput');
+      const copyOverlayUrlBtn = document.getElementById('copyOverlayUrlBtn');
+      const copyFeedback = document.getElementById('copyFeedback');
+
+      // Generar URL completa del overlay
+      const overlayUrl = `${window.location.origin}/overlay-timer.html`;
+      overlayUrlInput.value = overlayUrl;
+
+      console.log('[Overlay-URL] URL generada:', overlayUrl);
+
+      // Copiar URL al portapapeles
+      copyOverlayUrlBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(overlayUrl);
+          console.log('[Overlay-URL] URL copiada:', overlayUrl);
+
+          // Mostrar feedback
+          copyFeedback.style.opacity = '1';
+          copyOverlayUrlBtn.textContent = '✓ Copiado!';
+
+          // Resetear después de 2 segundos
+          setTimeout(() => {
+            copyFeedback.style.opacity = '0';
+            copyOverlayUrlBtn.textContent = '📋 Copiar URL';
+          }, 2000);
+        } catch (err) {
+          console.error('[Overlay-URL] Error al copiar:', err);
+          alert('Error al copiar la URL. Por favor cópiala manualmente.');
+        }
+      });
+    });
+  </script>
+
+  <!-- Módulo de ruleta -->
+  <script type="module">
+    import { init as initRoulette } from './modules/roulette.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('[ROULETTE] Inicializando página de ruleta...');
+      initRoulette();
+    });
+  </script>
+</body>
+
+</html>
