@@ -5,6 +5,7 @@
 -- Tabla de participantes de ruleta
 CREATE TABLE IF NOT EXISTS roulette_participants (
   id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   unique_id VARCHAR(255) NOT NULL,
   display_name VARCHAR(255) NOT NULL,
   profile_image TEXT,
@@ -16,7 +17,7 @@ CREATE TABLE IF NOT EXISTS roulette_participants (
   last_heart_date DATE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
-  UNIQUE(unique_id)
+  UNIQUE(user_id, unique_id)
 );
 
 -- Tabla de configuración de ruleta
@@ -46,8 +47,9 @@ CREATE TABLE IF NOT EXISTS roulette_winners (
 );
 
 -- Índices para optimización
-CREATE INDEX IF NOT EXISTS idx_roulette_participants_unique_id ON roulette_participants(unique_id);
-CREATE INDEX IF NOT EXISTS idx_roulette_participants_entries ON roulette_participants(entries DESC);
+CREATE INDEX IF NOT EXISTS idx_roulette_participants_user_id ON roulette_participants(user_id);
+CREATE INDEX IF NOT EXISTS idx_roulette_participants_unique_id ON roulette_participants(user_id, unique_id);
+CREATE INDEX IF NOT EXISTS idx_roulette_participants_entries ON roulette_participants(user_id, entries DESC);
 CREATE INDEX IF NOT EXISTS idx_roulette_winners_user_id ON roulette_winners(user_id);
 CREATE INDEX IF NOT EXISTS idx_roulette_winners_won_at ON roulette_winners(won_at DESC);
 

@@ -50,6 +50,7 @@ const paymentRoutes = require('./routes/payments');
 const newsRoutes = require('./routes/news');
 const chatRoutes = require('./routes/chat');
 const overlaysRoutes = require('./routes/overlays');
+const rouletteRoutes = require('./routes/roulette');
 
 // Configuración
 const HOST = process.env.HOST || '0.0.0.0';
@@ -244,10 +245,11 @@ app.post('/api/auctions/:id/finish', authMiddleware, auctionRoutes.finishAuction
 // Stats routes
 app.get('/api/stats', authMiddleware, auctionRoutes.getStats);
 
-// News, Chat y Overlay routes
+// News, Chat, Overlay y Roulette routes
 app.use('/api/news', newsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/overlays', overlaysRoutes);
+app.use('/api/roulette', rouletteRoutes);
 
 // Health check
 app.get('/api/health', async (req, res) => {
