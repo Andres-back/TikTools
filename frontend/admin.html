@@ -1110,15 +1110,27 @@
 
     function showSection(section) {
       currentSection = section;
-      
-      // Update nav
-      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-      event.target.closest('.nav-link').classList.add('active');
-      
+      console.log(`[ADMIN] Cambiando a sección: ${section}`);
+
+      // Update nav - find the correct link by matching onclick attribute
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        // Activar el link que corresponde a esta sección
+        const onclick = link.getAttribute('onclick');
+        if (onclick && onclick.includes(`'${section}'`)) {
+          link.classList.add('active');
+        }
+      });
+
       // Show section
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.getElementById(`${section}Section`).classList.add('active');
-      
+      const sectionEl = document.getElementById(`${section}Section`);
+      if (sectionEl) {
+        sectionEl.classList.add('active');
+      } else {
+        console.error(`[ADMIN] Section element not found: ${section}Section`);
+      }
+
       // Load data
       if (section === 'dashboard') loadDashboard();
       if (section === 'users') loadUsers();
@@ -1209,7 +1221,8 @@
               </div>
             </div>
           </div>
-        `).join('');
+          `;
+        }).join('');
       } catch (error) {
         console.error('Error loading news:', error);
         container.innerHTML = '<div class="loading">Error al cargar novedades</div>';
