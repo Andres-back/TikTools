@@ -762,7 +762,12 @@
       <section id="newsSection" class="section">
         <div class="section-header">
           <h2 class="section-title">📰 Gestión de Novedades</h2>
-          <button class="btn primary" onclick="openNewsModal()">+ Nueva Novedad</button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn secondary" onclick="cleanupNewsImages()" title="Limpiar referencias a imágenes que no existen">
+              🧹 Limpiar Imágenes Rotas
+            </button>
+            <button class="btn primary" onclick="openNewsModal()">+ Nueva Novedad</button>
+          </div>
         </div>
 
         <div id="newsList" class="news-grid">
@@ -774,6 +779,9 @@
       <section id="chatSection" class="section">
         <div class="section-header">
           <h2 class="section-title">💬 Bandeja de Mensajes</h2>
+          <button class="btn secondary" onclick="cleanupChatImages()" title="Limpiar referencias a imágenes que no existen">
+            🧹 Limpiar Imágenes Rotas
+          </button>
         </div>
 
         <div id="chatListView">
@@ -1309,6 +1317,56 @@
       } catch (error) {
         console.error('Error deleting news:', error);
         showAlert('Error al eliminar la novedad', 'error');
+      }
+    }
+
+    async function cleanupNewsImages() {
+      if (!confirm('¿Limpiar referencias a imágenes que no existen? Esto eliminará de la BD las URLs de imágenes que no se encuentren físicamente en el servidor.')) return;
+
+      try {
+        console.log('[ADMIN] Ejecutando limpieza de imágenes de novedades...');
+        const response = await fetch(`${API_URL}/news/cleanup`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Error en limpieza');
+
+        const result = await response.json();
+        console.log('[ADMIN] Resultado de limpieza:', result);
+
+        showAlert(`✅ Limpieza completada: ${result.fixed} referencias eliminadas de ${result.total} revisadas`);
+        loadNews(); // Recargar lista
+      } catch (error) {
+        console.error('[ADMIN] Error en limpieza:', error);
+        showAlert('Error al limpiar imágenes', 'error');
+      }
+    }
+
+    async function cleanupChatImages() {
+      if (!confirm('¿Limpiar referencias a imágenes que no existen en los mensajes? Esto eliminará de la BD las URLs de imágenes que no se encuentren físicamente en el servidor.')) return;
+
+      try {
+        console.log('[ADMIN] Ejecutando limpieza de imágenes de chat...');
+        const response = await fetch(`${API_URL}/chat/cleanup`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Error en limpieza');
+
+        const result = await response.json();
+        console.log('[ADMIN] Resultado de limpieza:', result);
+
+        showAlert(`✅ Limpieza completada: ${result.fixed} referencias eliminadas de ${result.total} revisadas`);
+        loadChatList(); // Recargar lista
+      } catch (error) {
+        console.error('[ADMIN] Error en limpieza:', error);
+        showAlert('Error al limpiar imágenes', 'error');
       }
     }
 

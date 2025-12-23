@@ -190,4 +190,48 @@ router.patch('/:messageId/read', authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * POST /api/chat/cleanup
+ * Limpiar referencias a imágenes que no existen físicamente (solo admin)
+ */
+router.post('/cleanup', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    console.log('[CHAT-CLEANUP] Iniciando limpieza de imágenes faltantes...');
+
+    // Obtener todos los mensajes con imágenes
+    const result = await db.query('SELECT id, message, image_url FROM messages WHERE image_url IS NOT NULL');
+    const messagesWithImages = result.rows || result;
+
+    let fixed = 0;
+    let errors = 0;
+
+    for (const msg of messagesWithImages) {
+      if (msg.image_url) {
+        const fullPath = path.join(__dirname, '..', msg.image_url);
+
+        if (!fs.existsSync(fullPath)) {
+          console.log(`[CHAT-CLEANUP] Imagen faltante: ${msg.image_url} en mensaje ID ${msg.id}`);
+
+          // Limpiar referencia de imagen en la base de datos
+          await db.query('UPDATE messages SET image_url = NULL WHERE id = $1', [msg.id]);
+          fixed++;
+        }
+      }
+    }
+
+    console.log(`[CHAT-CLEANUP] Completado. ${fixed} referencias limpiadas, ${errors} errores`);
+
+    res.json({
+      message: 'Limpieza completada',
+      fixed,
+      errors,
+      total: messagesWithImages.length
+    });
+
+  } catch (error) {
+    console.error('[CHAT-CLEANUP] Error:', error);
+    res.status(500).json({ error: 'Error en limpieza' });
+  }
+});
+
 module.exports = router;
