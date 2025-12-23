@@ -26,10 +26,11 @@ services:
       repo: Andres-back/TikTools
       branch: main
       deploy_on_push: true
-    
-    # Usar Dockerfile
-    dockerfile_path: Dockerfile
-    
+
+    # Build y Run commands (NO usa Dockerfile - App Platform detecta Node.js)
+    build_command: npm ci --only=production
+    run_command: node server-new.js
+
     # Puerto interno
     http_port: 8080
     
