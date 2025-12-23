@@ -28,6 +28,11 @@ let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 3;
 const RECONNECT_DELAY_MS = 2000;
 
+// ✅ NUEVO: Variables para reconexión de syncWs
+let syncWsReconnectTimeout = null;
+let syncWsReconnectAttempts = 0;
+const SYNC_WS_MAX_RECONNECT = 5;
+
 // Modo actual (auction o roulette)
 let currentMode = MODES.AUCTION;
 
@@ -47,21 +52,23 @@ let onFollowReceived = null; // Callback para eventos de follow
 
 /**
  * Inicializa WebSocket de sincronización para overlays
+ * ✅ CON RECONEXIÓN AUTOMÁTICA
  */
 function initSyncWebSocket() {
   try {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/sync`;
 
-    console.log(`[SyncWS] Conectando a WebSocket de sincronización: ${wsUrl}`);
+    console.log(`[SyncWS] Conectando... (intento ${syncWsReconnectAttempts + 1}/${SYNC_WS_MAX_RECONNECT})`);
     syncWs = new WebSocket(wsUrl);
 
     if (!syncWs) return;
-      
+
     syncWs.onopen = () => {
-      console.log('[SyncWS] Conectado');
+      console.log('[SyncWS] ✅ Conectado');
+      syncWsReconnectAttempts = 0; // Reset contador de intentos
     };
-    
+
     syncWs.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -74,17 +81,31 @@ function initSyncWebSocket() {
         console.warn('[SyncWS] Error parsing message:', e);
       }
     };
-    
+
     syncWs.onerror = (err) => {
-      console.warn('[SyncWS] Error de conexión:', err);
-      // No intentar reconectar inmediatamente en error
+      console.warn('[SyncWS] ⚠️ Error de conexión:', err);
     };
-    
+
     syncWs.onclose = (event) => {
       console.log('[SyncWS] Desconectado:', event.code, event.reason);
-      
-      // No reconectar automáticamente para evitar spam en logs
-      console.log('[SyncWS] WebSocket cerrado, no reconectando automáticamente');
+
+      // ✅ NUEVO: Reconectar automáticamente
+      if (event.code !== 1000 && syncWsReconnectAttempts < SYNC_WS_MAX_RECONNECT) {
+        syncWsReconnectAttempts++;
+        // Backoff exponencial: 1s, 2s, 4s, 8s, 16s (max 30s)
+        const delay = Math.min(1000 * Math.pow(2, syncWsReconnectAttempts - 1), 30000);
+
+        console.log(`[SyncWS] 🔄 Reconectando en ${delay/1000}s... (intento ${syncWsReconnectAttempts}/${SYNC_WS_MAX_RECONNECT})`);
+
+        clearTimeout(syncWsReconnectTimeout);
+        syncWsReconnectTimeout = setTimeout(() => {
+          initSyncWebSocket();
+        }, delay);
+      } else if (syncWsReconnectAttempts >= SYNC_WS_MAX_RECONNECT) {
+        console.error('[SyncWS] ❌ Máximo de reintentos alcanzado. Recarga la página para reconectar.');
+      } else {
+        console.log('[SyncWS] WebSocket cerrado normalmente (código 1000)');
+      }
     };
   } catch (e) {
     console.warn('[SyncWS] Error inicializando WebSocket de sincronización:', e);
