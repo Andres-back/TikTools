@@ -508,4 +508,71 @@ export function broadcastTimerUpdate(seconds, message = '', phase = 'idle', acti
   }
 }
 
+/**
+ * Envía configuración del timer a overlays via WebSocket
+ * @param {number} initialTime - Tiempo inicial en segundos
+ * @param {string} label - Etiqueta/mensaje del timer
+ */
+export function broadcastConfig(initialTime, label) {
+  // Enviar por WebSocket (prioridad para overlays en OBS)
+  const wsToUse = (syncWs && syncWs.readyState === WebSocket.OPEN) ? syncWs : ws;
+  if (wsToUse && wsToUse.readyState === WebSocket.OPEN) {
+    try {
+      wsToUse.send(JSON.stringify({
+        type: 'timer_config',
+        initialTime: initialTime,
+        label: label,
+        timestamp: Date.now()
+      }));
+      console.log(`[WS] Config enviada: ${label}, ${initialTime}s`);
+    } catch (err) {
+      console.warn('[WS] Error al enviar config:', err);
+    }
+  }
+
+  // También enviar por BroadcastChannel (para compatibilidad)
+  try {
+    overlayChannel.postMessage({
+      type: 'timer_config',
+      initialTime: initialTime,
+      label: label,
+      timestamp: Date.now()
+    });
+  } catch (err) {
+    console.warn('[Connection] Error al broadcast config via BroadcastChannel:', err);
+  }
+}
+
+/**
+ * Envía sincronización completa a overlays via WebSocket
+ * @param {Object} syncData - Datos de sincronización completos
+ */
+export function broadcastSync(syncData) {
+  // Enviar por WebSocket (prioridad para overlays en OBS)
+  const wsToUse = (syncWs && syncWs.readyState === WebSocket.OPEN) ? syncWs : ws;
+  if (wsToUse && wsToUse.readyState === WebSocket.OPEN) {
+    try {
+      wsToUse.send(JSON.stringify({
+        type: 'sync',
+        ...syncData,
+        timestamp: Date.now()
+      }));
+      console.log('[WS] Sync enviado a overlays');
+    } catch (err) {
+      console.warn('[WS] Error al enviar sync:', err);
+    }
+  }
+
+  // También enviar por BroadcastChannel (para compatibilidad)
+  try {
+    overlayChannel.postMessage({
+      type: 'sync',
+      ...syncData,
+      timestamp: Date.now()
+    });
+  } catch (err) {
+    console.warn('[Connection] Error al broadcast sync via BroadcastChannel:', err);
+  }
+}
+
 export { CONNECTION_STATES, MODES };

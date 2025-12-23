@@ -65,6 +65,8 @@ import {
   CONNECTION_STATES,
   setOnSyncRequest,
   broadcastTimerUpdate,
+  broadcastConfig,
+  broadcastSync,
   setMode,
   MODES
 } from "./modules/connection.js";
@@ -93,8 +95,8 @@ function sendOverlaySync() {
   const winner = getWinner();
   const sorted = getSortedDonors();
 
-  overlayChannel.postMessage({
-    type: 'sync',
+  // Usar broadcastSync de connection.js para enviar por WebSocket Y BroadcastChannel
+  broadcastSync({
     timer: {
       seconds: state.timeRemaining,
       phase: state.phase,
@@ -140,14 +142,10 @@ function broadcastWinner(winner) {
   });
 }
 
-// Función para enviar la configuración a los overlays
-function broadcastConfig() {
+// Función auxiliar para enviar configuración (usa broadcastConfig de connection.js)
+function sendConfigToOverlays() {
   const config = getConfig();
-  overlayChannel.postMessage({
-    type: 'timer_config',
-    initialTime: config.initialTime,
-    label: config.minMessage
-  });
+  broadcastConfig(config.initialTime, config.minMessage);
 }
 
 // ============================================
@@ -452,7 +450,7 @@ function setupEventListeners() {
 
     if (updated) {
       // Enviar configuración actualizada a overlays
-      broadcastConfig();
+      sendConfigToOverlays();
       // Mostrar confirmación
       if (elements.updateTimes) {
         const originalText = elements.updateTimes.textContent;
@@ -475,7 +473,7 @@ function setupEventListeners() {
       setMinMessage(message);
       updateTimerHeading(message);
       // Enviar configuración actualizada a overlays
-      broadcastConfig();
+      sendConfigToOverlays();
       // Mostrar confirmación visual
       if (elements.updateMinMessage) {
         const originalText = elements.updateMinMessage.textContent;
