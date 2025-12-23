@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('../database/db');
-const { authenticateToken, isAdmin } = require('../middleware/auth');
+const db = require('../../../database/db');
+const { authenticateToken, isAdmin } = require('../../shared/middlewares/auth');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');

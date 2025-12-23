@@ -2,7 +2,7 @@
  * API Routes - Subastas
  */
 
-const { query } = require('../database/db');
+const { query } = require('../../../database/db');
 
 /**
  * Obtener todas las subastas del usuario

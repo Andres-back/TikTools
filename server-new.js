@@ -20,17 +20,17 @@ const {
   SignConfig
 } = require('tiktok-live-connector');
 
-// Database y Auth
+// Database y Auth (rutas actualizadas a nueva estructura modular)
 const { initDatabase, closeDatabase, getDB } = require('./database/db');
-const { authMiddleware } = require('./middleware/auth');
-const { checkPlanMiddleware, adminMiddleware } = require('./middleware/plan');
-const authRoutes = require('./routes/auth');
-const auctionRoutes = require('./routes/auctions');
-const adminRoutes = require('./routes/admin');
-const paymentRoutes = require('./routes/payments');
-const newsRoutes = require('./routes/news');
-const chatRoutes = require('./routes/chat');
-const overlaysRoutes = require('./routes/overlays');
+const { authMiddleware, adminMiddleware } = require('./src/shared/middlewares/auth');
+const { checkPlanMiddleware } = require('./src/shared/middlewares/plan');
+const authRoutes = require('./src/modules/auth/routes');
+const auctionRoutes = require('./src/modules/auctions/routes');
+const adminRoutes = require('./src/modules/admin/routes');
+const paymentRoutes = require('./src/modules/payments/routes');
+const newsRoutes = require('./src/modules/news/routes');
+const chatRoutes = require('./src/modules/chat/routes');
+const overlaysRoutes = require('./src/modules/overlays/routes');
 
 // Configuración
 const HOST = process.env.HOST || '0.0.0.0';

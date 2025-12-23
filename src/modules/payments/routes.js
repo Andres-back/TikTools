@@ -2,7 +2,7 @@
  * API Routes - Pagos con PayPal
  */
 
-const { query } = require('../database/db');
+const { query } = require('../../../database/db');
 
 // Configuración de planes
 const PLANS = {

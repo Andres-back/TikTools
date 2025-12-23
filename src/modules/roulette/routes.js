@@ -5,8 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('../database/db');
-const { authenticateToken } = require('../middleware/auth');
+const db = require('../../../database/db');
+const { authenticateToken } = require('../../shared/middlewares/auth');
 
 /**
  * GET /api/roulette/participants

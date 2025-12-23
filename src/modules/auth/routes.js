@@ -4,13 +4,13 @@
 
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const { query } = require('../database/db');
-const { generateTokens, verifyToken } = require('../middleware/auth');
-const { activateTrialDays } = require('../middleware/plan');
+const { query } = require('../../../database/db');
+const { generateTokens, verifyToken } = require('../../shared/middlewares/auth');
+const { activateTrialDays } = require('../../shared/middlewares/plan');
 
 const SALT_ROUNDS = 12;
 
-const { sendVerificationEmail } = require('../utils/mailer');
+const { sendVerificationEmail } = require('../../shared/utils/mailer');
 
 // ... (código existente) ...
 

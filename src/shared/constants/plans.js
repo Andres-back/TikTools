@@ -41,7 +41,7 @@ const PLAN_HIERARCHY = {
   [PLANS.PREMIUM]: 3
 };
 
-function canAccess Feature(userPlan, feature) {
+function canAccessFeature(userPlan, feature) {
   return PLAN_FEATURES[userPlan]?.[feature] || false;
 }
 

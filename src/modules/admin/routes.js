@@ -2,12 +2,12 @@
  * API Routes - Administración
  */
 
-const { query } = require('../database/db');
-const { 
-  addDaysToUser, 
-  removeDaysFromUser, 
-  toggleUserAccount 
-} = require('../middleware/plan');
+const { query } = require('../../../database/db');
+const {
+  addDaysToUser,
+  removeDaysFromUser,
+  toggleUserAccount
+} = require('../../shared/middlewares/plan');
 
 /**
  * Obtener todos los usuarios
