@@ -250,10 +250,133 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// Endpoint de diagnóstico para uploads
+app.get('/api/debug/uploads', async (req, res) => {
+  try {
+    const fs = require('fs');
+    const overlaysDir = path.join(process.cwd(), 'uploads', 'overlays');
+
+    // Verificar que el directorio existe
+    if (!fs.existsSync(overlaysDir)) {
+      return res.status(404).json({
+        error: 'Directory not found',
+        directory: overlaysDir,
+        exists: false
+      });
+    }
+
+    // Listar archivos
+    const files = fs.readdirSync(overlaysDir);
+
+    const fileDetails = files.map(file => {
+      const filePath = path.join(overlaysDir, file);
+      const stats = fs.statSync(filePath);
+      return {
+        name: file,
+        size: stats.size,
+        sizeFormatted: `${(stats.size / 1024).toFixed(2)} KB`,
+        created: stats.birthtime,
+        modified: stats.mtime,
+        url: `/uploads/overlays/${file}`,
+        fullPath: filePath
+      };
+    });
+
+    res.json({
+      directory: overlaysDir,
+      totalFiles: files.length,
+      totalSize: fileDetails.reduce((sum, f) => sum + f.size, 0),
+      files: fileDetails
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+      stack: IS_PRODUCTION ? undefined : error.stack
+    });
+  }
+});
+
+// Endpoint para verificar un archivo específico
+app.get('/api/debug/file-exists/:filename', async (req, res) => {
+  try {
+    const fs = require('fs');
+    const { filename } = req.params;
+    const filePath = path.join(process.cwd(), 'uploads', 'overlays', filename);
+
+    const exists = fs.existsSync(filePath);
+
+    if (exists) {
+      const stats = fs.statSync(filePath);
+      res.json({
+        exists: true,
+        filename,
+        url: `/uploads/overlays/${filename}`,
+        fullPath: filePath,
+        size: stats.size,
+        created: stats.birthtime,
+        modified: stats.mtime
+      });
+    } else {
+      res.json({
+        exists: false,
+        filename,
+        expectedPath: filePath
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ==================== STATIC FILES ====================
 
-// Servir archivos subidos (uploads)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Servir archivos subidos (uploads) con logging mejorado
+const uploadsPath = path.join(process.cwd(), 'uploads');
+process.stdout.write(`✓ Serving uploads from: ${uploadsPath}\n`);
+
+// Verificar que el directorio uploads existe
+const overlaysDir = path.join(uploadsPath, 'overlays');
+if (!require('fs').existsSync(overlaysDir)) {
+  require('fs').mkdirSync(overlaysDir, { recursive: true, mode: 0o755 });
+  process.stdout.write(`✓ Created directory: ${overlaysDir}\n`);
+}
+
+// Middleware de logging para requests de uploads
+app.use('/uploads', (req, res, next) => {
+  const fullPath = path.join(uploadsPath, req.url);
+  process.stdout.write(`[STATIC] Request: ${req.url} -> ${fullPath}\n`);
+  next();
+});
+
+// Servir archivos estáticos con configuración mejorada
+app.use('/uploads', express.static(uploadsPath, {
+  // Configuración para mejor debugging
+  setHeaders: (res, filePath) => {
+    process.stdout.write(`[STATIC] Serving file: ${filePath}\n`);
+    // Agregar headers para evitar cache en desarrollo
+    if (!IS_PRODUCTION) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    }
+  },
+  fallthrough: true, // Continuar al siguiente handler si no encuentra el archivo
+  dotfiles: 'ignore',
+  index: false
+}));
+
+// Handler 404 para archivos no encontrados en uploads
+app.use('/uploads', (req, res) => {
+  const requestedPath = path.join(uploadsPath, req.url);
+  process.stderr.write(`[STATIC] ✗ 404 Not Found: ${req.url}\n`);
+  process.stderr.write(`[STATIC] Full path: ${requestedPath}\n`);
+
+  res.status(404).json({
+    error: 'File not found',
+    path: req.url,
+    fullPath: requestedPath,
+    exists: require('fs').existsSync(requestedPath),
+    message: 'El archivo solicitado no existe en el servidor'
+  });
+});
 
 app.use(express.static(PUBLIC_DIR));
 

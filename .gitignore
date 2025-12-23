@@ -12,7 +12,9 @@ node_modules/
 
 # Database files (SQLite)
 data/*.db
+data/*.sqlite
 *.db
+*.sqlite
 
 # Logs
 logs/
@@ -34,12 +36,32 @@ Thumbs.db
 # Build files
 dist/
 build/
+
 # Uploaded files
-uploads/
+uploads/*
 !uploads/.gitkeep
+
 # Claude cache
 .claude/
 
 # SQLite temp files
 *.db-shm
 *.db-wal
+
+# Temporary files
+nul
+*.tmp
+temp/
+tmp/
+
+# Test files
+test-*.js
+*-test.js
+
+# Carpetas temporales
+Nueva carpeta*/
+
+# Archivos obsoletos de migración
+server.js.old
+start.js.old
+*.backup

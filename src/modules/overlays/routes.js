@@ -14,7 +14,8 @@ const fs = require('fs');
 // Configurar multer para subida de imágenes de overlay
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../uploads/overlays');
+    // CORREGIDO: Usar process.cwd() para ruta absoluta desde raíz del proyecto
+    const uploadDir = path.join(process.cwd(), 'uploads', 'overlays');
     console.log(`[OVERLAY-UPLOAD] Destination check: ${uploadDir}`);
     
     try {
@@ -37,9 +38,25 @@ const storage = multer.diskStorage({
     const randomId = Math.random().toString(36).substring(2, 9);
     const ext = path.extname(file.originalname).toLowerCase();
     const uniqueName = `${timestamp}-${randomId}${ext}`;
-    
+
     console.log(`[OVERLAY-UPLOAD] Generated filename: ${uniqueName} for original: ${file.originalname}`);
+
+    // Verificar que el archivo se guardará correctamente
+    const uploadDir = path.join(process.cwd(), 'uploads', 'overlays');
+    const fullPath = path.join(uploadDir, uniqueName);
+    console.log(`[OVERLAY-UPLOAD] File will be saved at: ${fullPath}`);
+
     cb(null, uniqueName);
+
+    // Verificar después de 2 segundos que el archivo existe
+    setTimeout(() => {
+      if (fs.existsSync(fullPath)) {
+        const stats = fs.statSync(fullPath);
+        console.log(`[OVERLAY-UPLOAD] ✓ File saved successfully: ${fullPath} (${stats.size} bytes)`);
+      } else {
+        console.error(`[OVERLAY-UPLOAD] ✗ File NOT found after save: ${fullPath}`);
+      }
+    }, 2000);
   }
 });
 
@@ -167,7 +184,7 @@ router.post('/', authenticateToken, upload.fields([
       console.log(`[OVERLAY-POST] Processing left image: ${req.files.leftImage[0].filename}`);
       // Eliminar imagen anterior si existe
       if (currentOverlay?.left_image_url && !currentOverlay.left_image_url.startsWith('/assets/')) {
-        const oldPath = path.join(__dirname, '..', currentOverlay.left_image_url);
+        const oldPath = path.join(process.cwd(), currentOverlay.left_image_url);
         if (fs.existsSync(oldPath)) {
           console.log(`[OVERLAY-POST] Deleting old left image: ${oldPath}`);
           fs.unlinkSync(oldPath);
@@ -176,6 +193,14 @@ router.post('/', authenticateToken, upload.fields([
       leftImageUrl = `/uploads/overlays/${req.files.leftImage[0].filename}`;
       console.log(`[OVERLAY-POST] Left image URL set to: ${leftImageUrl}`);
       console.log(`[OVERLAY-POST] File saved at: ${req.files.leftImage[0].path}`);
+
+      // Verificar que el archivo existe en el sistema
+      const fullPath = path.join(process.cwd(), leftImageUrl);
+      if (fs.existsSync(fullPath)) {
+        console.log(`[OVERLAY-POST] ✓ Left image verified: ${fullPath}`);
+      } else {
+        console.error(`[OVERLAY-POST] ✗ Left image NOT found: ${fullPath}`);
+      }
     }
 
     // Actualizar imagen derecha si se subió
@@ -183,7 +208,7 @@ router.post('/', authenticateToken, upload.fields([
       console.log(`[OVERLAY-POST] Processing right image: ${req.files.rightImage[0].filename}`);
       // Eliminar imagen anterior si existe
       if (currentOverlay?.right_image_url && !currentOverlay.right_image_url.startsWith('/assets/')) {
-        const oldPath = path.join(__dirname, '..', currentOverlay.right_image_url);
+        const oldPath = path.join(process.cwd(), currentOverlay.right_image_url);
         if (fs.existsSync(oldPath)) {
           console.log(`[OVERLAY-POST] Deleting old right image: ${oldPath}`);
           fs.unlinkSync(oldPath);
@@ -192,6 +217,14 @@ router.post('/', authenticateToken, upload.fields([
       rightImageUrl = `/uploads/overlays/${req.files.rightImage[0].filename}`;
       console.log(`[OVERLAY-POST] Right image URL set to: ${rightImageUrl}`);
       console.log(`[OVERLAY-POST] File saved at: ${req.files.rightImage[0].path}`);
+
+      // Verificar que el archivo existe en el sistema
+      const fullPath = path.join(process.cwd(), rightImageUrl);
+      if (fs.existsSync(fullPath)) {
+        console.log(`[OVERLAY-POST] ✓ Right image verified: ${fullPath}`);
+      } else {
+        console.error(`[OVERLAY-POST] ✗ Right image NOT found: ${fullPath}`);
+      }
     }
 
     // Insertar o actualizar

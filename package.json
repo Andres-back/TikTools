@@ -10,15 +10,15 @@
   },
   "scripts": {
     "start": "node server-new.js",
-    "start:legacy": "node server.js",
     "dev": "node server-new.js",
     "check": "node check-config.js",
     "setup": "node check-config.js",
     "test": "node test-coins-count.js",
     "test:coins": "node test-coins-count.js",
-    "generate:jwt": "node generate-jwt-secret.js",
-    "diagnose": "node diagnose-env.js",
-    "diagnose:full": "node diagnose-env.js --test-connection"
+    "generate:jwt": "node scripts/generate-jwt-secret.js",
+    "diagnose": "node scripts/diagnose-env.js",
+    "diagnose:full": "node scripts/diagnose-env.js --test-connection",
+    "migrate": "node scripts/migrate-new-tables.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
