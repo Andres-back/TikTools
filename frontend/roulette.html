@@ -591,9 +591,11 @@
   <!-- Módulo de ruleta -->
   <script type="module">
     import { init as initRoulette } from './modules/roulette.js';
+    import { initUI } from './modules/ui.js';
 
     document.addEventListener('DOMContentLoaded', () => {
       console.log('[ROULETTE] Inicializando página de ruleta...');
+      initUI(); // Inicializar modales de chat y novedades
       initRoulette();
     });
   </script>

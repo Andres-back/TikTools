@@ -1179,9 +1179,25 @@
           return;
         }
         
-        container.innerHTML = data.map(news => `
+        container.innerHTML = data.map(news => {
+          // Confiar en la URL de la BD (backend guarda correctamente)
+          const imageUrl = news.image_url;
+          if (imageUrl) {
+            console.log('[ADMIN-NEWS] Noticia con imagen:', {
+              title: news.title,
+              imageUrl: imageUrl
+            });
+          }
+
+          return `
           <div class="news-card">
-            ${news.image_url ? `<img src="${news.image_url}" class="news-card-image" alt="${news.title}">` : ''}
+            ${imageUrl ? `
+              <img src="${escapeHtml(imageUrl)}"
+                   class="news-card-image"
+                   alt="${escapeHtml(news.title)}"
+                   onload="console.log('[ADMIN-NEWS] ✅ Imagen cargada:', '${escapeHtml(imageUrl)}');"
+                   onerror="console.error('[ADMIN-NEWS] ❌ Error cargando imagen:', '${escapeHtml(imageUrl)}'); this.style.display='none'; this.parentElement.querySelector('.news-card-body').insertAdjacentHTML('beforebegin', '<div style=\\'padding: 20px; background: rgba(255,71,87,0.1); text-align: center; color: #ff4757;\\'><div style=\\'font-size: 32px; margin-bottom: 8px;\\'>🚫</div><div style=\\'font-size: 14px;\\'>Imagen no disponible</div></div>');">
+            ` : ''}
             <div class="news-card-body">
               <h3 class="news-card-title">${escapeHtml(news.title)}</h3>
               <p class="news-card-content">${escapeHtml(news.content)}</p>
@@ -1624,35 +1640,65 @@
     async function loadChatMessages(userId) {
       const container = document.getElementById('chatMessages');
       container.innerHTML = '<div class="loading">Cargando...</div>';
-      
+
       try {
+        console.log(`[ADMIN-CHAT] Cargando mensajes del usuario ${userId}...`);
         const messages = await apiCall(`/chat/${userId}`);
-        
+        console.log(`[ADMIN-CHAT] Mensajes recibidos:`, messages.length);
+
         if (!messages || messages.length === 0) {
           container.innerHTML = '<div class="loading" style="padding:40px;text-align:center;">No hay mensajes</div>';
           return;
         }
-        
-        container.innerHTML = messages.map(msg => {
-          // Normalizar la URL de la imagen (corregir rutas antiguas sin /uploads/chat/)
+
+        container.innerHTML = messages.map((msg, index) => {
+          // Normalizar la URL de la imagen - confiar en la BD pero agregar logging
           let imageUrl = msg.image_url;
-          if (imageUrl && !imageUrl.startsWith('/uploads/') && !imageUrl.startsWith('http')) {
-            imageUrl = `/uploads/chat/${imageUrl}`;
+
+          if (imageUrl) {
+            const originalUrl = imageUrl;
+
+            // Si no empieza con / ni con http, agregar ruta completa
+            if (!imageUrl.startsWith('/') && !imageUrl.startsWith('http')) {
+              imageUrl = `/uploads/chat/${imageUrl}`;
+            }
+            // Si empieza con /uploads pero no tiene /chat/, agregarlo
+            else if (imageUrl.startsWith('/uploads/') && !imageUrl.includes('/chat/')) {
+              imageUrl = imageUrl.replace('/uploads/', '/uploads/chat/');
+            }
+
+            console.log(`[ADMIN-CHAT] Mensaje ${index + 1}:`, {
+              original: originalUrl,
+              normalized: imageUrl,
+              hasImage: true
+            });
           }
 
           return `
             <div class="message ${msg.sender_type === 'admin' ? 'own' : ''}">
               <div class="message-bubble">
                 <div class="message-text">${msg.message || ''}</div>
-                ${imageUrl ? `<img src="${imageUrl}" class="message-image" alt="Imagen" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EImagen no disponible%3C/text%3E%3C/svg%3E'; this.style.opacity='0.5';">` : ''}
+                ${imageUrl ? `
+                  <img src="${imageUrl}"
+                       class="message-image"
+                       alt="Imagen"
+                       onload="console.log('[ADMIN-CHAT] ✅ Imagen cargada:', '${imageUrl}');"
+                       onerror="console.error('[ADMIN-CHAT] ❌ Error cargando imagen:', '${imageUrl}'); this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <div style="display: none; padding: 20px; background: rgba(255,71,87,0.1); border-radius: 8px; text-align: center; color: #ff4757; margin-top: 8px;">
+                    <div style="font-size: 24px; margin-bottom: 4px;">🖼️</div>
+                    <div style="font-size: 12px;">Imagen no disponible</div>
+                  </div>
+                ` : ''}
                 <div class="message-time">${new Date(msg.created_at).toLocaleString()}</div>
               </div>
             </div>
           `;
         }).join('');
-        
+
         container.scrollTop = container.scrollHeight;
+        console.log('[ADMIN-CHAT] ✅ Mensajes renderizados exitosamente');
       } catch (error) {
+        console.error('[ADMIN-CHAT] ❌ Error al cargar mensajes:', error);
         container.innerHTML = '<div class="loading">Error al cargar mensajes</div>';
       }
     }
