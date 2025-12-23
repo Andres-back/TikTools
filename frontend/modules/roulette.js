@@ -72,6 +72,9 @@ export async function init() {
   // Configurar eventos de UI
   setupUIEvents();
 
+  // Configurar eventos de conexión TikTok
+  setupConnectionEvents();
+
   // Cargar configuración guardada
   loadConfiguration();
 
@@ -90,7 +93,7 @@ export async function init() {
 
 async function loadGiftsCatalog() {
   try {
-    const response = await fetch('/assets/gifts.json');
+    const response = await fetch('/gifts.json');
     giftsData = await response.json();
     console.log(`[ROULETTE] ${giftsData.length} regalos cargados`);
 
@@ -102,26 +105,33 @@ async function loadGiftsCatalog() {
   }
 }
 
-function populateGiftSelectors() {
+function populateGiftSelectors(filterText = '') {
   const validGiftSelector = document.getElementById('validGiftSelector');
   const manualGiftSelect = document.getElementById('manualGiftSelect');
 
+  const filteredGifts = filterText
+    ? giftsData.filter(gift =>
+        gift.name.toLowerCase().includes(filterText.toLowerCase()) ||
+        gift.id.includes(filterText)
+      )
+    : giftsData;
+
   if (validGiftSelector) {
     validGiftSelector.innerHTML = '<option value="">🚫 Solo Heart Me</option>';
-    giftsData.forEach(gift => {
+    filteredGifts.forEach(gift => {
       const option = document.createElement('option');
       option.value = gift.id;
-      option.textContent = `${gift.name} (${gift.diamond_count} 💎)`;
+      option.textContent = `${gift.name} (${gift.cost} 💎)`;
       validGiftSelector.appendChild(option);
     });
   }
 
   if (manualGiftSelect) {
     manualGiftSelect.innerHTML = '<option value="" disabled selected>Selecciona un regalo...</option>';
-    giftsData.forEach(gift => {
+    filteredGifts.forEach(gift => {
       const option = document.createElement('option');
       option.value = gift.id;
-      option.textContent = `${gift.name} (${gift.diamond_count} 💎)`;
+      option.textContent = `${gift.name} (${gift.cost} 💎)`;
       manualGiftSelect.appendChild(option);
     });
   }
@@ -661,6 +671,196 @@ function setupUIEvents() {
       }
     });
   }
+
+  // Búsqueda de regalo válido
+  const validGiftSearchInput = document.getElementById('validGiftSearchInput');
+  if (validGiftSearchInput) {
+    validGiftSearchInput.addEventListener('input', (e) => {
+      const searchText = e.target.value;
+      populateGiftSelectors(searchText);
+    });
+  }
+
+  // Búsqueda de regalo manual
+  const giftSearchInput = document.getElementById('giftSearchInput');
+  if (giftSearchInput) {
+    giftSearchInput.addEventListener('input', (e) => {
+      const searchText = e.target.value;
+      const manualGiftSelect = document.getElementById('manualGiftSelect');
+      if (manualGiftSelect) {
+        const filteredGifts = searchText
+          ? giftsData.filter(gift =>
+              gift.name.toLowerCase().includes(searchText.toLowerCase()) ||
+              gift.id.includes(searchText)
+            )
+          : giftsData;
+
+        manualGiftSelect.innerHTML = '<option value="" disabled selected>Selecciona un regalo...</option>';
+        filteredGifts.forEach(gift => {
+          const option = document.createElement('option');
+          option.value = gift.id;
+          option.textContent = `${gift.name} (${gift.cost} 💎)`;
+          manualGiftSelect.appendChild(option);
+        });
+      }
+    });
+  }
+
+  // Selector de regalo válido
+  const validGiftSelector = document.getElementById('validGiftSelector');
+  if (validGiftSelector) {
+    validGiftSelector.addEventListener('change', (e) => {
+      validGiftId = e.target.value || null;
+      saveConfiguration();
+      console.log(`[ROULETTE] Regalo válido configurado: ${validGiftId || 'Solo Heart Me'}`);
+
+      // Mostrar info del regalo seleccionado
+      const validGiftInfo = document.getElementById('validGiftInfo');
+      const validGiftInfoImage = document.getElementById('validGiftInfoImage');
+      const validGiftInfoName = document.getElementById('validGiftInfoName');
+
+      if (validGiftId && validGiftInfo && validGiftInfoImage && validGiftInfoName) {
+        const selectedGift = giftsData.find(g => g.id === validGiftId);
+        if (selectedGift) {
+          validGiftInfoImage.innerHTML = `<img src="${selectedGift.image}" alt="${selectedGift.name}" style="width: 50px; height: 50px; border-radius: 8px;" crossorigin="anonymous">`;
+          validGiftInfoName.textContent = `${selectedGift.name} (${selectedGift.cost} 💎)`;
+          validGiftInfo.style.display = 'block';
+        }
+      } else if (validGiftInfo) {
+        validGiftInfo.style.display = 'none';
+      }
+    });
+  }
+}
+
+// ============================================
+// EVENTOS DE CONEXIÓN TIKTOK
+// ============================================
+
+function setupConnectionEvents() {
+  const tiktokConnectBtn = document.getElementById('tiktokConnect');
+  const tiktokUserInput = document.getElementById('tiktokUserInput');
+  const connectionStatus = document.getElementById('connectionStatus');
+  const connectionFeedback = document.getElementById('connectionFeedback');
+  const tiktokUserDisplay = document.getElementById('tiktokUserDisplay');
+  const statusDot = document.getElementById('statusDot');
+  const saveSessionIdBtn = document.getElementById('saveSessionId');
+
+  // Importar módulo de conexión dinámicamente
+  import('./connection.js').then(connectionModule => {
+    const { connect, disconnect, initConnection, setConnectionCallbacks, getConnectionState, CONNECTION_STATES } = connectionModule;
+
+    // Inicializar módulo de conexión
+    initConnection({
+      statusBadge: connectionStatus,
+      feedback: connectionFeedback
+    });
+
+    // Configurar callbacks
+    setConnectionCallbacks({
+      onStateChange: (state) => {
+        console.log('[ROULETTE] Estado de conexión:', state);
+
+        // Actualizar dot indicator
+        if (statusDot) {
+          statusDot.className = 'status-dot';
+          if (state === CONNECTION_STATES.CONNECTED) {
+            statusDot.classList.add('status-dot--connected');
+          } else if (state === CONNECTION_STATES.CONNECTING) {
+            statusDot.classList.add('status-dot--connecting');
+          } else if (state === CONNECTION_STATES.ERROR) {
+            statusDot.classList.add('status-dot--error');
+          }
+        }
+      },
+      onGift: (giftData) => {
+        console.log('[ROULETTE] Regalo recibido:', giftData);
+        // Aquí se puede procesar el regalo para la ruleta si es necesario
+      }
+    });
+
+    // Botón de conectar
+    if (tiktokConnectBtn) {
+      tiktokConnectBtn.addEventListener('click', () => {
+        const username = tiktokUserInput?.value.trim() || '';
+
+        if (!username) {
+          if (connectionFeedback) {
+            connectionFeedback.textContent = 'Por favor ingresa un usuario';
+            connectionFeedback.style.color = '#ff6b6b';
+          }
+          return;
+        }
+
+        // Obtener sessionId si está disponible
+        const sessionIdInput = document.getElementById('sessionIdInput');
+        const ttTargetIdcInput = document.getElementById('ttTargetIdcInput');
+        const sessionId = sessionIdInput?.value.trim() || null;
+        const ttTargetIdc = ttTargetIdcInput?.value.trim() || null;
+
+        // Conectar
+        const connected = connect(username, sessionId, ttTargetIdc);
+
+        if (connected && tiktokUserDisplay) {
+          tiktokUserDisplay.textContent = `@${username}`;
+        }
+      });
+    }
+
+    // Enter en input de usuario
+    if (tiktokUserInput) {
+      tiktokUserInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          tiktokConnectBtn?.click();
+        }
+      });
+    }
+
+    // Guardar Session ID
+    if (saveSessionIdBtn) {
+      saveSessionIdBtn.addEventListener('click', () => {
+        const sessionIdInput = document.getElementById('sessionIdInput');
+        const ttTargetIdcInput = document.getElementById('ttTargetIdcInput');
+
+        const sessionId = sessionIdInput?.value.trim();
+        const ttTargetIdc = ttTargetIdcInput?.value.trim();
+
+        if (sessionId) {
+          localStorage.setItem('tiktok_sessionid', sessionId);
+          console.log('[ROULETTE] Session ID guardado');
+        }
+
+        if (ttTargetIdc) {
+          localStorage.setItem('tiktok_tt_target_idc', ttTargetIdc);
+          console.log('[ROULETTE] tt-target-idc guardado');
+        }
+
+        if (connectionFeedback) {
+          connectionFeedback.textContent = '✓ Credenciales guardadas';
+          connectionFeedback.style.color = '#4ecdc4';
+          setTimeout(() => {
+            connectionFeedback.textContent = '';
+          }, 3000);
+        }
+      });
+    }
+
+    // Cargar credenciales guardadas
+    const savedSessionId = localStorage.getItem('tiktok_sessionid');
+    const savedTtTargetIdc = localStorage.getItem('tiktok_tt_target_idc');
+
+    if (savedSessionId) {
+      const sessionIdInput = document.getElementById('sessionIdInput');
+      if (sessionIdInput) sessionIdInput.value = savedSessionId;
+    }
+
+    if (savedTtTargetIdc) {
+      const ttTargetIdcInput = document.getElementById('ttTargetIdcInput');
+      if (ttTargetIdcInput) ttTargetIdcInput.value = savedTtTargetIdc;
+    }
+  }).catch(err => {
+    console.error('[ROULETTE] Error cargando módulo de conexión:', err);
+  });
 }
 
 // ============================================
