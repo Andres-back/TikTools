@@ -64,7 +64,9 @@ import {
   getCurrentUser,
   CONNECTION_STATES,
   setOnSyncRequest,
-  broadcastTimerUpdate
+  broadcastTimerUpdate,
+  setMode,
+  MODES
 } from "./modules/connection.js";
 import { processGiftEvent } from "./modules/coins.js";
 
@@ -638,6 +640,10 @@ function showPlanBanner(planData) {
 // ============================================
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  // Configurar modo de operación como SUBASTA
+  setMode(MODES.AUCTION);
+  console.log('[MAIN] Modo configurado: AUCTION');
 
   try {
     initUI();

@@ -14,6 +14,12 @@ const CONNECTION_STATES = {
   ERROR: "error"
 };
 
+// Modos de operación
+const MODES = {
+  AUCTION: "auction",
+  ROULETTE: "roulette"
+};
+
 let ws = null;
 let syncWs = null; // WebSocket permanente para sincronización
 let connectionState = CONNECTION_STATES.DISCONNECTED;
@@ -21,6 +27,9 @@ let currentUser = "";
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 3;
 const RECONNECT_DELAY_MS = 2000;
+
+// Modo actual (auction o roulette)
+let currentMode = MODES.AUCTION;
 
 // BroadcastChannel para comunicación con overlays
 const overlayChannel = new BroadcastChannel('tiktoolstream_overlay');
@@ -33,7 +42,8 @@ let feedbackEl = null;
 let onConnectionStateChange = null;
 let onGiftReceived = null;
 let onSyncRequest = null;
-let onParticipantAdded = null; // Callback para eventos de participantes (ruleta)
+let onLikeReceived = null; // Callback para eventos de like
+let onFollowReceived = null; // Callback para eventos de follow
 
 /**
  * Inicializa WebSocket de sincronización para overlays
@@ -115,12 +125,22 @@ export function initConnection(elements) {
 }
 
 /**
+ * Establece el modo de operación (auction o roulette)
+ * @param {string} mode - 'auction' o 'roulette'
+ */
+export function setMode(mode) {
+  currentMode = mode;
+  console.log(`[Connection] Modo configurado: ${mode}`);
+}
+
+/**
  * Registra callbacks para eventos de conexión
  */
-export function setConnectionCallbacks({ onStateChange, onGift, onParticipant }) {
+export function setConnectionCallbacks({ onStateChange, onGift, onLike, onFollow }) {
   onConnectionStateChange = onStateChange || null;
   onGiftReceived = onGift || null;
-  onParticipantAdded = onParticipant || null;
+  onLikeReceived = onLike || null;
+  onFollowReceived = onFollow || null;
 }
 
 /**
@@ -211,14 +231,32 @@ function handleWebSocketMessage(event) {
         break;
 
       case "gift":
-        processGiftEvent(data.data);
+        // Rutear evento según modo
+        if (currentMode === MODES.AUCTION) {
+          // Modo subasta: procesar monedas
+          processGiftEvent(data.data);
+        } else if (currentMode === MODES.ROULETTE) {
+          // Modo ruleta: notificar callback
+          if (onGiftReceived) {
+            console.log('[WS] Regalo recibido (ruleta):', data.data);
+            onGiftReceived(data.data);
+          }
+        }
         break;
 
-      case "participant":
-        // Evento de participante para ruleta
-        if (onParticipantAdded && data.payload) {
-          console.log('[WS] Participante recibido:', data.payload);
-          onParticipantAdded(data.payload);
+      case "like":
+        // Evento de like
+        if (onLikeReceived) {
+          console.log('[WS] Like recibido:', data.data);
+          onLikeReceived(data.data);
+        }
+        break;
+
+      case "follow":
+        // Evento de follow
+        if (onFollowReceived) {
+          console.log('[WS] Follow recibido:', data.data);
+          onFollowReceived(data.data);
         }
         break;
 
@@ -470,4 +508,4 @@ export function broadcastTimerUpdate(seconds, message = '', phase = 'idle', acti
   }
 }
 
-export { CONNECTION_STATES };
+export { CONNECTION_STATES, MODES };

@@ -3,7 +3,7 @@
  * Adaptado para TikToolStream
  */
 
-import { getConnection, onTikTokEvent } from './connection.js';
+import { setMode, MODES } from './connection.js';
 import { getAccessToken } from './auth.js';
 
 // ============================================
@@ -55,6 +55,9 @@ let colorIndex = 0;
 export async function init() {
   console.log('[ROULETTE] Inicializando módulo de ruleta...');
 
+  // Configurar modo de conexión como RULETA
+  setMode(MODES.ROULETTE);
+
   // Obtener elementos del DOM
   rouletteCanvas = document.getElementById('rouletteCanvas');
   giftsOverlayCanvas = document.getElementById('giftsOverlayCanvas');
@@ -84,7 +87,7 @@ export async function init() {
   // Dibujar ruleta inicial
   drawRoulette();
 
-  console.log('[ROULETTE] Módulo inicializado');
+  console.log('[ROULETTE] Módulo inicializado en modo RULETA');
 }
 
 // ============================================
@@ -165,7 +168,7 @@ function syncStateWithOverlays() {
   if (!overlaySocket || overlaySocket.readyState !== WebSocket.OPEN) return;
 
   const state = {
-    type: 'roulette-state',
+    type: 'state',
     participants: Array.from(participants.entries()).map(([uniqueId, data]) => ({
       uniqueId,
       displayName: data.displayName,
@@ -178,6 +181,24 @@ function syncStateWithOverlays() {
   };
 
   overlaySocket.send(JSON.stringify(state));
+}
+
+/**
+ * Envía actualización individual de participante a overlays
+ */
+function broadcastParticipantUpdate(uniqueId, data) {
+  if (!overlaySocket || overlaySocket.readyState !== WebSocket.OPEN) return;
+
+  const update = {
+    type: 'participantUpdate',
+    uniqueId,
+    displayName: data.displayName,
+    entries: data.entries,
+    color: data.color,
+    profileImage: data.profileImage
+  };
+
+  overlaySocket.send(JSON.stringify(update));
 }
 
 // ============================================
@@ -204,14 +225,21 @@ function addParticipant({ uniqueId, displayName, entries, profileImage }) {
     existing.entries += entries;
     if (profileImage) existing.profileImage = profileImage;
     console.log(`[ROULETTE] @${uniqueId} ahora tiene ${existing.entries} entradas`);
+
+    // Broadcast individual update
+    broadcastParticipantUpdate(uniqueId, existing);
   } else {
-    participants.set(uniqueId, {
+    const newParticipant = {
       displayName: displayName || uniqueId,
       entries,
       color: getRandomColor(),
       profileImage: profileImage || null
-    });
+    };
+    participants.set(uniqueId, newParticipant);
     console.log(`[ROULETTE] Nuevo participante: @${uniqueId}`);
+
+    // Broadcast individual update
+    broadcastParticipantUpdate(uniqueId, newParticipant);
   }
 
   totalEntries = Array.from(participants.values()).reduce((sum, p) => sum + p.entries, 0);
@@ -541,8 +569,19 @@ function showWinner(winner) {
       participants.delete(winner.uniqueId);
       eliminatedParticipants.push({ ...participant, uniqueId: winner.uniqueId });
       console.log(`[ROULETTE] ❌ @${winner.displayName} eliminado`);
+
+      // Broadcast elimination (entries = 0)
+      broadcastParticipantUpdate(winner.uniqueId, {
+        displayName: participant.displayName,
+        entries: 0,
+        color: participant.color,
+        profileImage: participant.profileImage
+      });
     } else {
       console.log(`[ROULETTE] @${winner.displayName} tiene ${participant.entries} entradas restantes`);
+
+      // Broadcast updated entries
+      broadcastParticipantUpdate(winner.uniqueId, participant);
     }
   }
 
@@ -734,6 +773,84 @@ function setupUIEvents() {
 }
 
 // ============================================
+// PROCESAMIENTO DE EVENTOS TIKTOK
+// ============================================
+
+/**
+ * Procesa regalos de TikTok y los convierte en entradas de ruleta
+ */
+function processGiftForRoulette(giftData) {
+  console.log('[ROULETTE] Regalo de TikTok recibido:', giftData);
+
+  // Verificar si es el regalo válido configurado o si no hay regalo configurado
+  const isValidGift = !validGiftId || giftData.giftId === validGiftId;
+
+  if (!isValidGift) {
+    console.log(`[ROULETTE] Regalo ignorado (ID ${giftData.giftId}), solo se acepta ID ${validGiftId}`);
+    return;
+  }
+
+  // Agregar participante con las entradas configuradas
+  addParticipant({
+    uniqueId: giftData.uniqueId,
+    displayName: giftData.nickname || giftData.uniqueId,
+    entries: giftEntries,
+    profileImage: giftData.profilePictureUrl || null
+  });
+
+  console.log(`[ROULETTE] ✅ @${giftData.nickname} ganó ${giftEntries} entrada(s) por regalo`);
+}
+
+/**
+ * Procesa likes (Heart Me) y los convierte en entradas
+ */
+function processLikeForRoulette(likeData) {
+  if (!heartMeEnabled) {
+    console.log('[ROULETTE] Heart Me está desactivado');
+    return;
+  }
+
+  console.log('[ROULETTE] Likes recibidos:', likeData);
+
+  // Calcular entradas basadas en likes acumulados
+  const likeCount = likeData.likeCount || 1;
+  const entriesEarned = Math.floor(likeCount / likesPerEntry);
+
+  if (entriesEarned > 0) {
+    addParticipant({
+      uniqueId: likeData.uniqueId,
+      displayName: likeData.nickname || likeData.uniqueId,
+      entries: entriesEarned,
+      profileImage: likeData.profilePictureUrl || null
+    });
+
+    console.log(`[ROULETTE] ✅ @${likeData.nickname} ganó ${entriesEarned} entrada(s) por ${likeCount} likes`);
+  }
+}
+
+/**
+ * Procesa follows y los convierte en entradas
+ */
+function processFollowForRoulette(followData) {
+  if (!followEnabled) {
+    console.log('[ROULETTE] Follow está desactivado');
+    return;
+  }
+
+  console.log('[ROULETTE] Follow recibido:', followData);
+
+  // Dar 1 entrada por seguir
+  addParticipant({
+    uniqueId: followData.uniqueId,
+    displayName: followData.nickname || followData.uniqueId,
+    entries: 1,
+    profileImage: followData.profilePictureUrl || null
+  });
+
+  console.log(`[ROULETTE] ✅ @${followData.nickname} ganó 1 entrada por seguir`);
+}
+
+// ============================================
 // EVENTOS DE CONEXIÓN TIKTOK
 // ============================================
 
@@ -756,7 +873,7 @@ function setupConnectionEvents() {
       feedback: connectionFeedback
     });
 
-    // Configurar callbacks
+    // Configurar callbacks para eventos de TikTok
     setConnectionCallbacks({
       onStateChange: (state) => {
         console.log('[ROULETTE] Estado de conexión:', state);
@@ -773,15 +890,9 @@ function setupConnectionEvents() {
           }
         }
       },
-      onGift: (giftData) => {
-        console.log('[ROULETTE] Regalo recibido:', giftData);
-        // Aquí se puede procesar el regalo para la ruleta si es necesario
-      },
-      onParticipant: (participantData) => {
-        console.log('[ROULETTE] Participante recibido desde TikTok:', participantData);
-        // Agregar participante automáticamente
-        addParticipant(participantData);
-      }
+      onGift: processGiftForRoulette,
+      onLike: processLikeForRoulette,
+      onFollow: processFollowForRoulette
     });
 
     // Botón de conectar
