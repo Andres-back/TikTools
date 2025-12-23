@@ -33,6 +33,7 @@ let feedbackEl = null;
 let onConnectionStateChange = null;
 let onGiftReceived = null;
 let onSyncRequest = null;
+let onParticipantAdded = null; // Callback para eventos de participantes (ruleta)
 
 /**
  * Inicializa WebSocket de sincronización para overlays
@@ -116,9 +117,10 @@ export function initConnection(elements) {
 /**
  * Registra callbacks para eventos de conexión
  */
-export function setConnectionCallbacks({ onStateChange, onGift }) {
+export function setConnectionCallbacks({ onStateChange, onGift, onParticipant }) {
   onConnectionStateChange = onStateChange || null;
   onGiftReceived = onGift || null;
+  onParticipantAdded = onParticipant || null;
 }
 
 /**
@@ -210,6 +212,14 @@ function handleWebSocketMessage(event) {
 
       case "gift":
         processGiftEvent(data.data);
+        break;
+
+      case "participant":
+        // Evento de participante para ruleta
+        if (onParticipantAdded && data.payload) {
+          console.log('[WS] Participante recibido:', data.payload);
+          onParticipantAdded(data.payload);
+        }
         break;
 
       case "chat":

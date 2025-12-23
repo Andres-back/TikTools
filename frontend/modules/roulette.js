@@ -776,6 +776,11 @@ function setupConnectionEvents() {
       onGift: (giftData) => {
         console.log('[ROULETTE] Regalo recibido:', giftData);
         // Aquí se puede procesar el regalo para la ruleta si es necesario
+      },
+      onParticipant: (participantData) => {
+        console.log('[ROULETTE] Participante recibido desde TikTok:', participantData);
+        // Agregar participante automáticamente
+        addParticipant(participantData);
       }
     });
 
