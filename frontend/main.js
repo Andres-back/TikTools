@@ -428,14 +428,39 @@ function setupEventListeners() {
     const delayTime = parseInt(elements.delayTimeInput?.value, 10);
     const tieExtension = parseInt(elements.tieExtensionInput?.value, 10);
 
+    let updated = false;
     if (!isNaN(initialTime)) {
-      setInitialTime(initialTime);
+      const finalValue = setInitialTime(initialTime);
+      elements.initialTimeInput.value = finalValue;
+      updated = true;
+      console.log(`[Config] Tiempo inicial: ${finalValue}s`);
     }
     if (!isNaN(delayTime)) {
-      setDelayTime(delayTime);
+      const finalValue = setDelayTime(delayTime);
+      elements.delayTimeInput.value = finalValue;
+      updated = true;
+      console.log(`[Config] Tiempo de delay: ${finalValue}s`);
     }
     if (!isNaN(tieExtension)) {
-      setTieExtension(tieExtension);
+      const finalValue = setTieExtension(tieExtension);
+      elements.tieExtensionInput.value = finalValue;
+      updated = true;
+      console.log(`[Config] Extensión de empate: ${finalValue}s`);
+    }
+
+    if (updated) {
+      // Enviar configuración actualizada a overlays
+      broadcastConfig();
+      // Mostrar confirmación
+      if (elements.updateTimes) {
+        const originalText = elements.updateTimes.textContent;
+        elements.updateTimes.textContent = "✓ Guardado!";
+        elements.updateTimes.style.background = "linear-gradient(135deg, #10b981, #059669)";
+        setTimeout(() => {
+          elements.updateTimes.textContent = originalText;
+          elements.updateTimes.style.background = "";
+        }, 2000);
+      }
     }
 
     refreshTimerUI();
@@ -447,6 +472,19 @@ function setupEventListeners() {
     if (message) {
       setMinMessage(message);
       updateTimerHeading(message);
+      // Enviar configuración actualizada a overlays
+      broadcastConfig();
+      // Mostrar confirmación visual
+      if (elements.updateMinMessage) {
+        const originalText = elements.updateMinMessage.textContent;
+        elements.updateMinMessage.textContent = "✓ Actualizado!";
+        elements.updateMinMessage.style.background = "linear-gradient(135deg, #10b981, #059669)";
+        setTimeout(() => {
+          elements.updateMinMessage.textContent = originalText;
+          elements.updateMinMessage.style.background = "";
+        }, 2000);
+      }
+      console.log(`[Config] Mensaje actualizado a: "${message}"`);
     }
   });
 
