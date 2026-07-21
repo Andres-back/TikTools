@@ -111,32 +111,6 @@ const OVERLAYS = [
     badges: ['Progreso']
   },
   {
-    id: 'timer',
-    name: 'Timer Subasta',
-    file: '/overlays/overlay-timer.html',
-    desc: 'Temporizador principal con fases, extension y ganador.',
-    icon: 'TM',
-    category: 'Subasta',
-    scene: 'Centro / esquina',
-    tone: 'Competitivo',
-    format: 'Timer',
-    bg: '#110b08',
-    badges: ['Subasta']
-  },
-  {
-    id: 'extimer',
-    name: 'Timer Extensible',
-    file: '/overlays/overlay-timer-extendable.html',
-    desc: 'Countdown que aumenta cuando llegan regalos configurados.',
-    icon: 'TE',
-    category: 'Subasta',
-    scene: 'Centro',
-    tone: 'Urgente',
-    format: 'Timer interactivo',
-    bg: '#110b08',
-    badges: ['Regalos']
-  },
-  {
     id: 'roulette',
     name: 'Ruleta',
     file: '/overlays/overlay-ruleta.html',
