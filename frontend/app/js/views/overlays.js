@@ -98,32 +98,6 @@ const OVERLAYS = [
     badges: ['Timer']
   },
   {
-    id: 'goal',
-    name: 'Metas',
-    file: '/overlays/overlay-goal.html',
-    desc: 'Barra de progreso para likes, follows, shares o monedas.',
-    icon: 'MT',
-    category: 'Objetivos',
-    scene: 'Superior / inferior',
-    tone: 'Motivacional',
-    format: 'Progress bar',
-    bg: '#10110a',
-    badges: ['Progreso']
-  },
-  {
-    id: 'roulette',
-    name: 'Ruleta',
-    file: '/overlays/overlay-ruleta.html',
-    desc: 'Escena de ruleta para retos, premios y dinamicas del chat.',
-    icon: 'RL',
-    category: 'Juego',
-    scene: 'Full screen',
-    tone: 'Show',
-    format: 'Juego',
-    bg: '#0c0715',
-    badges: ['Juego']
-  },
-  {
     id: 'participants',
     name: 'Participantes',
     file: '/overlays/overlay-participantes.html',
