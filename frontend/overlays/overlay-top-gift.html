@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top Gift - TikToolStream</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; overflow: hidden; font-family: 'Poppins', system-ui, sans-serif; }
+
+  .topgift-stage {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .topgift-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.35);
+    text-align: right;
+  }
+
+  .topgift-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, rgba(10,10,30,0.88), rgba(20,15,40,0.88));
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 16px;
+    padding: 14px 20px 14px 16px;
+    min-width: 260px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 30px rgba(255,215,0,0.08);
+    animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) backwards;
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateX(40px) scale(0.92); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+  }
+
+  .topgift-card.glow {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 50px rgba(255,215,0,0.2);
+    border-color: rgba(255,215,0,0.6);
+  }
+
+  .topgift-card .gift-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .topgift-card .gift-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .topgift-card .gift-img .emoji {
+    font-size: 28px;
+  }
+
+  .topgift-card .info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .topgift-card .username {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .topgift-card .gift-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 2px;
+  }
+
+  .topgift-card .coins {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffd700, #ff6b00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .topgift-card .coins-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: right;
+    margin-top: -2px;
+  }
+
+  .topgift-idle {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    color: rgba(255,255,255,0.12);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: right;
+    pointer-events: none;
+  }
+
+  @media (max-width: 480px) {
+    .topgift-stage { bottom: 16px; right: 16px; }
+    .topgift-card { padding: 10px 14px; min-width: 200px; gap: 10px; }
+    .topgift-card .gift-img { width: 40px; height: 40px; }
+    .topgift-card .gift-name { font-size: 12px; }
+    .topgift-card .coins { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="topgift-stage" id="topGiftStage"></div>
+<div class="topgift-idle" id="topGiftIdle">🏆 MEJOR REGALO</div>
+<script src="/assets/js/overlay-runtime.js"></script>
+<script>
+  (() => {
+    'use strict';
+    const T = window.TikToolOverlay;
+    if (!T) return;
+
+    const params = T.getParams();
+    const userId = params.get('userId') || params.get('channelId');
+    if (!userId) {
+      document.getElementById('topGiftIdle').textContent = '⚙️ Configura userId en la URL';
+      return;
+    }
+
+    let currentTop = null;
+    const stage = document.getElementById('topGiftStage');
+    const idleEl = document.getElementById('topGiftIdle');
+    const GIFT_IMAGES = {};
+
+    // Cargar catálogo de regalos
+    async function loadGifts() {
+      try {
+        const res = await fetch('/gifts.json');
+        if (res.ok) {
+          const data = await res.json();
+          for (const g of Object.values(data)) {
+            if (g.id && g.image) GIFT_IMAGES[g.id] = g.image;
+          }
+        }
+      } catch {}
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function formatCoins(n) {
+      if (!n || isNaN(n)) return '0';
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+      return n.toLocaleString();
+    }
+
+    function renderTop(giftData) {
+      if (!giftData) {
+        stage.innerHTML = '';
+        idleEl.style.display = 'block';
+        return;
+      }
+
+      idleEl.style.display = 'none';
+
+      const giftImg = GIFT_IMAGES[giftData.giftId] || '';
+      const imgHtml = giftImg
+        ? `<img src="${escapeHtml(giftImg)}" onerror="this.style.display='none';this.parentNode.innerHTML='🎁'">`
+        : '<span class="emoji">🎁</span>';
+
+      stage.innerHTML = `
+        <div class="topgift-label">🏆 Mejor regalo</div>
+        <div class="topgift-card glow" id="topGiftCard">
+          <div class="gift-img">${imgHtml}</div>
+          <div class="info">
+            <div class="username">@${escapeHtml(giftData.nickname || giftData.uniqueId || 'Anónimo')}</div>
+            <div class="gift-name">${escapeHtml(giftData.giftName || 'Regalo')}</div>
+          </div>
+          <div>
+            <div class="coins">${formatCoins(giftData.coins || giftData.diamondCount || 0)}</div>
+            <div class="coins-label">monedas</div>
+          </div>
+        </div>
+      `;
+
+      // Re-trigger animation
+      const card = document.getElementById('topGiftCard');
+      if (card) {
+        card.style.animation = 'none';
+        void card.offsetHeight;
+        card.style.animation = '';
+      }
+    }
+
+    function handleEvent(event) {
+      if (event.type === 'gift') {
+        const data = event.data || {};
+        const coins = (data.diamondCount || 0) * (data.repeatCount || 1);
+        const isBigger = !currentTop || coins > (currentTop.coins || 0);
+
+        if (isBigger) {
+          currentTop = {
+            nickname: data.nickname || data.uniqueId || 'Anónimo',
+            uniqueId: data.uniqueId,
+            giftName: data.giftName || 'Regalo',
+            giftId: data.giftId,
+            diamondCount: data.diamondCount,
+            coins: coins
+          };
+          renderTop(currentTop);
+        }
+      }
+    }
+
+    // Conectar al live
+    if (userId) {
+      const client = new T.LiveChannelClient({ channelId: userId });
+      client.on('event', handleEvent);
+      client.on('status', (status) => {
+        if (status.state === 'live' || status.state === 'connected') {
+          idleEl.textContent = '🏆 ESPERANDO REGALOS...';
+        }
+      });
+      client.start();
+    }
+
+    loadGifts();
+  })();
+</script>
+</body>
+</html>

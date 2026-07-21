@@ -110,6 +110,19 @@ const OVERLAYS = [
     bg: '#0c0715',
     badges: ['Usuarios']
   },
+  {
+    id: 'top-gift',
+    name: 'Mejor Regalo',
+    file: '/overlays/overlay-top-gift.html',
+    desc: 'Muestra en vivo el regalo mas grande del stream: imagen, monedas y usuario.',
+    icon: '👑',
+    category: 'HUD',
+    scene: 'Esquina inferior',
+    tone: 'Competitivo',
+    format: 'Widget',
+    bg: '#0c0812',
+    badges: ['Top', 'Regalos']
+  },
 ];
 
 const CATEGORY_ORDER = ['Todos', 'Interactivo', 'Alertas', 'Comunidad', 'HUD', 'Objetivos', 'Subasta', 'Juego', 'Ranking'];
