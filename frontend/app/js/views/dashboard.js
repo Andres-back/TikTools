@@ -181,14 +181,19 @@ export async function mount({ target, api, user, toast, signal }) {
   }
 
   function tryLoadSession() {
-    const saved = localStorage.getItem('tiktok_sessionid');
-    if (saved) tiktokUserInput.placeholder = '@usuario (Session ID guardado)';
+    const saved = localStorage.getItem('tiktok_user');
+    if (saved) {
+      tiktokUserInput.value = saved;
+      setStatus(`@${saved} guardado`, '');
+    }
   }
   tryLoadSession();
 
   function connectWS() {
     const username = tiktokUserInput.value.trim();
     if (!username) { setStatus('Ingresa un usuario', ''); return; }
+    // Guardar usuario
+    localStorage.setItem('tiktok_user', username);
     const accessToken = getAccessToken();
     if (!accessToken) {
       setStatus('Sesión expirada. Inicia sesión de nuevo.', '');
