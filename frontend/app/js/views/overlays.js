@@ -20,32 +20,6 @@ const OVERLAYS = [
     badges: ['Nuevo', 'Interactivo', 'Demo']
   },
   {
-    id: 'actions',
-    name: 'Acciones y Eventos',
-    file: '/overlays/overlay-actions.html',
-    desc: 'Alertas visuales, audio, video e imagenes disparadas por eventos.',
-    icon: 'AE',
-    category: 'Alertas',
-    scene: 'Momentos especiales',
-    tone: 'Impacto visual',
-    format: 'Overlay transparente',
-    bg: '#070a19',
-    badges: ['Cola', 'Automatizable']
-  },
-  {
-    id: 'sounds',
-    name: 'Alertas de Sonido',
-    file: '/overlays/overlay-sounds.html',
-    desc: 'Reproduce sonidos y muestra una tarjeta animada cuando llegan regalos.',
-    icon: 'SO',
-    category: 'Alertas',
-    scene: 'Reacciones',
-    tone: 'Energico',
-    format: 'Centro / transparente',
-    bg: '#080716',
-    badges: ['Biblioteca', 'Regalos']
-  },
-  {
     id: 'tts',
     name: 'Texto a Voz',
     file: '/overlays/overlay-tts.html',

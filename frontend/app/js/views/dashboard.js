@@ -9,12 +9,9 @@ import { getAccessToken } from '/app/js/core/auth.js';
 
 export async function mount({ target, api, user, toast, signal }) {
   let ws = null;
-  let timerInterval = null;
-  let timerState = { remaining: 0, phase: 'idle', total: 0 };
   let leaderboard = [];
   let liveChat = [];
   let userId = user?.id;
-  let planInfo = null;
 
   const TIKTOK_GIFTS = {}; // cacheado
   const GIFT_IMAGES = {}; // cacheado
@@ -23,18 +20,18 @@ export async function mount({ target, api, user, toast, signal }) {
   // ============ RENDER ============
   target.innerHTML = `
     <style>
-      .dash-grid { display:grid; grid-template-columns: 300px 1fr 340px; gap:var(--space-lg); }
-      .dash-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--border-radius-lg); padding:var(--space-lg); box-shadow:var(--shadow-sm); position:relative; overflow:hidden; transition:border-color var(--transition-fast); }
+      .dash-grid { display:grid; grid-template-columns: 300px 1fr 340px; gap:var(--space-xl); }
+      .dash-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--border-radius-lg); padding:var(--space-xl); box-shadow:var(--shadow-sm); position:relative; overflow:hidden; transition:border-color var(--transition-fast); }
       .dash-card:hover { border-color:var(--border-hover); }
       .dash-card-title { font-size:var(--text-xs); color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:600; margin-bottom:var(--space-md); display:flex; align-items:center; gap:8px; }
       .dash-card-title i { color:var(--color-primary); font-size:14px; }
 
-      .stats-row { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-sm); margin-top:var(--space-md); }
-      .stats-mini { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:var(--space-md); text-align:center; transition:all var(--transition-fast); }
+      .stats-row { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-md); margin-top:var(--space-md); }
+      .stats-mini { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:var(--space-lg); text-align:center; transition:all var(--transition-fast); }
       .stats-mini:hover { border-color:var(--border-hover); transform:translateY(-1px); }
       .stats-mini .num { font-family:var(--font-display); font-size:var(--text-xl); font-weight:800; color:var(--text-primary); line-height:1.2; }
-      .stats-mini .lbl { font-size:var(--text-xs); color:var(--text-muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
-      .stats-mini i { font-size:18px; margin-bottom:6px; display:block; }
+      .stats-mini .lbl { font-size:var(--text-xs); color:var(--text-muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.5px; }
+      .stats-mini i { font-size:20px; margin-bottom:8px; display:block; }
       .stats-mini i.cyan { color:var(--color-primary); }
       .stats-mini i.gold { color:var(--color-warning); }
       .stats-mini i.green { color:var(--color-success); }
@@ -132,27 +129,6 @@ export async function mount({ target, api, user, toast, signal }) {
           <div id="connectionStatus" class="connect-status"><span class="status-dot"></span><span>Desconectado</span></div>
         </div>
 
-        <div class="dash-card">
-          <div class="dash-card-title"><i class="fa-solid fa-gamepad"></i> Controles</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn btn-primary" id="btnStart" style="font-size:0.85rem;padding:10px"><i class="fa-solid fa-play"></i> Iniciar</button>
-            <button class="btn btn-secondary" id="btnReset" style="font-size:0.85rem;padding:10px"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-            <input type="number" id="timerMinutes" class="input-field" placeholder="Min" min="1" value="2" style="padding:8px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.85rem">
-            <input type="number" id="timerDelay" class="input-field" placeholder="Delay (s)" min="0" value="20" style="padding:8px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.85rem">
-          </div>
-        </div>
-
-        <div class="dash-card">
-          <div class="dash-card-title"><i class="fa-solid fa-coins"></i> Suma Manual</div>
-          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px">
-            <input type="text" id="manualUser" class="input-field" placeholder="@usuario" style="padding:8px 12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.85rem">
-            <input type="number" id="manualCoins" class="input-field" placeholder="Monedas" min="1" style="padding:8px 12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.85rem">
-          </div>
-          <button class="btn btn-success" id="btnManual" style="width:100%;font-size:0.85rem"><i class="fa-solid fa-plus"></i> Agregar Monedas</button>
-        </div>
-
         <div class="stats-row">
           <div class="stats-mini"><i class="fa-solid fa-coins cyan"></i><div class="num" id="statCoins">0</div><div class="lbl">Monedas</div></div>
           <div class="stats-mini"><i class="fa-solid fa-gift gold"></i><div class="num" id="statGifts">0</div><div class="lbl">Regalos</div></div>
@@ -161,21 +137,25 @@ export async function mount({ target, api, user, toast, signal }) {
         </div>
       </div>
 
-      <!-- COL CENTER: Timer + Live Chat -->
+      <!-- COL CENTER: Live Chat + Atajos -->
       <div style="display:flex;flex-direction:column;gap:var(--space-md)">
-        <div class="dash-card" style="text-align:center;padding:var(--space-xl)">
-          <div class="dash-card-title" style="justify-content:center"><i class="fa-regular fa-clock"></i> Timer de Subasta</div>
-          <div id="timerDisplay" class="timer-display">02:00</div>
-          <div id="timerPhase" class="timer-phase"><i class="fa-regular fa-circle"></i> INACTIVO</div>
-          <div class="timer-bar-wrap"><div id="timerBar" class="timer-bar" style="width:0%"></div></div>
-          <div id="winnerDisplay" class="timer-winner"><i class="fa-solid fa-trophy" style="margin-right:6px"></i><span id="winnerName"></span></div>
-        </div>
-
         <div class="dash-card" style="flex:1;display:flex;flex-direction:column">
           <div class="dash-card-title"><i class="fa-solid fa-comment-dots"></i> Chat del Live</div>
           <div id="liveChatStream" class="chat-stream">
             <div class="empty-chat"><i class="fa-solid fa-plug" style="display:block;font-size:28px;margin-bottom:8px;opacity:0.3"></i>Conecta TikTok para ver el chat en vivo</div>
           </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--space-md)" id="quickActions">
+          <a href="/app/actions" data-router-link class="stats-mini" style="text-decoration:none;cursor:pointer;display:block">
+            <i class="fa-solid fa-bolt gold"></i><div class="num" style="font-size:var(--text-base)">Acciones</div><div class="lbl">Multi-paso</div>
+          </a>
+          <a href="/app/overlays" data-router-link class="stats-mini" style="text-decoration:none;cursor:pointer;display:block">
+            <i class="fa-solid fa-layer-group cyan"></i><div class="num" style="font-size:var(--text-base)">Overlays</div><div class="lbl">15 disponibles</div>
+          </a>
+          <a href="/app/analytics" data-router-link class="stats-mini" style="text-decoration:none;cursor:pointer;display:block">
+            <i class="fa-solid fa-chart-line purple"></i><div class="num" style="font-size:var(--text-base)">Analytics</div><div class="lbl">Estadísticas</div>
+          </a>
         </div>
       </div>
 
@@ -307,124 +287,6 @@ export async function mount({ target, api, user, toast, signal }) {
       if (ws?.readyState === WebSocket.OPEN) ws.close();
     }
   }
-
-  // ============ TIMER ============
-  const timerDisplay = document.getElementById('timerDisplay');
-  const timerPhase = document.getElementById('timerPhase');
-  const timerBar = document.getElementById('timerBar');
-  const winnerDisplay = document.getElementById('winnerDisplay');
-  const winnerName = document.getElementById('winnerName');
-  const timerMinutes = document.getElementById('timerMinutes');
-  const timerDelay = document.getElementById('timerDelay');
-
-  function fmt(s) {
-    s = Math.max(0, parseInt(s) || 0);
-    return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-  }
-
-  function applyTimerClass(state) {
-    timerDisplay.classList.remove('warn', 'danger');
-    timerBar.classList.remove('warn', 'danger');
-    timerPhase.classList.remove('live', 'warn', 'danger', 'done');
-    if (state === 'warn') { timerDisplay.classList.add('warn'); timerBar.classList.add('warn'); timerPhase.classList.add('warn'); }
-    else if (state === 'danger') { timerDisplay.classList.add('danger'); timerBar.classList.add('danger'); timerPhase.classList.add('danger'); }
-    else if (state === 'live') timerPhase.classList.add('live');
-    else if (state === 'done') timerPhase.classList.add('done');
-  }
-
-  function startTimer() {
-    const minutes = Math.max(1, parseInt(timerMinutes.value) || 2);
-    const total = minutes * 60;
-    timerState = { remaining: total, phase: 'running', total };
-    timerPhase.innerHTML = '<i class="fa-solid fa-circle" style="color:var(--color-success);font-size:8px"></i> EN VIVO';
-    applyTimerClass('live');
-    connectBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
-    winnerDisplay.style.display = 'none';
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(tick, 1000);
-    broadcast('timer_update', { remaining: timerState.remaining, phase: 'running', total });
-  }
-
-  function pauseTimer() {
-    if (timerState.phase === 'running') {
-      clearInterval(timerInterval);
-      timerState.phase = 'paused';
-      timerPhase.innerHTML = '<i class="fa-solid fa-pause"></i> PAUSADO';
-      applyTimerClass('');
-      connectBtn.innerHTML = '<i class="fa-solid fa-play"></i> Reanudar';
-    } else if (timerState.phase === 'paused') {
-      timerState.phase = 'running';
-      timerPhase.innerHTML = '<i class="fa-solid fa-circle" style="color:var(--color-success);font-size:8px"></i> EN VIVO';
-      applyTimerClass('live');
-      connectBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
-      timerInterval = setInterval(tick, 1000);
-    }
-  }
-
-  function resetTimer() {
-    clearInterval(timerInterval);
-    timerState = { remaining: 0, phase: 'idle', total: 0 };
-    timerDisplay.textContent = fmt(timerMinutes.value * 60);
-    timerPhase.innerHTML = '<i class="fa-regular fa-circle"></i> INACTIVO';
-    timerBar.style.width = '0%';
-    applyTimerClass('');
-    connectBtn.innerHTML = '<i class="fa-solid fa-play"></i> Iniciar';
-    winnerDisplay.style.display = 'none';
-    broadcast('timer_reset', {});
-  }
-
-  function tick() {
-    timerState.remaining = Math.max(0, timerState.remaining - 1);
-    timerDisplay.textContent = fmt(timerState.remaining);
-    const pct = timerState.total > 0 ? (timerState.remaining / timerState.total) * 100 : 0;
-    timerBar.style.width = `${pct}%`;
-
-    if (timerState.remaining <= 10) applyTimerClass('danger');
-    else if (timerState.remaining <= 30) applyTimerClass('warn');
-    else applyTimerClass('live');
-
-    broadcast('timer_update', { remaining: timerState.remaining, phase: 'running', total: timerState.total });
-
-    if (timerState.remaining <= 0) {
-      clearInterval(timerInterval);
-      timerState.phase = 'finished';
-      timerPhase.innerHTML = '<i class="fa-solid fa-trophy"></i> FINALIZADO';
-      applyTimerClass('done');
-      connectBtn.innerHTML = '<i class="fa-solid fa-play"></i> Iniciar';
-      if (leaderboard.length > 0) {
-        const w = [...leaderboard].sort((a, b) => b.coins - a.coins)[0];
-        winnerName.textContent = `@${w.nick || w.uid} - ${w.coins.toLocaleString()}`;
-        winnerDisplay.style.display = 'block';
-        broadcast('winner', { winner: w.nick || w.uid, coins: w.coins });
-      }
-    }
-  }
-
-  document.getElementById('btnStart')?.addEventListener('click', () => {
-    if (timerState.phase === 'idle' || timerState.phase === 'finished') startTimer();
-    else pauseTimer();
-  }, { signal });
-
-  document.getElementById('btnReset')?.addEventListener('click', resetTimer, { signal });
-
-  // ============ MANUAL COINS ============
-  document.getElementById('btnManual')?.addEventListener('click', () => {
-    const user = document.getElementById('manualUser').value.trim();
-    const coins = parseInt(document.getElementById('manualCoins').value);
-    if (!user) { toast?.showToast?.({ type: 'warning', message: 'Usuario requerido' }); return; }
-    if (!coins || coins < 1) { toast?.showToast?.({ type: 'warning', message: 'Monedas inválidas' }); return; }
-
-    const existing = leaderboard.find(d => d.uid === user);
-    if (existing) existing.coins += coins;
-    else leaderboard.push({ uid: user, nick: user, coins, gifts: 0, avatar: null });
-
-    renderLeaderboard();
-    updateStats();
-    document.getElementById('manualCoins').value = '';
-    document.getElementById('manualUser').value = '';
-    toast?.showToast?.({ type: 'success', message: `+${coins} para @${user}` });
-    pushChat({ type: 'gift', user, text: 'suma manual', amount: coins });
-  }, { signal });
 
   // ============ LEADERBOARD ============
   const lastLeaderboardSnapshot = [];
@@ -584,18 +446,13 @@ export async function mount({ target, api, user, toast, signal }) {
   // ============ LOAD PLAN ============
   try {
     const plan = await api.get('/payments/plan-status', { signal });
-    planInfo = plan;
     document.getElementById('statPlan').textContent = plan?.isActive ? 'Pro' : 'Free';
   } catch {}
-
-  // Init timer display
-  timerDisplay.textContent = fmt(parseInt(timerMinutes.value) * 60);
 
   // attach magnetic hover to primary buttons
   document.querySelectorAll('.dash-card .btn-primary, .dash-card .btn-success, .dash-card .btn-danger').forEach(b => magneticButton(b));
 
   return () => {
-    if (timerInterval) clearInterval(timerInterval);
     if (ws) try { ws.close(); } catch {}
   };
 }
