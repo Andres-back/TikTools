@@ -6,9 +6,9 @@
 
 import { countUp, formatNum, magneticButton } from '/app/js/core/visual-helpers.js';
 import { getAccessToken } from '/app/js/core/auth.js';
+import * as wsService from '/app/js/core/ws.js';
 
 export async function mount({ target, api, user, toast, signal }) {
-  let ws = null;
   let leaderboard = [];
   let liveChat = [];
   let userId = user?.id;
@@ -122,9 +122,9 @@ export async function mount({ target, api, user, toast, signal }) {
             <input type="text" id="tiktokUser" class="input-field" placeholder="@usuario" style="width:100%;padding:10px 14px 10px 36px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.9rem">
             <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)"><i class="fa-solid fa-at" style="font-size:14px"></i></span>
           </div>
-          <button class="btn ${ws && ws.readyState === WebSocket.OPEN ? 'btn-danger' : 'btn-primary'}" id="btnConnect" style="width:100%">
-            <i class="fa-solid ${ws && ws.readyState === WebSocket.OPEN ? 'fa-link-slash' : 'fa-link'}"></i>
-            ${ws && ws.readyState === WebSocket.OPEN ? 'Desconectar' : 'Conectar'}
+          <button class="btn" id="btnConnect" style="width:100%">
+            <i class="fa-solid fa-link" id="btnConnectIcon"></i>
+            <span id="btnConnectText">Conectar</span>
           </button>
           <div id="connectionStatus" class="connect-status"><span class="status-dot"></span><span>Desconectado</span></div>
         </div>
@@ -200,51 +200,69 @@ export async function mount({ target, api, user, toast, signal }) {
       return;
     }
 
-    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    try {
-      ws = new WebSocket(`${protocol}//${location.host}/live`);
-    } catch (e) { setStatus('Error al conectar', ''); return; }
-
+    wsService.connect({ uniqueId: username, channelId: userId, accessToken });
     setStatus('Conectando...', 'connecting');
     connectBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Conectando...';
     connectBtn.disabled = true;
-
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: 'connect', uniqueId: username, channelId: userId, accessToken }));
-      connectBtn.innerHTML = '<i class="fa-solid fa-link-slash"></i> Desconectar';
-      connectBtn.className = 'btn btn-danger';
-      connectBtn.disabled = false;
-      setStatus(`Conectado a @${username}`, 'connected');
-      toast?.showToast?.({ type: 'success', message: `Conectado a @${username}` });
-    };
-
-    ws.onmessage = (e) => {
-      try {
-        const msg = JSON.parse(e.data);
-        handleTikTokEvent(msg);
-      } catch {}
-    };
-
-    ws.onclose = () => {
-      connectBtn.innerHTML = '<i class="fa-solid fa-link"></i> Conectar';
-      connectBtn.className = 'btn btn-primary';
-      connectBtn.disabled = false;
-      if (statusEl.textContent.includes('Conectado')) {
-        setStatus('Desconectado', '');
-      }
-      ws = null;
-    };
-
-    ws.onerror = () => { setStatus('Error de conexión', ''); };
   }
 
   function disconnectWS() {
-    if (ws) { ws.close(); }
+    wsService.disconnect();
+  }
+
+  // Escuchar eventos del WebSocket compartido
+  const unsubGift = wsService.subscribe('gift', (msg) => handleTikTokEvent(msg));
+  const unsubFollow = wsService.subscribe('follow', (msg) => handleTikTokEvent(msg));
+  const unsubShare = wsService.subscribe('share', (msg) => handleTikTokEvent(msg));
+  const unsubLike = wsService.subscribe('like', (msg) => handleTikTokEvent(msg));
+  const unsubChat = wsService.subscribe('chat', (msg) => handleTikTokEvent(msg));
+  const unsubComment = wsService.subscribe('comment', (msg) => handleTikTokEvent(msg));
+  const unsubConnected = wsService.subscribe('connected', (msg) => handleTikTokEvent(msg));
+  const unsubDisconnected = wsService.subscribe('disconnected', (msg) => handleTikTokEvent(msg));
+  const unsubStreamEnd = wsService.subscribe('streamEnd', (msg) => handleTikTokEvent(msg));
+  const unsubSubscribed = wsService.subscribe('subscribed', (msg) => {
+    const live = msg?.data?.live;
+    if (live) setStatus(`Conectado a @${localStorage.getItem('tiktok_user') || ''}`, 'connected');
+  });
+
+  // Estado de la conexión
+  const unsubState = wsService.subscribeState((state) => {
+    if (state === wsService.WS_STATE.CONNECTED) {
+      const user = localStorage.getItem('tiktok_user') || '';
+      connectBtn.innerHTML = '<i class="fa-solid fa-link-slash"></i> Desconectar';
+      connectBtn.className = 'btn btn-danger';
+      connectBtn.disabled = false;
+      setStatus(`Conectado a @${user}`, 'connected');
+      toast?.showToast?.({ type: 'success', message: `Conectado a @${user}` });
+    } else if (state === wsService.WS_STATE.DISCONNECTED || state === wsService.WS_STATE.IDLE) {
+      connectBtn.innerHTML = '<i class="fa-solid fa-link"></i> Conectar';
+      connectBtn.className = 'btn btn-primary';
+      connectBtn.disabled = false;
+      setStatus('Desconectado', '');
+    } else if (state === wsService.WS_STATE.CONNECTING || state === wsService.WS_STATE.RECONNECTING) {
+      setStatus('Conectando...', 'connecting');
+    } else if (state === wsService.WS_STATE.ERROR) {
+      setStatus('Error de conexión', '');
+    }
+  });
+
+  // Si ya hay conexión activa de otra vista, actualizar UI
+  const currentState = wsService.getState();
+  if (currentState === wsService.WS_STATE.CONNECTED) {
+    const user = localStorage.getItem('tiktok_user') || '';
+    connectBtn.innerHTML = '<i class="fa-solid fa-link-slash"></i> Desconectar';
+    connectBtn.className = 'btn btn-danger';
+    connectBtn.disabled = false;
+    setStatus(`Conectado a @${user}`, 'connected');
   }
 
   connectBtn.addEventListener('click', () => {
-    if (ws && ws.readyState === WebSocket.OPEN) disconnectWS();
-    else connectWS();
+    const state = wsService.getState();
+    if (state === wsService.WS_STATE.CONNECTED || state === wsService.WS_STATE.CONNECTING) {
+      disconnectWS();
+    } else {
+      connectWS();
+    }
   }, { signal });
 
   function handleTikTokEvent(msg) {
@@ -289,7 +307,6 @@ export async function mount({ target, api, user, toast, signal }) {
       setStatus(`Conectado a @${data.uniqueId || ''}`, 'connected');
     } else if (type === 'disconnected' || type === 'streamEnd') {
       setStatus('Live desconectado', '');
-      if (ws?.readyState === WebSocket.OPEN) ws.close();
     }
   }
 
@@ -458,6 +475,8 @@ export async function mount({ target, api, user, toast, signal }) {
   document.querySelectorAll('.dash-card .btn-primary, .dash-card .btn-success, .dash-card .btn-danger').forEach(b => magneticButton(b));
 
   return () => {
-    if (ws) try { ws.close(); } catch {}
+    unsubGift(); unsubFollow(); unsubShare(); unsubLike();
+    unsubChat(); unsubComment(); unsubConnected(); unsubDisconnected();
+    unsubStreamEnd(); unsubSubscribed(); unsubState();
   };
 }

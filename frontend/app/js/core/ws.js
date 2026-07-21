@@ -68,7 +68,10 @@ function doConnect() {
     if (currentOptions.sessionToken) {
       ws.send(JSON.stringify({ type: 'auth', sessionToken: currentOptions.sessionToken }));
     } else if (currentOptions.uniqueId) {
-      ws.send(JSON.stringify({ type: 'connect', uniqueId: currentOptions.uniqueId }));
+      const msg = { type: 'connect', uniqueId: currentOptions.uniqueId };
+      if (currentOptions.channelId) msg.channelId = currentOptions.channelId;
+      if (currentOptions.accessToken) msg.accessToken = currentOptions.accessToken;
+      ws.send(JSON.stringify(msg));
     }
     // Enviar mensajes encolados
     while (messageQueue.length > 0) {
@@ -115,6 +118,14 @@ export function connect(options = {}) {
   intentionalDisconnect = false;
   currentOptions = options;
   reconnectAttempts = 0;
+  doConnect();
+}
+
+export function reconnect() {
+  if (!currentOptions) return;
+  intentionalDisconnect = false;
+  reconnectAttempts = 0;
+  if (ws) { try { ws.close(); } catch {} ws = null; }
   doConnect();
 }
 
