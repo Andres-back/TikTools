@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overlay Timer - TikToolStream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #ffd700;
+      --accent-primary: #00d9ff;
+      --accent-secondary: #9d4edd;
+      --accent-warning: #ffd23f;
+      --accent-danger: #ff6b6b;
+      --font-heading: 'Montserrat', sans-serif;
+      --font-numeric: 'Rajdhani', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-heading);
+      background: transparent;
+      color: white;
+      overflow: hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mobile portrait */
+    .mobile .timer-overlay { flex-direction:column; gap:0.8rem; padding:0.6rem; }
+    .mobile .mascot { width:70px; height:70px; }
+    .mobile .timer-container { max-width:100%; padding:1.2rem 1rem 1rem; border-radius:18px; }
+    .mobile .timer-label { font-size:0.7rem; }
+    .mobile .timer-display { font-size:2.8rem; }
+    .mobile .timer-phase { font-size:0.75rem; padding:4px 10px; }
+    .mobile .winner-name { font-size:0.9rem; }
+    .mobile .winner-amount { font-size:0.8rem; }
+    .mobile .bid-row { padding:6px 10px; gap:6px; }
+    .mobile .bid-user { font-size:0.75rem; }
+    .mobile .bid-amount { font-size:0.75rem; }
+    .mobile .winner-star { font-size:1.5rem; }
+
+    .timer-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    /* Mascotas laterales */
+    .mascot {
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+      animation: bounce 2s ease-in-out infinite;
+      filter: drop-shadow(0 10px 30px rgba(0, 217, 255, 0.25));
+    }
+
+    .mascot img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+    }
+
+    .mascot.left {
+      animation-delay: 0s;
+    }
+
+    .mascot.right {
+      animation-delay: 0.5s;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Timer central */
+    .timer-container {
+      flex: 1;
+      max-width: 500px;
+      background: linear-gradient(135deg, rgba(10,10,30,0.92), rgba(20,15,40,0.92));
+      -webkit-backdrop-filter: blur(36px) saturate(200%);
+      backdrop-filter: blur(36px) saturate(200%);
+      border-radius: 24px;
+      padding: 2.2rem 2rem 1.6rem;
+      border: 2px solid rgba(255, 215, 0, 0.4);
+      box-shadow:
+        0 25px 60px -12px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(255, 215, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .timer-container::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(255,215,0,0.08), transparent 60%);
+      pointer-events: none;
+    }
+
+    .timer-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-primary), var(--gold), var(--accent-secondary));
+    }
+
+    .timer-label {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      display: inline-block;
+      padding: 4px 14px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+    }
+
+    .timer-display {
+      font-family: var(--font-numeric);
+      font-size: 6.5rem;
+      font-weight: 700;
+      line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 4px 24px rgba(255, 215, 0, 0.4));
+      margin: 0.4rem 0;
+      letter-spacing: -2px;
+    }
+
+    .timer-message {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.8);
+      min-height: 1.5em;
+    }
+
+    /* Barra de progreso */
+    .progress-bar {
+      margin-top: 1.2rem;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--gold));
+      border-radius: 6px;
+      transition: width 1s linear;
+      width: 100%;
+      box-shadow: 0 0 12px rgba(0, 217, 255, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Estados de urgencia */
+    .timer-container.warning {
+      border-color: var(--accent-warning);
+      animation: warningPulse 1s ease-in-out infinite;
+    }
+
+    .timer-container.danger {
+      border-color: var(--accent-danger);
+      animation: dangerPulse 0.5s ease-in-out infinite;
+    }
+
+    /* Animated gradient border (uiverse style) */
+    .timer-container.live {
+      position: relative;
+    }
+    .timer-container.live::before {
+      background-size: 400% 400% !important;
+      animation: borderRotate 6s linear infinite;
+      height: 3px !important;
+    }
+    @keyframes borderRotate {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
+    .timer-container.danger .timer-display {
+      background: linear-gradient(135deg, #ffffff, var(--accent-danger));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    @keyframes warningPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 210, 63, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 210, 63, 0.5); }
+    }
+
+    @keyframes dangerPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.4); }
+      50% { box-shadow: 0 0 50px rgba(255, 107, 107, 0.7); }
+    }
+
+    /* Logo */
+    .timer-logo {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      width: 40px;
+      opacity: 0.5;
+    }
+
+    /* Conectando */
+    .connecting {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .connecting-text {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 1rem;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Ganador */
+    .winner-display {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.85rem 1.6rem;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.22), rgba(255, 107, 0, 0.08));
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--gold);
+      animation: goldGlow 2s ease-in-out infinite;
+      text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+    }
+
+    @keyframes goldGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+    }
+
+    /* Panel de configuración */
+    .config-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      z-index: 100;
+      opacity: 0.12;
+    }
+    .config-toggle:focus { opacity:1; }
+    .config-toggle:hover {
+      background: rgba(255, 215, 0, 0.4);
+      opacity: 1;
+    }
+
+    .config-panel {
+      position: fixed;
+      top: 50px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      width: 280px;
+      z-index: 100;
+      display: none;
+      backdrop-filter: blur(10px);
+    }
+
+    .config-panel.active {
+      display: block;
+    }
+
+    .config-title {
+      color: var(--gold);
+      font-size: 1rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .config-group {
+      margin-bottom: 15px;
+    }
+
+    .config-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 6px;
+    }
+
+    .config-preview {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.3);
+      margin-bottom: 8px;
+    }
+
+    .config-file {
+      width: 100%;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .config-file::file-selector-button {
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-right: 10px;
+    }
+
+    .config-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), #ffa500);
+      border: none;
+      color: #000;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .config-btn:hover {
+      opacity: 0.9;
+    }
+
+    .config-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .config-status {
+      font-size: 0.8rem;
+      margin-top: 10px;
+      text-align: center;
+      min-height: 1.2em;
+    }
+
+    .config-status.success { color: #2ed573; }
+    .config-status.error { color: #ff6b6b; }
+  </style>
+</head>
+<body>
+  <!-- Botón para mostrar/ocultar configuración -->
+  <button class="config-toggle" id="configToggle">⚙️ Personalizar</button>
+  
+  <!-- Panel de configuración -->
+  <div class="config-panel" id="configPanel">
+    <div class="config-title">🎨 Personalizar Mascotas</div>
+    
+    <div class="config-group">
+      <label>Mascota Izquierda</label>
+      <img id="leftPreview" class="config-preview" src="../assets/QuesadillaCrocodilla.webp">
+      <input type="file" id="leftImageInput" class="config-file" accept="image/*">
+    </div>
+    
+    <div class="config-group">
+      <label>Mascota Derecha</label>
+      <img id="rightPreview" class="config-preview" src="../assets/Noel.webp">
+      <input type="file" id="rightImageInput" class="config-file" accept="image/*">
+    </div>
+    
+    <button class="config-btn" id="saveImagesBtn">💾 Guardar Cambios</button>
+    <div class="config-status" id="configStatus"></div>
+  </div>
+
+  <div id="connectingScreen" class="connecting">
+    <div class="spinner"></div>
+    <p class="connecting-text">Conectando con el panel...</p>
+  </div>
+
+  <div id="timerOverlay" class="timer-overlay" style="display: none;">
+    <!-- Mascota Izquierda -->
+    <div class="mascot left">
+      <img id="mascotLeft" src="../assets/QuesadillaCrocodilla.webp" alt="Mascota">
+    </div>
+
+    <!-- Timer Central -->
+    <div class="timer-container" id="timerContainer">
+      <h2 class="timer-label" id="timerLabel">MIN 10</h2>
+      <div class="timer-display" id="timerDisplay">02:00</div>
+      <div class="timer-message" id="timerMessage"></div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="winner-display" id="winnerDisplay">
+        🏆 GANADOR: <span id="winnerName">—</span>
+      </div>
+      <img src="../assets/LOGOSINFONDO.png" alt="Logo" class="timer-logo">
+    </div>
+
+    <!-- Mascota Derecha -->
+    <div class="mascot right">
+      <img id="mascotRight" src="../assets/Noel.webp" alt="Mascota">
+    </div>
+  </div>
+
+  <script>
+    console.log('[Overlay-Timer] Inicializando overlay de timer...');
+    if (new URLSearchParams(window.location.search).get('mode') === 'mobile') document.body.classList.add('mobile');
+
+    // Elementos DOM
+    const connectingScreen = document.getElementById('connectingScreen');
+    const timerOverlay = document.getElementById('timerOverlay');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerLabel = document.getElementById('timerLabel');
+    const timerMessage = document.getElementById('timerMessage');
+    const timerContainer = document.getElementById('timerContainer');
+    const progressFill = document.getElementById('progressFill');
+    const winnerDisplay = document.getElementById('winnerDisplay');
+    const winnerName = document.getElementById('winnerName');
+    const mascotLeft = document.getElementById('mascotLeft');
+    const mascotRight = document.getElementById('mascotRight');
+
+    let initialTime = 120;
+    let connected = false;
+    let ws = null;
+    let reconnectTimeout = null;
+
+    // Conectar al WebSocket del servidor
+    function connectWebSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/live`;
+
+      console.log(`[Overlay-Timer] Conectando a WebSocket: ${wsUrl}`);
+
+      try {
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          console.log('[Overlay-Timer] ✅ Conectado al servidor');
+          connected = true;
+          connectingScreen.style.display = 'none';
+          timerOverlay.style.display = 'flex';
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            handleMessage(data);
+          } catch (err) {
+            console.error('[Overlay-Timer] Error parseando mensaje:', err);
+          }
+        };
+
+        ws.onerror = (error) => {
+          console.error('[Overlay-Timer] Error WebSocket:', error);
+        };
+
+        ws.onclose = () => {
+          console.log('[Overlay-Timer] Desconectado, reconectando en 3s...');
+          connected = false;
+
+          // Mostrar pantalla de conexión
+          connectingScreen.style.display = 'flex';
+          timerOverlay.style.display = 'none';
+
+          // Reintentar conexión
+          if (reconnectTimeout) clearTimeout(reconnectTimeout);
+          reconnectTimeout = setTimeout(connectWebSocket, 3000);
+        };
+
+      } catch (err) {
+        console.error('[Overlay-Timer] Error al crear WebSocket:', err);
+        setTimeout(connectWebSocket, 3000);
+      }
+    }
+
+    // Manejar mensajes del servidor
+    function handleMessage(data) {
+      switch (data.type) {
+        case 'timer_update':
+          updateTimer(data);
+          break;
+        case 'timer_config':
+          if (data.initialTime) initialTime = data.initialTime;
+          if (data.label) timerLabel.textContent = data.label;
+          break;
+        case 'winner':
+          showWinner(data.winner);
+          break;
+        case 'overlay_images':
+          if (data.leftImage) mascotLeft.src = data.leftImage;
+          if (data.rightImage) mascotRight.src = data.rightImage;
+          break;
+        case 'sync':
+          // Sincronización completa
+          console.log('[Overlay-Timer] Sincronización recibida:', data);
+          if (data.timer) updateTimer(data.timer);
+          if (data.config) {
+            initialTime = data.config.initialTime || 120;
+            timerLabel.textContent = data.config.label || 'MIN 10';
+          }
+          if (data.images) {
+            if (data.images.left) mascotLeft.src = data.images.left;
+            if (data.images.right) mascotRight.src = data.images.right;
+          }
+          break;
+      }
+    }
+
+    function updateTimer(data) {
+      const seconds = data.seconds || 0;
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+      // Actualizar barra de progreso
+      const progress = (seconds / initialTime) * 100;
+      progressFill.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+
+      // Estados de urgencia + live state
+      timerContainer.classList.remove('warning', 'danger', 'live');
+      if (seconds > 0) {
+        timerContainer.classList.add('live');
+      }
+      if (seconds <= 10) {
+        timerContainer.classList.add('danger');
+      } else if (seconds <= 30) {
+        timerContainer.classList.add('warning');
+      }
+
+      // Mensaje
+      if (data.message) {
+        timerMessage.textContent = data.message;
+      }
+
+      // Ocultar ganador si el timer está activo
+      if (seconds > 0) {
+        winnerDisplay.style.display = 'none';
+      }
+    }
+
+    function showWinner(winner) {
+      if (winner) {
+        winnerName.textContent = winner;
+        winnerDisplay.style.display = 'block';
+      }
+    }
+
+
+    // ========== BROADCAST CHANNEL (comunicación con el panel principal) ==========
+    const overlayChannel = new BroadcastChannel('tiktoolstream_overlay');
+    overlayChannel.onmessage = (event) => {
+      const data = event.data;
+      if (!data || !data.type) return;
+
+      switch (data.type) {
+        case 'timer_update':
+          handleMessage({ type: 'timer_update', seconds: data.seconds, message: data.message });
+          break;
+        case 'timer_config':
+          handleMessage({ type: 'timer_config', initialTime: data.initialTime, label: data.label });
+          break;
+        case 'winner':
+          handleMessage({ type: 'winner', winner: data.winner });
+          break;
+        case 'sync':
+          handleMessage({ type: 'sync', timer: data.timer, config: data.config, images: data.images });
+          break;
+      }
+    };
+
+    // Mantener viva la conexión con pings
+    setInterval(() => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        try { ws.send(JSON.stringify({ type: 'ping', timestamp: Date.now() })); } catch {}
+      }
+    }, 10000);
+
+    // Iniciar conexión WebSocket (intenta /live, el server no tiene /sync)
+    connectWebSocket();
+
+    // ========== CONFIGURACIÓN DE IMÁGENES ==========
+    const configToggle = document.getElementById('configToggle');
+    const configPanel = document.getElementById('configPanel');
+    const leftPreview = document.getElementById('leftPreview');
+    const rightPreview = document.getElementById('rightPreview');
+    const leftImageInput = document.getElementById('leftImageInput');
+    const rightImageInput = document.getElementById('rightImageInput');
+    const saveImagesBtn = document.getElementById('saveImagesBtn');
+    const configStatus = document.getElementById('configStatus');
+
+    // Toggle panel
+    configToggle.addEventListener('click', () => {
+      configPanel.classList.toggle('active');
+    });
+
+    // Preview de imágenes
+    leftImageInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        leftPreview.src = URL.createObjectURL(e.target.files[0]);
+      }
+    });
+
+    rightImageInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        rightPreview.src = URL.createObjectURL(e.target.files[0]);
+      }
+    });
+
+    // Obtener token (desde URL o localStorage)
+    function getToken() {
+      // Primero intentar obtener de la URL (pasado desde el panel principal)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      if (urlToken) {
+        // Verificar si el token es válido antes de usarlo
+        try {
+          const payload = JSON.parse(atob(urlToken.split('.')[1]));
+          const now = Math.floor(Date.now() / 1000);
+          if (payload.exp > now) {
+            // Token válido, guardarlo
+            localStorage.setItem('accessToken', urlToken);
+            return urlToken;
+          } else {
+            console.log('Token de URL expirado');
+          }
+        } catch (e) {
+          console.log('Token de URL inválido');
+        }
+      }
+      
+      // Fallback a localStorage/sessionStorage
+      const storedToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+      if (storedToken) {
+        try {
+          const payload = JSON.parse(atob(storedToken.split('.')[1]));
+          const now = Math.floor(Date.now() / 1000);
+          if (payload.exp > now) {
+            return storedToken;
+          } else {
+            console.log('Token almacenado expirado');
+            localStorage.removeItem('accessToken');
+            sessionStorage.removeItem('accessToken');
+          }
+        } catch (e) {
+          console.log('Token almacenado inválido');
+          localStorage.removeItem('accessToken');
+          sessionStorage.removeItem('accessToken');
+        }
+      }
+      
+      return null;
+    }
+
+    // Función para refrescar token
+    async function refreshToken() {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) return null;
+
+      try {
+        const response = await fetch('/api/auth/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem('accessToken', data.accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          return data.accessToken;
+        } else {
+          // Refresh token también expirado
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          sessionStorage.removeItem('accessToken');
+          sessionStorage.removeItem('refreshToken');
+          return null;
+        }
+      } catch (error) {
+        console.error('Error refreshing token:', error);
+        return null;
+      }
+    }
+
+    // Función mejorada para hacer requests con auto-refresh
+    async function apiCall(url, options = {}) {
+      let token = getToken();
+      
+      // Si no hay token válido, intentar refresh
+      if (!token) {
+        token = await refreshToken();
+        if (!token) {
+          throw new Error('No hay token válido');
+        }
+      }
+
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      // Si es 401, intentar refresh una vez
+      if (response.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          // Reintentar con nuevo token
+          return fetch(url, {
+            ...options,
+            headers: {
+              ...options.headers,
+              'Authorization': `Bearer ${newToken}`
+            }
+          });
+        }
+      }
+
+      return response;
+    }
+
+    // Cargar imágenes guardadas del usuario
+    async function loadSavedImages() {
+      try {
+        const response = await apiCall('/api/overlays/my');
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.left_image_url) {
+            mascotLeft.src = data.left_image_url;
+            leftPreview.src = data.left_image_url;
+          }
+          if (data.right_image_url) {
+            mascotRight.src = data.right_image_url;
+            rightPreview.src = data.right_image_url;
+          }
+        } else {
+          console.error('Error response loading images:', response.status, response.statusText);
+          if (response.status === 401) {
+            console.log('Token expired or invalid, user needs to login again');
+          }
+        }
+      } catch (error) {
+        console.error('Error loading saved images:', error);
+        if (error.message.includes('No hay token válido')) {
+          configStatus.textContent = '⚠️ Sesión expirada. Cierra y abre de nuevo desde el panel principal.';
+          configStatus.className = 'config-status error';
+        }
+      }
+    }
+
+    // Guardar imágenes
+    saveImagesBtn.addEventListener('click', async () => {
+      const formData = new FormData();
+      if (leftImageInput.files[0]) {
+        formData.append('leftImage', leftImageInput.files[0]);
+      }
+      if (rightImageInput.files[0]) {
+        formData.append('rightImage', rightImageInput.files[0]);
+      }
+
+      if (!leftImageInput.files[0] && !rightImageInput.files[0]) {
+        configStatus.textContent = 'Selecciona al menos una imagen';
+        configStatus.className = 'config-status error';
+        return;
+      }
+
+      saveImagesBtn.disabled = true;
+      saveImagesBtn.textContent = 'Guardando...';
+      configStatus.textContent = '';
+
+      try {
+        const response = await apiCall('/api/overlays', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Actualizar mascotas en el overlay
+          if (data.left_image_url) {
+            mascotLeft.src = data.left_image_url;
+            leftPreview.src = data.left_image_url;
+          }
+          if (data.right_image_url) {
+            mascotRight.src = data.right_image_url;
+            rightPreview.src = data.right_image_url;
+          }
+
+          // NOTA: El panel principal obtendrá las imágenes directamente del servidor
+          // No necesitamos notificar via BroadcastChannel (ya no existe)
+
+          configStatus.textContent = '✅ Guardado exitosamente';
+          configStatus.className = 'config-status success';
+          
+          // Limpiar inputs
+          leftImageInput.value = '';
+          rightImageInput.value = '';
+        } else {
+          console.error('Error response saving images:', response.status, response.statusText);
+          const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+          if (response.status === 401) {
+            throw new Error('Sesión expirada. Cierra y abre de nuevo desde el panel principal.');
+          }
+          throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
+        }
+      } catch (error) {
+        console.error('Error saving images:', error);
+        configStatus.textContent = '❌ Error: ' + error.message;
+        configStatus.className = 'config-status error';
+        
+        if (error.message.includes('No hay token válido') || error.message.includes('Sesión expirada')) {
+          setTimeout(() => {
+            configStatus.textContent = '🔄 Intenta cerrar y abrir de nuevo desde el panel principal';
+          }, 3000);
+        }
+      } finally {
+        saveImagesBtn.disabled = false;
+        saveImagesBtn.textContent = '💾 Guardar Cambios';
+      }
+    });
+
+    // Cargar imágenes al iniciar
+    loadSavedImages();
+  </script>
+</body>
+</html>

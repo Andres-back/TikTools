@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hype Arena · TikToolStream</title>
+  <link rel="stylesheet" href="/assets/css/overlays.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --arena-cyan: #25f4ee;
+      --arena-pink: #fe2c55;
+      --arena-violet: #8b5cf6;
+      --arena-gold: #ffd166;
+      --arena-ink: rgba(5, 7, 18, 0.82);
+      --arena-line: rgba(255, 255, 255, 0.14);
+      --safe-x: clamp(28px, 3.35vw, 68px);
+      --safe-y: clamp(24px, 4.8vh, 54px);
+      --panel-blur: blur(22px) saturate(155%);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent !important; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .arena {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      isolation: isolate;
+      pointer-events: none;
+    }
+
+    .ambient {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0.48;
+      z-index: -1;
+    }
+
+    .ambient::before,
+    .ambient::after {
+      content: "";
+      position: absolute;
+      width: 34vw;
+      height: 34vw;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 900ms ease, transform 900ms ease;
+    }
+
+    .ambient::before { left: -12vw; bottom: -14vw; background: rgba(37, 244, 238, 0.28); }
+    .ambient::after { right: -12vw; top: -14vw; background: rgba(254, 44, 85, 0.25); }
+    .arena[data-tier="fire"] .ambient::before,
+    .arena[data-tier="legend"] .ambient::before,
+    .arena[data-tier="fire"] .ambient::after,
+    .arena[data-tier="legend"] .ambient::after { opacity: 1; transform: scale(1); }
+    .arena[data-tier="legend"] .ambient::before { animation: ambientPulse 1.5s ease-in-out infinite alternate; }
+    .arena[data-tier="legend"] .ambient::after { animation: ambientPulse 1.5s ease-in-out infinite alternate-reverse; }
+    @keyframes ambientPulse { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.35); opacity: 1; } }
+
+    /* per-level background colors */
+    .arena[data-tier="flow"] .ambient::before { background: rgba(37,244,238,0.18); }
+    .arena[data-tier="hot"] .ambient::before { background: rgba(255,209,102,0.22); }
+    .arena[data-tier="hot"] .ambient::after { background: rgba(254,44,85,0.2); }
+    .arena[data-tier="fire"] .ambient::before { background: rgba(254,44,85,0.35); }
+    .arena[data-tier="fire"] .ambient::after { background: rgba(255,107,0,0.3); }
+
+    .arena-panel {
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.105), rgba(255,255,255,0.025)),
+        var(--arena-ink);
+      border: 1px solid var(--arena-line);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.13);
+      -webkit-backdrop-filter: var(--panel-blur);
+      backdrop-filter: var(--panel-blur);
+    }
+
+    .status-pill {
+      position: absolute;
+      top: var(--safe-y);
+      left: var(--safe-x);
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-height: 42px;
+      padding: 8px 15px 8px 10px;
+      border-radius: 999px;
+      font-size: clamp(12px, 0.82vw, 16px);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .live-dot {
+      position: relative;
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .live-dot::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #8d95a9;
+      box-shadow: 0 0 0 0 rgba(141,149,169,0);
+      transition: background 250ms ease, box-shadow 250ms ease;
+    }
+
+    .status-pill[data-state="live"] .live-dot::before,
+    .status-pill[data-state="demo"] .live-dot::before {
+      background: var(--arena-pink);
+      box-shadow: 0 0 16px rgba(254,44,85,0.85);
+      animation: livePulse 1.8s ease-in-out infinite;
+    }
+
+    .status-separator { width: 1px; height: 17px; background: rgba(255,255,255,0.16); }
+    .viewer-count { color: rgba(255,255,255,0.72); font-variant-numeric: tabular-nums; }
+
+    .moment-card {
+      position: absolute;
+      top: var(--safe-y);
+      right: var(--safe-x);
+      width: clamp(280px, 20vw, 388px);
+      padding: 16px 17px;
+      border-radius: 19px;
+      overflow: hidden;
+    }
+
+    .moment-card::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--arena-cyan), var(--arena-pink), transparent);
+      transform: scaleX(var(--moment-progress, 0));
+      transform-origin: left center;
+    }
+
+    .eyebrow {
+      color: rgba(255,255,255,0.5);
+      font-size: clamp(9px, 0.58vw, 11px);
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .moment-main { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 8px; }
+    .moment-copy { min-width: 0; }
+    .moment-name {
+      overflow: hidden;
+      color: #fff;
+      font-size: clamp(15px, 1.04vw, 20px);
+      font-weight: 850;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .moment-detail { margin-top: 3px; color: rgba(255,255,255,0.58); font-size: clamp(11px, 0.72vw, 14px); }
+    .moment-icon { font-size: clamp(25px, 2vw, 38px); filter: drop-shadow(0 0 16px rgba(37,244,238,0.28)); }
+
+    .hype-card {
+      position: absolute;
+      left: var(--safe-x);
+      bottom: var(--safe-y);
+      width: clamp(390px, 30vw, 570px);
+      padding: clamp(18px, 1.3vw, 25px);
+      border-radius: 25px;
+      overflow: hidden;
+    }
+
+    .hype-card::before {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      right: -90px;
+      top: -110px;
+      border-radius: 50%;
+      background: var(--arena-cyan);
+      filter: blur(65px);
+      opacity: 0.16;
+    }
+
+    .hype-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .brand-lockup { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: clamp(37px, 2.45vw, 47px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--arena-cyan), var(--arena-violet) 58%, var(--arena-pink));
+      box-shadow: 0 0 30px rgba(37,244,238,0.22);
+      color: #050711;
+      font-size: clamp(20px, 1.35vw, 26px);
+      font-weight: 1000;
+    }
+    .hype-title { font-size: clamp(16px, 1.08vw, 21px); font-weight: 950; letter-spacing: -0.02em; }
+    .hype-subtitle { margin-top: 2px; color: rgba(255,255,255,0.46); font-size: clamp(10px, 0.65vw, 13px); font-weight: 700; }
+    .tier-badge {
+      padding: 7px 10px;
+      border: 1px solid rgba(37,244,238,0.23);
+      border-radius: 999px;
+      background: rgba(37,244,238,0.08);
+      color: var(--arena-cyan);
+      font-size: clamp(9px, 0.58vw, 11px);
+      font-weight: 950;
+      letter-spacing: 0.12em;
+    }
+
+    .hype-score-row { display: flex; align-items: flex-end; gap: 10px; margin: clamp(18px, 1.35vw, 26px) 0 12px; }
+    .hype-score {
+      font-size: clamp(41px, 4.1vw, 78px);
+      font-weight: 1000;
+      letter-spacing: -0.075em;
+      line-height: 0.8;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 34px rgba(37,244,238,0.2);
+      transition: text-shadow 0.8s ease;
+    }
+    /* dynamic glow via JS sets this inline, but these are the base patterns */
+    .hype-score.glow-lv1 { text-shadow: 0 0 20px #25f4ee, 0 0 40px rgba(37,244,238,0.3); }
+    .hype-score.glow-lv2 { text-shadow: 0 0 30px #ffd166, 0 0 60px rgba(255,209,102,0.4), 0 0 20px #fe2c55; }
+    .hype-score.glow-lv3 { text-shadow: 0 0 40px #fe2c55, 0 0 80px rgba(254,44,85,0.5), 0 0 30px #8b5cf6; }
+    .hype-score.glow-lv4 { text-shadow: 0 0 50px #ffd166, 0 0 100px rgba(255,209,102,0.6), 0 0 40px #25f4ee; }
+    .hype-score.glow-lv5 { text-shadow: 0 0 60px #fff, 0 0 120px rgba(255,255,255,0.4), 0 0 50px #fe2c55, 0 0 30px #8b5cf6; }
+    .hype-score.glow-lvmax { text-shadow: 0 0 70px #25f4ee, 0 0 140px rgba(37,244,238,0.5), 0 0 60px #fe2c55, 0 0 40px #ffd166; }
+    .hype-unit { color: rgba(255,255,255,0.38); font-size: clamp(11px, 0.72vw, 14px); font-weight: 900; letter-spacing: 0.13em; transition: color 0.5s; }
+    .hype-unit.gold { color: var(--arena-gold); text-shadow: 0 0 15px rgba(255,209,102,0.4); }
+    .hype-unit.platinum { color: #e8e8ff; text-shadow: 0 0 20px rgba(200,200,255,0.5); }
+    .hype-unit.diamond { color: #b9f2ff; text-shadow: 0 0 25px rgba(100,230,255,0.6), 0 0 10px rgba(100,230,255,0.3); }
+
+    .hype-track { position: relative; height: 12px; border-radius: 999px; background: rgba(255,255,255,0.075); overflow: hidden; }
+    .hype-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--arena-cyan), #71f5ca 38%, var(--arena-gold) 72%, var(--arena-pink));
+      box-shadow: 0 0 25px rgba(37,244,238,0.36);
+      transform: scaleX(0.12);
+      transform-origin: left center;
+      will-change: transform;
+      transition: box-shadow 0.8s;
+    }
+    .hype-fill.high { box-shadow: 0 0 40px rgba(255,209,102,0.5), 0 0 20px rgba(254,44,85,0.3); }
+    .hype-fill.epic { box-shadow: 0 0 60px rgba(255,215,0,0.6), 0 0 30px rgba(254,44,85,0.4), 0 0 10px #fff; }
+    .hype-fill::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.65), transparent 65%); animation: barShine 2.8s ease-in-out infinite; }
+    .hype-fill.high::after { animation-duration: 1.8s; }
+    .hype-fill.epic::after { animation-duration: 1s; }
+    .hype-milestones { display: flex; justify-content: space-between; margin-top: 8px; color: rgba(255,255,255,0.3); font-size: 9px; font-weight: 900; letter-spacing: 0.08em; transition: color 0.5s; }
+    .hype-milestones.gold span { color: rgba(255,215,0,0.5); }
+
+    .event-rail {
+      position: absolute;
+      right: var(--safe-x);
+      bottom: var(--safe-y);
+      width: clamp(300px, 23vw, 440px);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .event-item {
+      display: grid;
+      grid-template-columns: 43px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      min-height: 64px;
+      padding: 9px 12px 9px 10px;
+      border-radius: 18px;
+      will-change: transform, opacity;
+    }
+
+    .event-icon { width: 43px; aspect-ratio: 1; display: grid; place-items: center; border-radius: 13px; background: rgba(255,255,255,0.08); font-size: 22px; }
+    .event-copy { min-width: 0; }
+    .event-user { overflow: hidden; font-size: clamp(12px, 0.8vw, 15px); font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+    .event-detail { overflow: hidden; margin-top: 2px; color: rgba(255,255,255,0.5); font-size: clamp(10px, 0.67vw, 13px); text-overflow: ellipsis; white-space: nowrap; }
+    .event-value { color: var(--arena-gold); font-size: clamp(11px, 0.73vw, 14px); font-weight: 950; }
+
+    .spotlight {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: clamp(440px, 34vw, 650px);
+      display: grid;
+      grid-template-columns: clamp(94px, 7.3vw, 140px) minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(20px, 1.75vw, 34px);
+      padding: clamp(22px, 1.75vw, 34px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 34px;
+      background: linear-gradient(135deg, rgba(37,244,238,0.14), rgba(5,7,18,0.91) 43%, rgba(254,44,85,0.13));
+      box-shadow: 0 30px 110px rgba(0,0,0,0.55), 0 0 80px rgba(37,244,238,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
+      -webkit-backdrop-filter: blur(30px) saturate(165%);
+      backdrop-filter: blur(30px) saturate(165%);
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, -46%) scale(0.82);
+      will-change: transform, opacity;
+    }
+
+    .spotlight-art { position: relative; width: 100%; aspect-ratio: 1; display: grid; place-items: center; }
+    .spotlight-ring { position: absolute; inset: 0; border: 2px solid rgba(37,244,238,0.65); border-radius: 31px; transform: rotate(8deg); box-shadow: 0 0 35px rgba(37,244,238,0.28); }
+    .spotlight-ring.second { border-color: rgba(254,44,85,0.5); transform: rotate(-8deg) scale(0.88); }
+    .gift-art { position: relative; z-index: 1; width: 74%; height: 74%; display: grid; place-items: center; object-fit: contain; filter: drop-shadow(0 12px 22px rgba(0,0,0,0.35)); font-size: clamp(55px, 5vw, 94px); }
+    img.gift-art { border-radius: 22px; }
+    .spotlight-kicker { color: var(--arena-cyan); font-size: clamp(10px, 0.66vw, 13px); font-weight: 950; letter-spacing: 0.18em; text-transform: uppercase; }
+    .spotlight-title { margin-top: 7px; overflow: hidden; font-size: clamp(27px, 2.35vw, 45px); font-weight: 1000; letter-spacing: -0.045em; text-overflow: ellipsis; white-space: nowrap; }
+    .spotlight-gift { margin-top: 4px; color: rgba(255,255,255,0.62); font-size: clamp(14px, 1vw, 19px); font-weight: 750; }
+    .spotlight-coins { display: inline-flex; align-items: center; gap: 7px; margin-top: 13px; padding: 7px 11px; border-radius: 10px; background: rgba(255,209,102,0.1); color: var(--arena-gold); font-size: clamp(12px, 0.83vw, 16px); font-weight: 950; }
+
+    .hype-mode {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      visibility: hidden;
+      background: radial-gradient(circle at center, rgba(37,244,238,0.13), transparent 48%);
+    }
+    .hype-mode-copy { text-align: center; will-change: transform, opacity; }
+    .hype-mode-small { color: var(--arena-cyan); font-size: clamp(12px, 0.9vw, 17px); font-weight: 950; letter-spacing: 0.34em; text-transform: uppercase; }
+    .hype-mode-big { margin-top: 7px; font-size: clamp(70px, 9vw, 172px); font-weight: 1000; letter-spacing: -0.09em; line-height: 0.85; text-shadow: -4px 0 0 var(--arena-cyan), 4px 0 0 var(--arena-pink), 0 0 75px rgba(255,255,255,0.2); }
+    .hype-mode-big.gold { text-shadow: -5px 0 0 #ffd700, 5px 0 0 #fe2c55, 0 0 80px rgba(255,215,0,0.5), 0 0 40px rgba(255,215,0,0.3); }
+    .hype-mode-big.platinum { text-shadow: -6px 0 0 #e8e8ff, 6px 0 0 #8b5cf6, 0 0 100px rgba(255,255,255,0.4), 0 0 50px rgba(200,200,255,0.3); }
+    .hype-mode-big.diamond { text-shadow: -7px 0 0 #b9f2ff, 7px 0 0 #ffd700, 0 0 120px rgba(100,230,255,0.5), 0 0 60px rgba(255,215,0,0.4); }
+    .hype-mode-small.gold { color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.4); }
+    .hype-mode-small.platinum { color: #d0d0ff; text-shadow: 0 0 20px rgba(200,200,255,0.4); }
+    .hype-mode-small.diamond { color: #b9f2ff; text-shadow: 0 0 25px rgba(100,230,255,0.5); }
+
+    .tts-particle { position: fixed; top: 0; left: 0; width: 10px; height: 14px; border-radius: 3px; font-size: 25px; line-height: 1; pointer-events: none; will-change: transform, opacity; z-index: 50; }
+
+    /* Expanding rings for HYPE MODE */
+    .hype-ring {
+      position: fixed; top: 50%; left: 50%; z-index: 40;
+      width: 10px; height: 10px; margin: -5px 0 0 -5px;
+      border-radius: 50%; pointer-events: none;
+      border: 3px solid var(--ring-color, #25f4ee);
+      opacity: 0;
+    }
+
+    @keyframes livePulse { 50% { box-shadow: 0 0 4px rgba(254,44,85,0.45), 0 0 0 6px rgba(254,44,85,0.08); } }
+    @keyframes barShine { 0%, 35% { transform: translateX(-120%); } 75%, 100% { transform: translateX(120%); } }
+
+    @media (max-width: 900px) {
+      .hype-card { width: 48vw; }
+      .event-rail { width: 39vw; }
+      .moment-card { width: 36vw; }
+    }
+
+    /* Mobile portrait mode — single column */
+    .mobile .status-pill { top:8px; left:50%; transform:translateX(-50%); padding:4px 10px 4px 6px; min-height:30px; gap:6px; font-size:9px; }
+    .mobile .status-pill .live-dot { width:16px; height:16px; }
+    .mobile .status-pill .live-dot::before { width:6px; height:6px; }
+    .mobile .status-separator { height:12px; }
+    .mobile .viewer-count { font-size:9px; }
+    .mobile .moment-card { top:auto; bottom:calc(var(--safe-y) + 70px); left:var(--safe-x); right:var(--safe-x); width:auto; padding:10px 12px; border-radius:14px; z-index:3; }
+    .mobile .moment-name { font-size:13px; }
+    .mobile .moment-detail { font-size:10px; }
+    .mobile .moment-icon { font-size:20px; }
+    .mobile .hype-card { left:var(--safe-x); right:var(--safe-x); bottom:var(--safe-y); width:auto; padding:14px 16px; border-radius:18px; }
+    .mobile .brand-mark { width:30px; height:30px; font-size:16px; border-radius:10px; }
+    .mobile .hype-title { font-size:14px; }
+    .mobile .hype-subtitle { font-size:8px; }
+    .mobile .tier-badge { font-size:7px; padding:4px 7px; }
+    .mobile .hype-score { font-size:32px; }
+    .mobile .hype-unit { font-size:9px; }
+    .mobile .meta-chip { font-size:8px; padding:4px 6px; }
+    .mobile .hype-track { height:8px; }
+    .mobile .hype-milestones { font-size:7px; }
+    .mobile .event-rail { left:0; right:0; bottom:0; width:100%; flex-direction:row; gap:4px; padding:4px 6px 60px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .mobile .event-item { min-height:44px; padding:6px 8px; gap:6px; grid-template-columns:30px minmax(0,1fr) auto; border-radius:12px; min-width:180px; flex-shrink:0; }
+    .mobile .event-icon { width:30px; font-size:16px; }
+    .mobile .event-user { font-size:11px; }
+    .mobile .event-detail { font-size:9px; }
+    .mobile .event-value { font-size:10px; }
+    .mobile .spotlight { width:80vw; padding:14px 18px; border-radius:20px; gap:12px; grid-template-columns:60px minmax(0,1fr); }
+    .mobile .spotlight-ring { border-radius:20px; }
+    .mobile .gift-art { font-size:28px; }
+    .mobile .spotlight-kicker { font-size:8px; }
+    .mobile .spotlight-title { font-size:18px; }
+    .mobile .spotlight-gift { font-size:11px; }
+    .mobile .spotlight-coins { font-size:10px; padding:4px 8px; }
+    .mobile .hype-mode-big { font-size:48px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+      .ambient { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="arena" id="arena" data-tier="flow" aria-label="Overlay Hype Arena">
+    <div class="ambient" aria-hidden="true"></div>
+
+    <section class="status-pill arena-panel" id="statusPill" data-state="connecting">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span id="statusText">CONECTANDO</span>
+      <span class="status-separator" aria-hidden="true"></span>
+      <span class="viewer-count"><span id="viewerCount">0</span> viendo</span>
+    </section>
+
+    <section class="moment-card arena-panel" id="momentCard" style="--moment-progress:0">
+      <div class="eyebrow">Momento del live</div>
+      <div class="moment-main">
+        <div class="moment-copy">
+          <div class="moment-name" id="momentName">La arena está lista</div>
+          <div class="moment-detail" id="momentDetail">Cada interacción carga el hype</div>
+        </div>
+        <div class="moment-icon" id="momentIcon" aria-hidden="true">⚡</div>
+      </div>
+    </section>
+
+    <section class="hype-card arena-panel" id="hypeCard">
+      <div class="hype-heading">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">⚡</div>
+          <div>
+            <div class="hype-title">HYPE ARENA</div>
+            <div class="hype-subtitle">La energía de tu comunidad</div>
+          </div>
+        </div>
+        <span class="tier-badge" id="tierBadge">FLOW</span>
+      </div>
+      <div class="hype-score-row">
+        <span class="hype-score" id="hypeScore">12</span>
+        <span class="hype-unit" id="hypeUnit">/ 100</span>
+        <div class="hype-meta">
+          <span class="meta-chip">Racha <strong id="streakCount">x1</strong></span>
+          <span class="meta-chip">Combo <strong id="comboCount">0</strong></span>
+        </div>
+      </div>
+      <div class="hype-track" aria-label="Nivel de hype">
+        <div class="hype-fill" id="hypeFill"></div>
+      </div>
+      <div class="hype-milestones" id="hypeMilestones"><span>FLOW</span><span>CALIENTE</span><span>FUEGO</span><span>LEGENDARIO</span></div>
+      <div style="margin-top:6px;display:flex;justify-content:space-between;color:rgba(255,255,255,0.2);font-size:8px;font-weight:700;letter-spacing:0.05em" id="hypeDebug"></div>
+    </section>
+
+    <section class="event-rail" id="eventRail" aria-live="polite"><div class="event-item arena-panel" style="grid-template-columns:1fr;text-align:center;opacity:0.35;font-size:12px;min-height:48px;justify-items:center"><span>⏳ Esperando eventos...</span></div></section>
+
+    <section class="spotlight" id="spotlight" aria-live="polite">
+      <div class="spotlight-art">
+        <span class="spotlight-ring" aria-hidden="true"></span>
+        <span class="spotlight-ring second" aria-hidden="true"></span>
+        <span class="gift-art" id="giftArt" aria-hidden="true">🎁</span>
+      </div>
+      <div>
+        <div class="spotlight-kicker" id="spotlightKicker">REGALO ÉPICO</div>
+        <div class="spotlight-title" id="spotlightTitle">Viewer</div>
+        <div class="spotlight-gift" id="spotlightGift">envió un regalo</div>
+        <div class="spotlight-coins"><span aria-hidden="true">✦</span><span id="spotlightCoins">1</span> monedas</div>
+      </div>
+    </section>
+
+    <section class="hype-mode" id="hypeMode" aria-live="assertive">
+      <div class="hype-mode-copy" id="hypeModeCopy">
+        <div class="hype-mode-small">La comunidad desbloqueó</div>
+        <div class="hype-mode-big">HYPE MODE</div>
+      </div>
+    </section>
+
+    <div id="particles" aria-hidden="true"></div>
+  </main>
+
+  <script src="/vendor/gsap/gsap.min.js"></script>
+  <script src="/assets/js/overlay-runtime.js"></script>
+  <script>
+    (() => {
+      'use strict';
+      const T = window.TikToolOverlay;
+      if (!T) return;
+
+      const elements = {
+        arena: document.getElementById('arena'),
+        statusPill: document.getElementById('statusPill'),
+        statusText: document.getElementById('statusText'),
+        viewerCount: document.getElementById('viewerCount'),
+        momentCard: document.getElementById('momentCard'),
+        momentName: document.getElementById('momentName'),
+        momentDetail: document.getElementById('momentDetail'),
+        momentIcon: document.getElementById('momentIcon'),
+        hypeCard: document.getElementById('hypeCard'),
+        hypeScore: document.getElementById('hypeScore'),
+        hypeFill: document.getElementById('hypeFill'),
+        tierBadge: document.getElementById('tierBadge'),
+        streakCount: document.getElementById('streakCount'),
+        comboCount: document.getElementById('comboCount'),
+        eventRail: document.getElementById('eventRail'),
+        spotlight: document.getElementById('spotlight'),
+        giftArt: document.getElementById('giftArt'),
+        spotlightKicker: document.getElementById('spotlightKicker'),
+        spotlightTitle: document.getElementById('spotlightTitle'),
+        spotlightGift: document.getElementById('spotlightGift'),
+        spotlightCoins: document.getElementById('spotlightCoins'),
+        hypeMode: document.getElementById('hypeMode'),
+        hypeModeCopy: document.getElementById('hypeModeCopy'),
+        hypeUnit: document.getElementById('hypeUnit'),
+        hypeMilestones: document.getElementById('hypeMilestones'),
+        particles: document.getElementById('particles')
+      };
+
+      let hypeCfg = { multiplier: 1, decay: 0.65, thresholdBase: 100, thresholdMultiplier: 1.5, animations: true, sound: true, maxLevels: 0 };
+
+      async function loadHypeConfig(userId) {
+        try {
+          const r = await fetch(`/api/settings/hype/public/${userId}`);
+          if (r.ok) { const d = await r.json(); hypeCfg = { ...hypeCfg, ...d }; }
+        } catch {}
+        /* URL params override API */
+        const params = T.getParams();
+        if (params.get('multiplier')) hypeCfg.multiplier = parseFloat(params.get('multiplier'));
+        if (params.get('decay')) hypeCfg.decay = parseFloat(params.get('decay'));
+        if (params.get('thresholdBase')) hypeCfg.thresholdBase = parseFloat(params.get('thresholdBase'));
+        if (params.get('thresholdMult')) hypeCfg.thresholdMultiplier = parseFloat(params.get('thresholdMult'));
+        if (params.get('noAnim') === '1') hypeCfg.animations = false;
+        if (params.get('noSound') === '1') hypeCfg.sound = false;
+        if (params.get('maxLevels')) hypeCfg.maxLevels = parseInt(params.get('maxLevels'));
+      }
+
+      function getLevelThreshold(level) {
+        if (hypeCfg.maxLevels > 0 && level > hypeCfg.maxLevels) return Infinity;
+        return hypeCfg.thresholdBase * Math.pow(hypeCfg.thresholdMultiplier, level);
+      }
+
+      const state = {
+        hype: 12,
+        hypeLevel: 0,
+        viewers: 0,
+        combo: 0,
+        streak: 1,
+        lastInteractionAt: Date.now(),
+        lastActor: '',
+        lastActorAt: 0,
+        hypeModeLocked: false,
+        momentTimer: null
+      };
+
+      const eventDesign = {
+        gift: { icon: '🎁', action: 'envió', accent: 'regalo' },
+        follow: { icon: '💫', action: 'ahora te sigue', accent: '' },
+        share: { icon: '🚀', action: 'compartió el LIVE', accent: '' },
+        subscribe: { icon: '👑', action: 'se suscribió', accent: '' },
+        like: { icon: '♥', action: 'encendió el chat', accent: '' },
+        chat: { icon: '💬', action: 'comentó', accent: '' },
+        interactionResult: { icon: '🎮', action: 'activó el juego', accent: '' }
+      };
+
+      /* Track likes per user for milestones (20 = default, lower for demo) */
+      const likeCounts = new Map();
+      const LIKE_MILESTONE = 5;
+
+      const spotlightQueue = new T.SerialQueue(showSpotlight, { maxLength: 7 });
+
+      function addHype(amount, data = {}) {
+        const actor = data.uniqueId || data.userId || '';
+        const now = Date.now();
+        if (actor && actor === state.lastActor && now - state.lastActorAt < 8500) state.combo += 1;
+        else state.combo = actor ? 1 : state.combo;
+        state.lastActor = actor || state.lastActor;
+        state.lastActorAt = now;
+        state.streak = Math.max(1, Math.min(9, 1 + Math.floor(state.combo / 3)));
+        state.lastInteractionAt = now;
+        state.hype = Math.max(0, state.hype + amount * (1 + (state.streak - 1) * 0.08) * hypeCfg.multiplier);
+        renderHype();
+      }
+
+      function renderHype() {
+        const level = state.hypeLevel;
+        const threshold = getLevelThreshold(level);
+        const prevThreshold = level === 0 ? 0 : getLevelThreshold(level - 1);
+        const progress = threshold === Infinity ? 1 : Math.min(1, (state.hype - prevThreshold) / (threshold - prevThreshold));
+
+        elements.hypeScore.textContent = T.formatCompact(Math.round(state.hype));
+        const maxLv = hypeCfg.maxLevels;
+        if (elements.hypeUnit) elements.hypeUnit.textContent = (level === 0 && maxLv <= 0) ? `/ ${hypeCfg.thresholdBase}` : (maxLv > 0 && level > maxLv ? 'MAX' : `Lv.${level}`);
+
+        /* Dynamic glow on score based on level */
+        const glowClass = level === 0 ? '' : level === 1 ? 'glow-lv1' : level === 2 ? 'glow-lv2' : level === 3 ? 'glow-lv3' : level === 4 ? 'glow-lv4' : level >= 5 ? 'glow-lv5' : '';
+        elements.hypeScore.className = 'hype-score' + (glowClass ? ' ' + glowClass : '');
+        elements.comboCount.textContent = String(state.combo);
+        elements.streakCount.textContent = `x${state.streak}`;
+        T.motion.to(elements.hypeFill, { scaleX: progress, duration: 0.55, ease: 'power3.out', overwrite: true });
+
+        /* Bar glow intensifies per level */
+        const barClass = level >= 5 ? 'epic' : level >= 3 ? 'high' : '';
+        elements.hypeFill.className = 'hype-fill' + (barClass ? ' ' + barClass : '');
+        /* Unit color tier */
+        const unitClass = level >= 7 ? 'diamond' : level >= 4 ? 'platinum' : level >= 2 ? 'gold' : '';
+        if (elements.hypeUnit) elements.hypeUnit.className = 'hype-unit' + (unitClass ? ' ' + unitClass : '');
+
+        /* Epic tier labels per level */
+        const crownLv = level >= 7 ? '👑' : level >= 5 ? '💎' : level >= 3 ? '⭐' : '';
+        const tierLabel = level > 0 ? `${crownLv} HYPE MODE Lv.${level} ${crownLv}` : '';
+        let tier = { key: 'flow', label: 'FLOW' };
+        if (maxLv > 0 && level >= maxLv) tier = { key: 'legend', label: '🏆 MAX LEVEL 🏆' };
+        else if (level >= 7) tier = { key: 'legend', label: `👑 HYPE MODE Lv.${level} 👑` };
+        else if (level >= 5) tier = { key: 'legend', label: `💎 HYPE MODE Lv.${level} 💎` };
+        else if (level >= 3) tier = { key: 'legend', label: `⭐ HYPE MODE Lv.${level} ⭐` };
+        else if (level > 0) tier = { key: 'legend', label: `🔥 HYPE MODE Lv.${level} 🔥` };
+        else if (state.hype >= 85) tier = { key: 'legend', label: '🔥 LEGENDARIO 🔥' };
+        else if (state.hype >= 60) tier = { key: 'fire', label: '🔥 EN FUEGO' };
+        else if (state.hype >= 30) tier = { key: 'hot', label: '🌤️ CALIENTE' };
+        elements.arena.dataset.tier = tier.key;
+        elements.tierBadge.textContent = tier.label;
+
+        /* dynamic milestones for current level */
+        if (elements.hypeMilestones) {
+          if (level === 0) {
+            const b = hypeCfg.thresholdBase;
+            elements.hypeMilestones.innerHTML = `<span>0</span><span>${Math.round(b * 0.5)}</span><span>${Math.round(b * 0.85)}</span><span>${b}</span>`;
+          } else if (maxLv > 0 && level >= maxLv) {
+            elements.hypeMilestones.innerHTML = '<span>🏆 NIVEL MÁXIMO</span>';
+          } else {
+            const next = getLevelThreshold(level + 1);
+            if (next === Infinity) {
+              elements.hypeMilestones.innerHTML = `<span>Lv.${level} ✓</span><span>${T.formatCompact(Math.round(threshold))}</span><span>🏆 MAX</span>`;
+            } else {
+              elements.hypeMilestones.innerHTML = `<span>Lv.${level} ✓</span><span>${T.formatCompact(Math.round(threshold))}</span><span>→ ${T.formatCompact(Math.round(next))}</span>`;
+            }
+          }
+        }
+
+        /* debug info */
+        const debugEl = document.getElementById('hypeDebug');
+        if (debugEl) {
+          const next = getLevelThreshold(level + 1);
+          debugEl.textContent = `hype=${Math.round(state.hype)} thresh=${Math.round(threshold)} next=${next === Infinity ? 'MAX' : Math.round(next)} lv=${level} locked=${state.hypeModeLocked}`;
+        }
+
+        if (state.hype >= threshold && !state.hypeModeLocked) {
+          if (maxLv > 0 && level >= maxLv) return; /* max level reached */
+          triggerHypeMode();
+        }
+      }
+
+      function handleEvent(event) {
+        if (!event || !event.type || event.type === 'giftProgress') return;
+        const data = event.data || {};
+        switch (event.type) {
+          case 'roomUser':
+            state.viewers = Math.max(0, Number(data.viewerCount || data.totalUser) || 0);
+            elements.viewerCount.textContent = T.formatCompact(state.viewers);
+            return;
+          case 'like': {
+            const likeAmount = Math.min(6, Math.max(0.25, (Number(data.likeCount) || 1) * 0.035));
+            addHype(likeAmount, data);
+            /* Track per-user like events and show milestone every 20 events */
+            const uid = data.uniqueId || data.userId || 'anon';
+            const count = (likeCounts.get(uid) || 0) + 1;
+            likeCounts.set(uid, count);
+            if (count % LIKE_MILESTONE === 0) {
+              addEventCard('like', { ...data, uniqueId: uid, nickname: data.nickname || uid, likeCount: count });
+              setMoment(data.nickname || uid, `×${count} likes consecutivos ♥`, '♥');
+            }
+            if (state.combo % 4 !== 0) return;
+            break;
+          }
+          case 'gift': {
+            const coins = Math.max(1, Number(data.coins) || (Number(data.diamondCount) || 1) * (Number(data.repeatCount) || 1));
+            addHype(Math.min(35, 2.5 + Math.log2(coins + 1) * 2.15), data);
+            spotlightQueue.push({ ...data, coins }, { priority: coins >= 1000 });
+            break;
+          }
+          case 'follow': addHype(4, data); break;
+          case 'share': addHype(6, data); break;
+          case 'subscribe': addHype(17, data); break;
+          case 'member': addHype(0.7, data); return;
+          case 'chat':
+            if (String(data.comment || '').trim().toLowerCase() === '!hype') {
+              setMoment(T.displayName(data), `El hype va en ${Math.round(state.hype)}%`, '⚡');
+            }
+            return;
+          case 'interactionResult': addHype(data.success === false ? 0 : 8, data); break;
+          default: return;
+        }
+        addEventCard(event.type, data);
+      }
+
+      function addEventCard(type, data) {
+        /* remove placeholder if present */
+        const placeholder = elements.eventRail.querySelector('.event-item[style*="text-align:center"]');
+        if (placeholder) placeholder.remove();
+
+        const design = eventDesign[type] || { icon: '⚡', action: 'interactuó', accent: '' };
+        const item = document.createElement('article');
+        item.className = 'event-item arena-panel';
+
+        const icon = document.createElement('span');
+        icon.className = 'event-icon';
+        icon.textContent = design.icon;
+
+        const copy = document.createElement('div');
+        copy.className = 'event-copy';
+        const user = document.createElement('div');
+        user.className = 'event-user';
+        user.textContent = T.displayName(data);
+        const detail = document.createElement('div');
+        detail.className = 'event-detail';
+        detail.textContent = type === 'gift' ? `${design.action} ${data.giftName || design.accent || 'un regalo'}` : type === 'like' ? `${data.likeCount || ''} likes! ♥` : design.action;
+        copy.append(user, detail);
+
+        const value = document.createElement('span');
+        value.className = 'event-value';
+        if (type === 'gift') value.textContent = `+${T.formatCompact(data.coins || data.diamondCount || 1)}`;
+        else if (type === 'subscribe') value.textContent = `${Number(data.subMonth) || 1}M`;
+        else if (type === 'like') value.textContent = `♥${T.formatCompact(data.likeCount || data.totalLikeCount || 0)}`;
+        else value.textContent = '';
+
+        item.append(icon, copy, value);
+        elements.eventRail.prepend(item);
+        while (elements.eventRail.children.length > 4) elements.eventRail.lastElementChild?.remove();
+        T.motion.fromTo(item, { x: 80, autoAlpha: 0, scale: 0.94 }, { x: 0, autoAlpha: 1, scale: 1, duration: 0.52, ease: 'back.out(1.45)' });
+        setTimeout(() => {
+          T.motion.to(item, { x: 45, autoAlpha: 0, duration: 0.42, ease: 'power2.in', onComplete: () => item.remove() });
+        }, 7200);
+      }
+
+      async function showSpotlight(data) {
+        const coins = Math.max(1, Number(data.coins) || 1);
+        const isEpic = coins >= 1000;
+        elements.spotlightKicker.textContent = isEpic ? 'REGALO LEGENDARIO' : coins >= 100 ? 'REGALO ÉPICO' : 'NUEVO REGALO';
+        elements.spotlightTitle.textContent = T.displayName(data);
+        elements.spotlightGift.textContent = `envió ${data.giftName || 'un regalo'}${Number(data.repeatCount) > 1 ? ` ×${data.repeatCount}` : ''}`;
+        elements.spotlightCoins.textContent = T.formatCompact(coins);
+
+        const giftUrl = T.safeImageUrl(data.giftPictureUrl);
+        const current = elements.giftArt;
+        let art = current;
+        if (giftUrl && current.tagName !== 'IMG') {
+          art = document.createElement('img');
+          art.id = 'giftArt';
+          art.className = 'gift-art';
+          art.alt = '';
+          current.replaceWith(art);
+          elements.giftArt = art;
+        } else if (!giftUrl && current.tagName !== 'SPAN') {
+          art = document.createElement('span');
+          art.id = 'giftArt';
+          art.className = 'gift-art';
+          art.setAttribute('aria-hidden', 'true');
+          current.replaceWith(art);
+          elements.giftArt = art;
+        }
+        if (giftUrl) art.src = giftUrl;
+        else art.textContent = data.giftEmoji || (coins >= 1000 ? '👑' : '🎁');
+
+        const rect = elements.spotlight.getBoundingClientRect();
+        T.motion.fromTo(elements.spotlight,
+          { xPercent: -50, yPercent: -42, scale: 0.78, rotation: -2, autoAlpha: 0 },
+          { xPercent: -50, yPercent: -50, scale: 1, rotation: 0, autoAlpha: 1, duration: 0.66, ease: 'back.out(1.55)' }
+        );
+        T.createParticleBurst(elements.particles, { x: rect.left + rect.width * 0.23, y: rect.top + rect.height * 0.5, count: isEpic ? 24 : 13, emoji: isEpic ? '✦' : '' });
+        setMoment(T.displayName(data), `${data.giftName || 'Regalo'} · ${T.formatCompact(coins)} monedas`, isEpic ? '👑' : '🎁');
+        await T.sleep(isEpic ? 3100 : 2200);
+        T.motion.to(elements.spotlight, { yPercent: -56, scale: 0.9, autoAlpha: 0, duration: 0.42, ease: 'power2.in' });
+        await T.sleep(460);
+      }
+
+      function setMoment(name, detail, icon) {
+        clearTimeout(state.momentTimer);
+        elements.momentName.textContent = String(name || 'La arena está lista').slice(0, 52);
+        elements.momentDetail.textContent = String(detail || 'Cada interacción carga el hype').slice(0, 90);
+        elements.momentIcon.textContent = icon || '⚡';
+        T.motion.fromTo(elements.momentCard, { x: 28, autoAlpha: 0.5 }, { x: 0, autoAlpha: 1, duration: 0.4, ease: 'power2.out' });
+        elements.momentCard.style.setProperty('--moment-progress', '1');
+        state.momentTimer = setTimeout(() => {
+          elements.momentCard.style.setProperty('--moment-progress', '0');
+          elements.momentName.textContent = 'La arena sigue activa';
+          elements.momentDetail.textContent = 'Likes, regalos y follows aumentan la energía';
+          elements.momentIcon.textContent = '⚡';
+        }, 6500);
+      }
+
+      function getTierEmoji(level) {
+        if (level >= 10) return '🏆👑💎';
+        if (level >= 7) return '👑';
+        if (level >= 5) return '💎';
+        if (level >= 3) return '⭐';
+        return '🔥';
+      }
+
+      async function triggerHypeMode() {
+        const newLevel = state.hypeLevel + 1;
+        const emoji = getTierEmoji(newLevel);
+        const levelLabel = newLevel === 1 ? '🔥 HYPE MODE 🔥' : `${emoji} HYPE MODE Lv.${newLevel} ${emoji}`;
+        const fireCount = Math.min(8, newLevel);
+        const fireEmojis = '🔥'.repeat(fireCount);
+        const particleCount = Math.min(140, 50 + newLevel * 20);
+        const intensity = Math.min(6, newLevel * 0.6 + 0.5);
+        const ringCount = Math.min(5, 2 + Math.floor(newLevel / 2));
+        const ringSpread = 6 + newLevel * 2.5;
+
+        state.hypeModeLocked = true;
+
+        try {
+          if (hypeCfg.animations) {
+            if (typeof T.screenShake === 'function') T.screenShake(intensity);
+
+            if (typeof T.flashOverlay === 'function') {
+              const flashColors = ['#25f4ee', '#ffd166', '#fe2c55', '#8b5cf6', '#ffffff', '#ffd700', '#b9f2ff'];
+              T.flashOverlay(flashColors[Math.min(newLevel - 1, flashColors.length - 1)], 200 + intensity * 30);
+            }
+
+            /* Expanding rings (more rings at higher levels) */
+            const ringColors = ['#25f4ee', '#fe2c55', '#ffd166', '#8b5cf6', '#ffffff'];
+            for (let r = 0; r < ringCount; r++) {
+              const ring = document.createElement('div');
+              ring.className = 'hype-ring';
+              ring.style.setProperty('--ring-color', ringColors[r % ringColors.length]);
+              ring.style.borderWidth = String(2 + Math.floor(newLevel / 2)) + 'px';
+              document.body.appendChild(ring);
+              T.motion.set(ring, { scale: 0.3, opacity: 0.9 });
+              T.motion.to(ring, {
+                scale: ringSpread + r * 2.5,
+                opacity: 0, duration: 0.6 + r * 0.18,
+                delay: r * 0.12, ease: 'power2.out',
+                onComplete: () => ring.remove()
+              });
+            }
+
+            /* Particle burst with gold at high levels */
+            const palette = newLevel >= 5
+              ? ['#ffd700', '#ffffff', '#ff6b00', '#25f4ee', '#fe2c55', '#b9f2ff', '#ffd700', '#fff5cc']
+              : ['#25f4ee', '#fe2c55', '#ffd166', '#8b5cf6', '#ffffff', '#00ff88'];
+            T.createParticleBurst(elements.particles, {
+              x: innerWidth / 2, y: innerHeight / 2,
+              count: particleCount, palette
+            });
+
+            /* Golden sparkles at level 5+ */
+            if (newLevel >= 5 && typeof T.createParticleBurst === 'function') {
+              setTimeout(() => {
+                T.createParticleBurst(elements.particles, {
+                  x: innerWidth / 2 - 100, y: innerHeight / 2 - 50,
+                  count: Math.min(60, 20 + newLevel * 6),
+                  palette: ['#ffd700', '#fff5cc', '#ffffff', '#ffd700'],
+                  emoji: '✦'
+                });
+              }, 400);
+            }
+          }
+
+          if (hypeCfg.sound) {
+            try {
+              const tierIdx = newLevel >= 5 ? 4 : Math.min(newLevel, 4);
+              const paths = ['', '/assets/sounds/effects/airhorn.mp3', '/assets/sounds/effects/applause.mp3', '/assets/sounds/memes/sigma.mp3', '/assets/sounds/games/zelda-item-get.mp3'];
+              const p = paths[tierIdx] || '/assets/sounds/memes/sigma.mp3';
+              const a = new Audio(p); a.volume = Math.min(1, 0.4 + newLevel * 0.07); a.play().catch(() => {});
+              /* Second sound at level 5+ */
+              if (newLevel >= 5) {
+                setTimeout(() => {
+                  const a2 = new Audio('/assets/sounds/effects/airhorn.mp3');
+                  a2.volume = 0.5; a2.play().catch(() => {});
+                }, 300);
+              }
+            } catch {}
+          }
+
+          /* HYPE MODE text — more dramatic per level */
+          T.motion.set(elements.hypeMode, { autoAlpha: 1 });
+          const scaleStart = Math.max(0.3, 0.55 - newLevel * 0.04);
+          const rotationAmount = Math.min(-12, -3 - newLevel * 1.5);
+          T.motion.fromTo(elements.hypeModeCopy, {
+            scale: scaleStart, autoAlpha: 0, rotation: rotationAmount
+          }, {
+            scale: 1, autoAlpha: 1, rotation: 0,
+            duration: 0.75, ease: 'elastic.out(1, 0.5)'
+          });
+
+          /* Style HYPE MODE text based on level tier */
+          const tierStyle = newLevel >= 7 ? 'diamond' : newLevel >= 5 ? 'platinum' : newLevel >= 3 ? 'gold' : '';
+          const bigEl = elements.hypeModeCopy.querySelector('.hype-mode-big');
+          const smallEl = elements.hypeModeCopy.querySelector('.hype-mode-small');
+          if (bigEl) bigEl.className = 'hype-mode-big' + (tierStyle ? ' ' + tierStyle : '');
+          if (smallEl) smallEl.className = 'hype-mode-small' + (tierStyle ? ' ' + tierStyle : '');
+
+          const momentIcon = newLevel >= 7 ? '🏆' : newLevel >= 5 ? '💎' : newLevel >= 3 ? '⭐' : '🔥';
+          setMoment(levelLabel, `La comunidad llegó al nivel ${newLevel} ${fireEmojis}`, momentIcon);
+
+          await T.sleep(2600);
+
+          T.motion.to(elements.hypeModeCopy, { scale: 1.2, autoAlpha: 0, duration: 0.5, ease: 'power2.in' });
+          T.motion.to(elements.hypeMode, { autoAlpha: 0, duration: 0.5, delay: 0.15 });
+          await T.sleep(750);
+        } catch (e) {
+          console.warn('[Hype] triggerHypeMode error:', e);
+          await T.sleep(500);
+        }
+
+        /* Level up */
+        state.hypeLevel = newLevel;
+        const nThreshold = getLevelThreshold(newLevel);
+        const pThreshold = getLevelThreshold(newLevel - 1);
+        state.hype = pThreshold + (nThreshold - pThreshold) * 0.3;
+        state.hypeModeLocked = false;
+        renderHype();
+      }
+
+      function updateConnectionStatus(status) {
+        const labels = {
+          connecting: 'CONECTANDO', reconnecting: 'RECONECTANDO', connected: 'CONECTADO',
+          ready: 'LISTO', live: 'EN VIVO', offline: 'LIVE OFFLINE', waiting: 'CONFIGURA URL', error: 'SIN SEÑAL', stopped: 'DETENIDO'
+        };
+        const stateName = status?.state || 'connecting';
+        elements.statusPill.dataset.state = stateName;
+        elements.statusText.textContent = labels[stateName] || 'CONECTANDO';
+      }
+
+      const params = T.getParams();
+      if (params.get('mode') === 'mobile') document.body.classList.add('mobile');
+      const channelUserId = T.channelIdFromUrl();
+      if (channelUserId) loadHypeConfig(channelUserId);
+      const demo = params.get('demo') === '1';
+      let stopDemo = () => {};
+      let client = null;
+
+      if (demo) {
+        elements.statusPill.dataset.state = 'demo';
+        elements.statusText.textContent = 'DEMO LIVE';
+        state.viewers = 842;
+        elements.viewerCount.textContent = T.formatCompact(state.viewers);
+        stopDemo = T.createDemoFeed(handleEvent);
+      } else {
+        client = new T.LiveChannelClient({ channelId: T.channelIdFromUrl() });
+        client.on('status', updateConnectionStatus);
+        client.on('event', handleEvent);
+        client.start();
+      }
+
+      setInterval(() => {
+        if (Date.now() - state.lastInteractionAt < 9000 || state.hypeModeLocked) return;
+        const decayRate = hypeCfg.decay + state.hypeLevel * 0.1;
+        const minHype = state.hypeLevel === 0 ? 8 : getLevelThreshold(state.hypeLevel - 1) + 1;
+        state.hype = Math.max(minHype, state.hype - decayRate);
+        state.combo = Math.max(0, state.combo - 1);
+        state.streak = Math.max(1, 1 + Math.floor(state.combo / 3));
+        renderHype();
+      }, 3000);
+
+      renderHype();
+
+      /* Listen for test events from parent view */
+      window.addEventListener('message', (e) => {
+        if (e.data?.type !== 'hypeTest') return;
+        const testData = { uniqueId: 'TestUser', nickname: 'TestUser' };
+        switch (e.data.test) {
+          case 'like': handleEvent({ type: 'like', data: { ...testData, likeCount: 1 } }); break;
+          case 'follow': handleEvent({ type: 'follow', data: { ...testData } }); break;
+          case 'share': handleEvent({ type: 'share', data: { ...testData } }); break;
+          case 'gift': handleEvent({ type: 'gift', data: { ...testData, giftName: 'Rosa', diamondCount: 1, repeatCount: 1, coins: 1 } }); break;
+          case 'big': handleEvent({ type: 'gift', data: { ...testData, giftName: 'León', diamondCount: 500, repeatCount: 2, coins: 1000 } }); break;
+        }
+      });
+
+      /* Send hype stats to parent view every 2s */
+      setInterval(() => {
+        window.parent?.postMessage({
+          type: 'hypeStats',
+          hype: Math.round(state.hype),
+          level: state.hypeLevel,
+          combo: state.combo,
+          viewers: state.viewers
+        }, '*');
+      }, 2000);
+
+      window.addEventListener('pagehide', () => { client?.stop(); stopDemo(); spotlightQueue.clear(); }, { once: true });
+    })();
+  </script>
+</body>
+</html>

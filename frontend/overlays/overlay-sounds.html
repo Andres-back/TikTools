@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound Alerts Overlay - TikToolStream</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/overlays.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; overflow: hidden; font-family: 'Poppins', system-ui, sans-serif; }
+
+  .sound-stage { position: fixed; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+
+  /* aurora theme adapts to gift category */
+  .aurora-bg { position: fixed !important; }
+
+  /* Mobile portrait */
+  .mobile .sound-alert { min-width:auto; max-width:88vw; padding:14px 18px 14px 14px; gap:14px; border-radius:16px; }
+  .mobile .sound-alert .gift-icon { width:48px; height:48px; font-size:1.5rem; }
+  .mobile .sound-alert .gift-icon img { width:48px; height:48px; }
+  .mobile .sound-alert .alert-info h2 { font-size:1rem; }
+  .mobile .sound-alert .alert-info p { font-size:0.7rem; }
+  .mobile .sound-alert .alert-amount { font-size:0.75rem; padding:3px 9px; }
+
+  .sound-idle { color:rgba(255,255,255,0.25); font-size:1.1rem; font-weight:600; letter-spacing:2px; text-align:center; animation:soundIdlePulse 3s ease-in-out infinite; pointer-events:none; user-select:none; }
+  @keyframes soundIdlePulse { 0%,100%{opacity:0.25;} 50%{opacity:0.5;} }
+
+  .sound-alert {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    background: linear-gradient(135deg, rgba(10,10,30,0.92), rgba(20,15,40,0.92));
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    backdrop-filter: blur(30px) saturate(200%);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 22px 32px 22px 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.2);
+    min-width: 440px;
+    max-width: 640px;
+    position: relative;
+    transform-origin: center;
+    will-change: transform, opacity;
+  }
+  /* top highlight */
+  .sound-alert::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent, #ffd700), transparent);
+    pointer-events: none;
+  }
+  /* glass edge */
+  .sound-alert::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 1px; height: 100%;
+    background: linear-gradient(180deg, var(--accent, #ffd700), transparent 60%);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .gift-icon-wrap { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+  .gift-icon {
+    width: 100px; height: 100px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--accent-bg-1, rgba(255,215,0,0.3)), var(--accent-bg-2, rgba(255,107,0,0.15)));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 60px;
+    border: 2px solid var(--accent, #ffd700);
+    box-shadow: 0 0 24px var(--accent-glow, rgba(255,215,0,0.4));
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+  }
+  .gift-icon img { width: 100%; height: 100%; object-fit: contain; }
+
+  /* expanding rings */
+  .alert-ring { color: var(--accent, #ffd700); }
+
+  .sound-body { flex: 1; min-width: 0; position: relative; z-index: 1; }
+  .sound-label {
+    font-size: 11px;
+    color: var(--accent, #ffd700);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 800;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 2px;
+  }
+  .sound-user {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    margin: 2px 0;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sound-gift {
+    color: rgba(255,255,255,0.75);
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .sound-amount {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent, #ffd700), var(--accent-2, #ff6b00));
+    color: #0a0a0f;
+    font-weight: 900;
+    font-size: 16px;
+    padding: 4px 14px;
+    border-radius: 10px;
+    margin-left: 8px;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: 0 4px 16px var(--accent-glow, rgba(255,215,0,0.4));
+    vertical-align: middle;
+  }
+
+  /* epic scale-up for huge gifts */
+  .sound-alert.epic {
+    border-width: 2px;
+    box-shadow: 0 0 60px var(--accent-glow, rgba(255,215,0,0.6)), 0 20px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .sound-alert.epic .sound-label::after {
+    content: ' ✦ ÉPICO';
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent, #ffd700), var(--accent-2, #ff6b00));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+  }
+  .sound-alert.epic .gift-icon { animation: epicPulse 1.4s ease-in-out infinite; }
+  @keyframes epicPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+  }
+</style>
+</head>
+<body>
+<div class="sound-stage">
+  <div id="soundContainer"><div class="sound-idle">🎵 Escuchando alertas...</div></div>
+</div>
+<script>
+  /* ============================================================
+     Premium Sound Alerts — TikToolStream
+     Features: glass morphism, stagger cascade, letter reveal,
+     countUp, confetti (vanilla particles), screen shake
+     ============================================================ */
+  let ws = null;
+  let reconnectTimer = null;
+  let audioCache = {};
+  const GIFT_IMAGES = {};
+  const GIFT_CATEGORY_COLORS = {
+    default:  { accent: '#ffd700', accent2: '#ff6b00', bg1: 'rgba(255,215,0,0.3)',  bg2: 'rgba(255,107,0,0.15)', glow: 'rgba(255,215,0,0.4)', label: '🎵 SOUND ALERT', theme: 'gold' },
+    pink:     { accent: '#ff006e', accent2: '#8b5cf6', bg1: 'rgba(255,0,110,0.3)',  bg2: 'rgba(139,92,246,0.15)', glow: 'rgba(255,0,110,0.4)', label: '💖 SOUND ALERT', theme: 'pink' },
+    cyan:     { accent: '#00f5ff', accent2: '#8b5cf6', bg1: 'rgba(0,245,255,0.3)',  bg2: 'rgba(139,92,246,0.15)', glow: 'rgba(0,245,255,0.4)', label: '💎 SOUND ALERT', theme: 'cyan' },
+    green:    { accent: '#00ff88', accent2: '#00d9ff', bg1: 'rgba(0,255,136,0.3)',  bg2: 'rgba(0,217,255,0.15)', glow: 'rgba(0,255,136,0.4)', label: '✨ SOUND ALERT', theme: 'green' }
+  };
+
+  function getUserId() { return new URLSearchParams(window.location.search).get('userId'); }
+  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
+
+  /* ====== countUp vanilla (rAF) ====== */
+  function countUp(el, from, to, duration = 1500) {
+    const start = performance.now();
+    const diff = to - from;
+    function frame(now) {
+      const elapsed = now - start;
+      const k = Math.min(1, elapsed / duration);
+      const ease = 1 - Math.pow(1 - k, 3);
+      const val = Math.round(from + diff * ease);
+      el.textContent = val.toLocaleString('es-ES');
+      if (k < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ====== letter reveal (one char at a time) ====== */
+  function letterReveal(el, text, stagger = 30) {
+    el.innerHTML = '';
+    const chars = [...text];
+    chars.forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'reveal-char';
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      span.style.animationDelay = `${i * stagger}ms`;
+      el.appendChild(span);
+    });
+  }
+
+  /* ====== confetti vanilla (CSS particles + rAF) ====== */
+  function spawnConfetti(x, y, count = 40, palette) {
+    const colors = palette || ['#ff006e', '#00f5ff', '#8b5cf6', '#ffd700', '#00ff88', '#ff6b00'];
+    const stage = document.body;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = (x - 5) + 'px';
+      p.style.top = (y - 7) + 'px';
+      p.style.background = colors[i % colors.length];
+      p.style.borderRadius = i % 3 === 0 ? '50%' : '2px';
+      stage.appendChild(p);
+      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+      const dist = 180 + Math.random() * 280;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist - 120; // bias upward
+      const rot = (Math.random() - 0.5) * 720;
+      const dur = 1800 + Math.random() * 1200;
+      const start = performance.now();
+      function anim(now) {
+        const k = Math.min(1, (now - start) / dur);
+        const ease = 1 - Math.pow(1 - k, 2);
+        p.style.transform = `translate(${dx * ease}px, ${dy * ease + 200 * ease * ease}px) rotate(${rot * ease}deg)`;
+        p.style.opacity = 1 - ease;
+        if (k < 1) requestAnimationFrame(anim);
+        else p.remove();
+      }
+      requestAnimationFrame(anim);
+    }
+  }
+
+  /* ====== screen shake (CSS class trigger) ====== */
+  function screenShake(intensity = 1) {
+    const el = document.getElementById('soundContainer');
+    if (!el) return;
+    el.style.animation = 'none';
+    void el.offsetHeight; // reflow
+    el.style.setProperty('--shake-intensity', intensity);
+    el.style.animation = 'screenShake 0.5s ease-in-out';
+  }
+
+  /* ====== load gift catalog ====== */
+  async function loadGiftCatalog() {
+    try {
+      const res = await fetch('/gifts.json');
+      if (res.ok) {
+        const data = await res.json();
+        for (const g of Object.values(data)) if (g.id && g.image) GIFT_IMAGES[g.id] = g.image;
+      }
+    } catch {}
+  }
+
+  /* ====== load alerts ====== */
+  let soundAlerts = [];
+  async function loadAlerts(userId) {
+    try {
+      const res = await fetch(`/api/sounds/public/${userId}`);
+      if (res.ok) soundAlerts = await res.json();
+    } catch (e) {}
+  }
+
+  /* ====== audio cache ====== */
+  function playSound(url, volume) {
+    if (!url) return;
+    if (audioCache[url]) {
+      try { audioCache[url].currentTime = 0; audioCache[url].volume = volume || 0.8; audioCache[url].play().catch(() => {}); return; } catch {}
+    }
+    try {
+      const audio = new Audio(url);
+      audio.volume = volume || 0.8;
+      audioCache[url] = audio;
+      audio.play().catch(() => {});
+    } catch {}
+  }
+
+  /* ====== alert display queue ====== */
+  let alertQueue = [];
+  let alertProcessing = false;
+
+  function processAlertQueue() {
+    if (alertProcessing || alertQueue.length === 0) return;
+    alertProcessing = true;
+    const item = alertQueue.shift();
+    showAlertNow(item);
+  }
+
+  function showAlert(data) {
+    alertQueue.push(data);
+    if (!alertProcessing) processAlertQueue();
+  }
+
+  /* ====== show alert (internal) ====== */
+  function showAlertNow({ giftName, username, giftId, diamondCount, repeatCount }) {
+    const total = (Number(diamondCount) || 0) * (Number(repeatCount) || 1);
+    const isEpic = total >= 5000;
+    const cat = total >= 5000 ? GIFT_CATEGORY_COLORS.pink : (total >= 1000 ? GIFT_CATEGORY_COLORS.cyan : GIFT_CATEGORY_COLORS.default);
+
+    const container = document.getElementById('soundContainer');
+    container.innerHTML = '';
+    container.style.setProperty('--accent', cat.accent);
+    container.style.setProperty('--accent-2', cat.accent2);
+    container.style.setProperty('--accent-bg-1', cat.bg1);
+    container.style.setProperty('--accent-bg-2', cat.bg2);
+    container.style.setProperty('--accent-glow', cat.glow);
+
+    const div = document.createElement('div');
+    div.className = `sound-alert ${isEpic ? 'epic' : ''} pop-in`;
+
+    const imgSrc = GIFT_IMAGES[giftId];
+    const giftHtml = imgSrc
+      ? `<img src="${escapeAttr(imgSrc)}" onerror="this.style.display='none';this.parentNode.textContent='🎁'">`
+      : '🎁';
+
+    div.innerHTML = `
+      <div class="gift-icon-wrap">
+        <div class="alert-ring"></div>
+        <div class="alert-ring"></div>
+        <div class="alert-ring"></div>
+        <div class="gift-icon">${giftHtml}</div>
+      </div>
+      <div class="sound-body">
+        <div class="sound-label">${cat.label}</div>
+        <div class="sound-user" data-user></div>
+        <div class="sound-gift">envió ${escapeHtml(giftName || 'Regalo')}${total > 0 ? `<span class="sound-amount" data-amount>×0</span>` : ''}</div>
+      </div>
+    `;
+    container.appendChild(div);
+
+    // letter reveal for username
+    const userEl = div.querySelector('[data-user]');
+    letterReveal(userEl, username || 'Alguien', 35);
+
+    // countUp for amount
+    if (total > 0) {
+      const amtEl = div.querySelector('[data-amount]');
+      setTimeout(() => countUp(amtEl, 0, total, 1400), 200);
+    }
+
+    // epic extras: confetti + screen shake
+    if (isEpic) {
+      const rect = div.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      spawnConfetti(cx, cy, 60, [cat.accent, cat.accent2, '#fff', '#ffd700']);
+      screenShake(1.4);
+    } else if (total >= 1000) {
+      const rect = div.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      spawnConfetti(cx, cy, 25, [cat.accent, cat.accent2, '#fff']);
+    }
+
+    setTimeout(() => {
+      div.classList.add('fade-out');
+      setTimeout(() => {
+        div.remove();
+        alertProcessing = false;
+        if (alertQueue.length > 0) {
+          processAlertQueue();
+        } else {
+          container.innerHTML = '<div class="sound-idle">🎵 Escuchando alertas...</div>';
+        }
+      }, 400);
+    }, isEpic ? 5000 : 3500);
+  }
+
+  /* ====== websocket ====== */
+  function connectWS(userId) {
+    if (ws) { try { ws.close(); } catch {} }
+    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    try {
+      ws = new WebSocket(`${proto}//${window.location.host}/live`);
+      ws.onopen = () => ws.send(JSON.stringify({ type: 'subscribe', channelId: userId }));
+      ws.onmessage = (ev) => {
+        try {
+          const msg = JSON.parse(ev.data);
+          if (msg.type === 'gift' && soundAlerts.length > 0) {
+            const giftId = msg.data?.giftId;
+            const matching = soundAlerts.filter(a => a.enabled !== false && a.trigger_type === 'gift' && (!a.trigger_id || a.trigger_id === giftId || a.trigger_id === 'any'));
+            if (matching.length > 0) {
+              matching.forEach(a => playSound(a.sound_file, a.volume));
+              showAlert({
+                giftName: msg.data?.giftName,
+                username: msg.data?.uniqueId,
+                giftId,
+                diamondCount: msg.data?.diamondCount,
+                repeatCount: msg.data?.repeatCount
+              });
+            }
+          }
+        } catch {}
+      };
+      ws.onclose = () => { reconnectTimer = setTimeout(() => connectWS(userId), 3000); };
+      ws.onerror = () => { try { ws.close(); } catch {} };
+    } catch (e) { reconnectTimer = setTimeout(() => connectWS(userId), 3000); }
+  }
+
+  const isMobile = new URLSearchParams(window.location.search).get('mode') === 'mobile';
+  if (isMobile) document.body.classList.add('mobile');
+
+  const userId = getUserId();
+  if (userId) {
+    loadGiftCatalog();
+    loadAlerts(userId);
+    setInterval(() => loadAlerts(userId), 15000);
+    connectWS(userId);
+  }
+</script>
+</body>
+</html>

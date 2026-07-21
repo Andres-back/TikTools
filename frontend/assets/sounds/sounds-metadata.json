@@ -1,0 +1,1954 @@
+{
+  "version": "1.0.0",
+  "source": "https://www.myinstants.com/",
+  "credits": "Sonidos proporcionados por Myinstants.com",
+  "license": "Ver términos en https://www.myinstants.com/terms_of_use.html",
+  "lastUpdated": "2026-07-20T23:49:34.617Z",
+  "totalSounds": 243,
+  "sounds": [
+    {
+      "id": "anime-wow",
+      "name": "Anime Wow",
+      "file": "/assets/sounds/memes/anime-wow.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "bruh",
+      "name": "Bruh",
+      "file": "/assets/sounds/memes/bruh.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "dexter",
+      "name": "Dexter",
+      "file": "/assets/sounds/memes/dexter.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fail",
+      "name": "Fail",
+      "file": "/assets/sounds/memes/fail.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fart",
+      "name": "Fart",
+      "file": "/assets/sounds/memes/fart.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "galaxy",
+      "name": "Galaxy",
+      "file": "/assets/sounds/memes/galaxy.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "rizz",
+      "name": "Rizz",
+      "file": "/assets/sounds/memes/rizz.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "romance",
+      "name": "Romance",
+      "file": "/assets/sounds/memes/romance.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "sad-violin",
+      "name": "Sad Violin",
+      "file": "/assets/sounds/memes/sad-violin.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "sadtrombone",
+      "name": "Sadtrombone",
+      "file": "/assets/sounds/memes/sadtrombone.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "spongebob-fail",
+      "name": "Spongebob Fail",
+      "file": "/assets/sounds/memes/spongebob-fail.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "taco-bell",
+      "name": "Taco Bell",
+      "file": "/assets/sounds/memes/taco-bell.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "vine-boom",
+      "name": "Vine Boom",
+      "file": "/assets/sounds/memes/vine-boom.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "airhorn",
+      "name": "Airhorn",
+      "file": "/assets/sounds/effects/airhorn.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "applause",
+      "name": "Applause",
+      "file": "/assets/sounds/effects/applause.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "bone-crack",
+      "name": "Bone Crack",
+      "file": "/assets/sounds/effects/bone-crack.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "glass-break",
+      "name": "Glass Break",
+      "file": "/assets/sounds/effects/glass-break.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "metal-pipe",
+      "name": "Metal Pipe",
+      "file": "/assets/sounds/effects/metal-pipe.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "punch",
+      "name": "Punch",
+      "file": "/assets/sounds/effects/punch.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "undertaker-bell",
+      "name": "Undertaker Bell",
+      "file": "/assets/sounds/effects/undertaker-bell.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "apple-pay",
+      "name": "Apple Pay",
+      "file": "/assets/sounds/notifications/apple-pay.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "ding",
+      "name": "Ding",
+      "file": "/assets/sounds/notifications/ding.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "among-us",
+      "name": "Among Us",
+      "file": "/assets/sounds/games/among-us.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fortnite-death",
+      "name": "Fortnite Death",
+      "file": "/assets/sounds/games/fortnite-death.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "cymbal",
+      "name": "Cymbal",
+      "file": "/assets/sounds/music/cymbal.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "drumroll",
+      "name": "Drumroll",
+      "file": "/assets/sounds/music/drumroll.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "error",
+      "name": "Error",
+      "file": "/assets/sounds/alerts/error.mp3",
+      "category": "alerts",
+      "source": "https://www.myinstants.com/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "faaah",
+      "name": "Faaah",
+      "file": "/assets/sounds/memes/faaah.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/faaah-63455/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "chicken-screaming",
+      "name": "Chicken Screaming",
+      "file": "/assets/sounds/memes/chicken-screaming.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/chicken-on-tree-screaming-53890/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "long-brain-fart",
+      "name": "Long Brain Fart",
+      "file": "/assets/sounds/memes/long-brain-fart.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/long-brain-fart-60967/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "oh-hell-nah",
+      "name": "Oh Hell Nah",
+      "file": "/assets/sounds/memes/oh-hell-nah.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/oh-my-god-bro-oh-hell-nah-man-42939/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "buzzer",
+      "name": "Buzzer",
+      "file": "/assets/sounds/effects/buzzer.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/buzzer-89244/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "cat-laugh",
+      "name": "Cat Laugh",
+      "file": "/assets/sounds/memes/cat-laugh.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/cat-laugh-meme-1-15761/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "gunshot-meme",
+      "name": "Gunshot Meme",
+      "file": "/assets/sounds/effects/gunshot-meme.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/gunshottttt-97863/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "phone-ringing",
+      "name": "Phone Ringing",
+      "file": "/assets/sounds/notifications/phone-ringing.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/yo-phone-is-ringing-56694/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "baby-laugh",
+      "name": "Baby Laugh",
+      "file": "/assets/sounds/memes/baby-laugh.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/baby-laughing-meme-56428/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fart-reverb",
+      "name": "Fart Reverb",
+      "file": "/assets/sounds/memes/fart-reverb.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/fart-with-reverb-17715/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "yaaaaaaaay",
+      "name": "Yaaaaaaaay",
+      "file": "/assets/sounds/memes/yaaaaaaaay.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/yaaaaaaaay/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "kwebbelkop-laugh",
+      "name": "Kwebbelkop Laugh",
+      "file": "/assets/sounds/memes/kwebbelkop-laugh.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/kwebbelkop-laughing-or-smth-29291/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "meow",
+      "name": "Meow",
+      "file": "/assets/sounds/effects/meow.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/m-e-o-w-82698/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "sad-meow",
+      "name": "Sad Meow",
+      "file": "/assets/sounds/memes/sad-meow.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/sad-meow-song-88771/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "emotional-damage",
+      "name": "Emotional Damage",
+      "file": "/assets/sounds/memes/emotional-damage.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/emotional-damage-meme-74555/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "goku-drip",
+      "name": "Goku Drip",
+      "file": "/assets/sounds/memes/goku-drip.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/goku-drip-99617/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "oh-my-god",
+      "name": "Oh My God",
+      "file": "/assets/sounds/memes/oh-my-god.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/oh-my-god-meme-88573/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "67",
+      "name": "67",
+      "file": "/assets/sounds/memes/67.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/67-71609/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "gah-dayum",
+      "name": "Gah Dayum",
+      "file": "/assets/sounds/memes/gah-dayum.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/gah-dayum-29041/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "run-vine",
+      "name": "Run Vine",
+      "file": "/assets/sounds/memes/run-vine.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/run-vine/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "homer-barts",
+      "name": "Homer Barts",
+      "file": "/assets/sounds/memes/homer-barts.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/homer-lets-the-barts-out-72599/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "elevator-music",
+      "name": "Elevator Music",
+      "file": "/assets/sounds/music/elevator-music.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/elevator-music-background-5865/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lizard-button",
+      "name": "Lizard Button",
+      "file": "/assets/sounds/memes/lizard-button.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/lizard-button-12218/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fart-louder",
+      "name": "Fart Louder",
+      "file": "/assets/sounds/memes/fart-louder.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/fart-meme-sound-better-and-louder-32265/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "skibidi-toilet",
+      "name": "Skibidi Toilet",
+      "file": "/assets/sounds/memes/skibidi-toilet.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/my-mommy-said-no-more-skibidi-toilet-45304/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lobotomy",
+      "name": "Lobotomy",
+      "file": "/assets/sounds/memes/lobotomy.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/lobotomy-sound-effect-98475/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "bad-to-the-bone",
+      "name": "Bad To The Bone",
+      "file": "/assets/sounds/memes/bad-to-the-bone.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/bad-to-the-bone-meme-22189/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "what-bottom-text",
+      "name": "What Bottom Text",
+      "file": "/assets/sounds/memes/what-bottom-text.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/what-bottom-text-meme-sanctuary-guardian-s-24591/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "aaaaaaaa",
+      "name": "Aaaaaaaa",
+      "file": "/assets/sounds/memes/aaaaaaaa.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/aaaaaaaaaaaaaaaaaaaa-e-lutador-57357/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "du-bist-gut-genug",
+      "name": "Du Bist Gut Genug",
+      "file": "/assets/sounds/memes/du-bist-gut-genug.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/du-bist-gut-genug-22336/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "what-a-good-boy",
+      "name": "What A Good Boy",
+      "file": "/assets/sounds/memes/what-a-good-boy.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/what-a-good-boy-58925/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "gay-gay-gay-gay",
+      "name": "Gay Gay Gay Gay",
+      "file": "/assets/sounds/memes/gay-gay-gay-gay.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/gay-gay-gay-gay-81081/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "spiderman-meme-song",
+      "name": "Spiderman Meme Song",
+      "file": "/assets/sounds/memes/spiderman-meme-song.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/spiderman-meme-song-37638/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "ive-got-this-faaah",
+      "name": "Ive Got This Faaah",
+      "file": "/assets/sounds/memes/ive-got-this-faaah.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/ive-got-this-faaaaaaaaahhhhh-66795/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "the-nut-button",
+      "name": "The Nut Button",
+      "file": "/assets/sounds/memes/the-nut-button.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/the-nut-button-20451/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "windows-xp-error",
+      "name": "Windows Xp Error",
+      "file": "/assets/sounds/memes/windows-xp-error.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/windows-xp-error/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "french-meme-song",
+      "name": "French Meme Song",
+      "file": "/assets/sounds/memes/french-meme-song.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/french-meme-song-55813/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "spongebob-boowomp",
+      "name": "Spongebob Boowomp",
+      "file": "/assets/sounds/memes/spongebob-boowomp.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/spongebob-boowomp-96031/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "bing-chilling",
+      "name": "Bing Chilling",
+      "file": "/assets/sounds/memes/bing-chilling.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/bing-chilling-44511/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "what-da-dog-doin",
+      "name": "What Da Dog Doin",
+      "file": "/assets/sounds/memes/what-da-dog-doin.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/what-da-dog-doin-35890/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "doge-bonk",
+      "name": "Doge Bonk",
+      "file": "/assets/sounds/memes/doge-bonk.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/doge-bonk-84044/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "goofy-ahh-runnin",
+      "name": "Goofy Ahh Runnin",
+      "file": "/assets/sounds/memes/goofy-ahh-runnin.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/goofy-ahh-runnin-25331/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "laughing-dog-meme",
+      "name": "Laughing Dog Meme",
+      "file": "/assets/sounds/memes/laughing-dog-meme.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/laughing-dog-meme-78821/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "tom-and-jerry-scream",
+      "name": "Tom And Jerry Scream",
+      "file": "/assets/sounds/memes/tom-and-jerry-scream.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/tom-and-jerry-scream-71256/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "yourrage-laugh",
+      "name": "Yourrage Laugh",
+      "file": "/assets/sounds/memes/yourrage-laugh.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/yourrage-laugh-89736/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "eww-brother-eww",
+      "name": "Eww Brother Eww",
+      "file": "/assets/sounds/memes/eww-brother-eww.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/eww-brother-eww-60822/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "coffin-dance",
+      "name": "Coffin Dance",
+      "file": "/assets/sounds/memes/coffin-dance.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/coffin-dance-meme-31063/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "auughhh",
+      "name": "Auughhh",
+      "file": "/assets/sounds/memes/auughhh.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/auughhh-79002/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "nya-cat-girl",
+      "name": "Nya Cat Girl",
+      "file": "/assets/sounds/memes/nya-cat-girl.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/nya-cat-girl-sound-95668/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fart-button",
+      "name": "Fart Button",
+      "file": "/assets/sounds/effects/fart-button.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/fart-button/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "dun-dun-dun",
+      "name": "Dun Dun Dun",
+      "file": "/assets/sounds/effects/dun-dun-dun.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/dun-dun-dunnnnnnnn-68584/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "censor-beep",
+      "name": "Censor Beep",
+      "file": "/assets/sounds/effects/censor-beep.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/censor-beep-1/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "smoke-detector-beep",
+      "name": "Smoke Detector Beep",
+      "file": "/assets/sounds/effects/smoke-detector-beep.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/smoke-detector-beep-97430/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "prowler-sound",
+      "name": "Prowler Sound",
+      "file": "/assets/sounds/effects/prowler-sound.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/prowler-sound-effect-83389/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "cartoon-slip",
+      "name": "Cartoon Slip",
+      "file": "/assets/sounds/effects/cartoon-slip.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/cartoon-slip-89839/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "sudden-suspense",
+      "name": "Sudden Suspense",
+      "file": "/assets/sounds/effects/sudden-suspense.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/sudden-suspense-64030/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "sparkleeeeeee",
+      "name": "Sparkleeeeeee",
+      "file": "/assets/sounds/effects/sparkleeeeeee.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/sparkleeeeeee-19288/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "anime-punch",
+      "name": "Anime Punch",
+      "file": "/assets/sounds/effects/anime-punch.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/anime-punch/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "thunder",
+      "name": "Thunder",
+      "file": "/assets/sounds/effects/thunder.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/thunder-65237/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "wrong-answer-buzzer",
+      "name": "Wrong Answer Buzzer",
+      "file": "/assets/sounds/effects/wrong-answer-buzzer.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/wrong-answer-buzzer-6983/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "pop-sfx",
+      "name": "Pop Sfx",
+      "file": "/assets/sounds/effects/pop-sfx.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/pop-sfx-75405/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "danger-alarm",
+      "name": "Danger Alarm",
+      "file": "/assets/sounds/effects/danger-alarm.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/danger-alarm-sound-effect-meme-98361/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "dial-up",
+      "name": "Dial Up",
+      "file": "/assets/sounds/effects/dial-up.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/dial-up-sound-53214/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "cash-register",
+      "name": "Cash Register",
+      "file": "/assets/sounds/effects/cash-register.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/cash-register/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "thx",
+      "name": "Thx",
+      "file": "/assets/sounds/effects/thx.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/thx/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "wet-fart",
+      "name": "Wet Fart",
+      "file": "/assets/sounds/effects/wet-fart.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/wet-fart-11093/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "family-feud-ding",
+      "name": "Family Feud Ding",
+      "file": "/assets/sounds/effects/family-feud-ding.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/family-feud-yes-ding-24818/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "discord-notification",
+      "name": "Discord Notification",
+      "file": "/assets/sounds/notifications/discord-notification.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/discord-notification-38119/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "youve-got-mail",
+      "name": "Youve Got Mail",
+      "file": "/assets/sounds/notifications/youve-got-mail.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/youve-got-mail/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "gta-v-notification",
+      "name": "Gta V Notification",
+      "file": "/assets/sounds/notifications/gta-v-notification.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/gta-v-notification-96319/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fnaf-balloon-boy",
+      "name": "Fnaf Balloon Boy",
+      "file": "/assets/sounds/notifications/fnaf-balloon-boy.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/fnaf-balloon-boy-hello-12102/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "roblox-oof",
+      "name": "Roblox Oof",
+      "file": "/assets/sounds/games/roblox-oof.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/roblox-oof/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "minecraft-level-up",
+      "name": "Minecraft Level Up",
+      "file": "/assets/sounds/games/minecraft-level-up.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/minecraft-level-up-sound/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "minecraft-xp",
+      "name": "Minecraft Xp",
+      "file": "/assets/sounds/games/minecraft-xp.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/minecraft-xp-sound/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "zelda-item-get",
+      "name": "Zelda Item Get",
+      "file": "/assets/sounds/games/zelda-item-get.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/zelda-item-get/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "metal-gear-alert",
+      "name": "Metal Gear Alert",
+      "file": "/assets/sounds/games/metal-gear-alert.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/metal-gear-solid-alert/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fnaf-jumpscare",
+      "name": "Fnaf Jumpscare",
+      "file": "/assets/sounds/games/fnaf-jumpscare.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/fnaf-jumpscare-scream/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "pikmin",
+      "name": "Pikmin",
+      "file": "/assets/sounds/games/pikmin.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/pikmin-69773/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "perfect-street-fighter",
+      "name": "Perfect Street Fighter",
+      "file": "/assets/sounds/games/perfect-street-fighter.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/perfect-street-fighter-16558/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "scary-maze-scream",
+      "name": "Scary Maze Scream",
+      "file": "/assets/sounds/games/scary-maze-scream.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/scary-maze-game-scream-sound-47386/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "jeopardy-theme",
+      "name": "Jeopardy Theme",
+      "file": "/assets/sounds/music/jeopardy-theme.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/jeopardy-theme-song-88152/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "final-jeopardy",
+      "name": "Final Jeopardy",
+      "file": "/assets/sounds/music/final-jeopardy.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/final-jeopardy-thinking-music-31414/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "mii-channel",
+      "name": "Mii Channel",
+      "file": "/assets/sounds/music/mii-channel.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/mii-channel-music-82732/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "worlds-smallest-violin",
+      "name": "Worlds Smallest Violin",
+      "file": "/assets/sounds/music/worlds-smallest-violin.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/worlds-smallest-violin/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "crickets-chirping",
+      "name": "Crickets Chirping",
+      "file": "/assets/sounds/music/crickets-chirping.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/crickets-chirping/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "nokia-ringtone",
+      "name": "Nokia Ringtone",
+      "file": "/assets/sounds/music/nokia-ringtone.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/nokia-kick-ringtone-98192/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "tuco-get-out",
+      "name": "Tuco Get Out",
+      "file": "/assets/sounds/music/tuco-get-out.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/tuco-get-out-30566/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "michael-jackson-hee-hee",
+      "name": "Michael Jackson Hee Hee",
+      "file": "/assets/sounds/reactions/michael-jackson-hee-hee.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/michael-jackson-hee-hee-40277/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "damn",
+      "name": "Damn",
+      "file": "/assets/sounds/reactions/damn.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/damn/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "kids-cheering",
+      "name": "Kids Cheering",
+      "file": "/assets/sounds/reactions/kids-cheering.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/kids-cheering/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "wrong-answer-gameshow",
+      "name": "Wrong Answer Gameshow",
+      "file": "/assets/sounds/reactions/wrong-answer-gameshow.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/wrong-answer-gameshow/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "to-be-continued",
+      "name": "To Be Continued",
+      "file": "/assets/sounds/anime/to-be-continued.mp3",
+      "category": "anime",
+      "source": "https://www.myinstants.com/es/instant/to-be-continued-jojo/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "tuturu",
+      "name": "Tuturu",
+      "file": "/assets/sounds/anime/tuturu.mp3",
+      "category": "anime",
+      "source": "https://www.myinstants.com/es/instant/tuturu/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "re-zero-return-by-death",
+      "name": "Re Zero Return By Death",
+      "file": "/assets/sounds/anime/re-zero-return-by-death.mp3",
+      "category": "anime",
+      "source": "https://www.myinstants.com/es/instant/re-zero-return-by-death-51511/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "jaws-theme",
+      "name": "Jaws Theme",
+      "file": "/assets/sounds/movies/jaws-theme.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/jaws-theme-20053/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "imperial-march",
+      "name": "Imperial March",
+      "file": "/assets/sounds/movies/imperial-march.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/imperial-march-star-wars/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "here-comes-the-money",
+      "name": "Here Comes The Money",
+      "file": "/assets/sounds/movies/here-comes-the-money.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/here-comes-the-money/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "x-files",
+      "name": "X Files",
+      "file": "/assets/sounds/movies/x-files.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/x-files/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "godzilla-roar",
+      "name": "Godzilla Roar",
+      "file": "/assets/sounds/movies/godzilla-roar.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/godzilla-roar-2/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "tv-static",
+      "name": "Tv Static",
+      "file": "/assets/sounds/movies/tv-static.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/tv-static/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "gong-sound",
+      "name": "Gong Sound",
+      "file": "/assets/sounds/movies/gong-sound.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/gong-sound-27308/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "transformers",
+      "name": "Transformers",
+      "file": "/assets/sounds/movies/transformers.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/transformers-transforming-3503/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "jojo-ayayay",
+      "name": "Jojo Ayayay",
+      "file": "/assets/sounds/movies/jojo-ayayay.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/jojo-ayayay-40739/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "dune-scream",
+      "name": "Dune Scream",
+      "file": "/assets/sounds/movies/dune-scream.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/dune-scream-56633/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "windows-xp-startup",
+      "name": "Windows Xp Startup",
+      "file": "/assets/sounds/movies/windows-xp-startup.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/windows-xp-startup-sound-58970/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "damn-son",
+      "name": "Damn Son",
+      "file": "/assets/sounds/movies/damn-son.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/damn-son-whered-ya-find-this/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "law-and-order-dun-dun",
+      "name": "Law And Order Dun Dun",
+      "file": "/assets/sounds/movies/law-and-order-dun-dun.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/law-and-order-dun-dun/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "noot-noot",
+      "name": "Noot Noot",
+      "file": "/assets/sounds/movies/noot-noot.mp3",
+      "category": "movies",
+      "source": "https://www.myinstants.com/es/instant/noot-noot-pingu-85062/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lego-yoda-death",
+      "name": "Lego Yoda Death",
+      "file": "/assets/sounds/games/lego-yoda-death.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lego-yoda-death-sound-58846/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "super-mario-64-thwomp",
+      "name": "Super Mario 64 Thwomp",
+      "file": "/assets/sounds/games/super-mario-64-thwomp.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/super-mario-64-thwomp/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "cartoon-chase",
+      "name": "Cartoon Chase",
+      "file": "/assets/sounds/effects/cartoon-chase.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/cartoon-chase-52579/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "spongebob-sad-song",
+      "name": "Spongebob Sad Song",
+      "file": "/assets/sounds/music/spongebob-sad-song.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/spongebob-sad-song-94002/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "my-leg-fish",
+      "name": "My Leg Fish",
+      "file": "/assets/sounds/memes/my-leg-fish.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/my-leg-fish/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "que-miras-bobo",
+      "name": "Que Miras Bobo",
+      "file": "/assets/sounds/memes/que-miras-bobo.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/que-miras-bobo-messi-18772/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "finish-him",
+      "name": "Finish Him",
+      "file": "/assets/sounds/games/finish-him.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/finish-him/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "among-us-emergency",
+      "name": "Among Us Emergency",
+      "file": "/assets/sounds/games/among-us-emergency.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/among-us-emergency-meeting-5844/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "super-mario-pipe",
+      "name": "Super Mario Pipe",
+      "file": "/assets/sounds/games/super-mario-pipe.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/super-mario-pipe/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "sitcom-laugh",
+      "name": "Sitcom Laugh",
+      "file": "/assets/sounds/reactions/sitcom-laugh.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/sitcom-laugh/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "crowd-cheering",
+      "name": "Crowd Cheering",
+      "file": "/assets/sounds/reactions/crowd-cheering.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/crowd-cheering/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "police-siren",
+      "name": "Police Siren",
+      "file": "/assets/sounds/effects/police-siren.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/police-siren-75367/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "cartoon-jump",
+      "name": "Cartoon Jump",
+      "file": "/assets/sounds/effects/cartoon-jump.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/cartoon-jump-80656/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "ka-ching",
+      "name": "Ka Ching",
+      "file": "/assets/sounds/effects/ka-ching.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/ka-ching/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "coach-whistle",
+      "name": "Coach Whistle",
+      "file": "/assets/sounds/effects/coach-whistle.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/coach-whistle-94622/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "boxing-bell",
+      "name": "Boxing Bell",
+      "file": "/assets/sounds/effects/boxing-bell.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/boxing-bell/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "horse-neigh",
+      "name": "Horse Neigh",
+      "file": "/assets/sounds/effects/horse-neigh.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/horse-neigh/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "whip",
+      "name": "Whip",
+      "file": "/assets/sounds/effects/whip.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/whip/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "awkward-cricket",
+      "name": "Awkward Cricket",
+      "file": "/assets/sounds/effects/awkward-cricket.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/awkward-cricket-74642/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fbi-open-up",
+      "name": "Fbi Open Up",
+      "file": "/assets/sounds/effects/fbi-open-up.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/fbi-open-up-with-explosion-491/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "shocked-sound",
+      "name": "Shocked Sound",
+      "file": "/assets/sounds/effects/shocked-sound.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/shocked-sound-37548/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "keyboard-typing",
+      "name": "Keyboard Typing",
+      "file": "/assets/sounds/effects/keyboard-typing.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/keyboard-typing-sound-16012/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "goofy-yell",
+      "name": "Goofy Yell",
+      "file": "/assets/sounds/effects/goofy-yell.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/goofy-yell/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "quack",
+      "name": "Quack",
+      "file": "/assets/sounds/effects/quack.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/quackmp3/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "pew",
+      "name": "Pew",
+      "file": "/assets/sounds/effects/pew.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/pew/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "censor-beep-3",
+      "name": "Censor Beep 3",
+      "file": "/assets/sounds/effects/censor-beep-3.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/censor-beep-3/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "blood-splatter",
+      "name": "Blood Splatter",
+      "file": "/assets/sounds/effects/blood-splatter.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/blood-splatter-55536/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "netflix-intro",
+      "name": "Netflix Intro",
+      "file": "/assets/sounds/music/netflix-intro.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/netflix-intro-79459/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "tf2-critical-hit",
+      "name": "Tf2 Critical Hit",
+      "file": "/assets/sounds/games/tf2-critical-hit.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/tf2-critical-hit-33843/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "tf2-frying-pan",
+      "name": "Tf2 Frying Pan",
+      "file": "/assets/sounds/games/tf2-frying-pan.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/tf2-frying-pan/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "fnaf-2-scream",
+      "name": "Fnaf 2 Scream",
+      "file": "/assets/sounds/games/fnaf-2-scream.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/fnaf-2-scream/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "pizza-tower-taunt",
+      "name": "Pizza Tower Taunt",
+      "file": "/assets/sounds/games/pizza-tower-taunt.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/pizza-tower-taunt-50721/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "ultra-instinct",
+      "name": "Ultra Instinct",
+      "file": "/assets/sounds/anime/ultra-instinct.mp3",
+      "category": "anime",
+      "source": "https://www.myinstants.com/es/instant/ultra-instinct-45647/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "japanese-yoooo",
+      "name": "Japanese Yoooo",
+      "file": "/assets/sounds/memes/japanese-yoooo.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/japanese-yoooo/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "why-are-you-running",
+      "name": "Why Are You Running",
+      "file": "/assets/sounds/memes/why-are-you-running.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/why-are-you-running-15312/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "you-need-to-leave",
+      "name": "You Need To Leave",
+      "file": "/assets/sounds/reactions/you-need-to-leave.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/you-need-to-leave-11539/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "miles-objection",
+      "name": "Miles Objection",
+      "file": "/assets/sounds/games/miles-objection.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/miles-objection-23786/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "german-song",
+      "name": "German Song",
+      "file": "/assets/sounds/music/german-song.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/german-song-10008/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "i-carly-cheers",
+      "name": "I Carly Cheers",
+      "file": "/assets/sounds/reactions/i-carly-cheers.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/icarly-cheers-86037/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "clapping",
+      "name": "Clapping",
+      "file": "/assets/sounds/reactions/clapping.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/clapping/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "love-island-text",
+      "name": "Love Island Text",
+      "file": "/assets/sounds/notifications/love-island-text.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/love-island-text-57720/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "door-knocking-sfx",
+      "name": "Door Knocking Sfx",
+      "file": "/assets/sounds/effects/door-knocking-sfx.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/door-knocking-sfx-96109/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "crowd-clap",
+      "name": "Crowd Clap",
+      "file": "/assets/sounds/reactions/crowd-clap.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/crowd-clap/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "bass-drop",
+      "name": "Bass Drop",
+      "file": "/assets/sounds/effects/bass-drop.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/bass-drop-sound-effect-87683/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "german-ringtone",
+      "name": "German Ringtone",
+      "file": "/assets/sounds/notifications/german-ringtone.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/german-ringtone-call-22891/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "nokia-arabic",
+      "name": "Nokia Arabic",
+      "file": "/assets/sounds/music/nokia-arabic.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/nokia-arabic-ringstone-97490/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "old-spice-whistle",
+      "name": "Old Spice Whistle",
+      "file": "/assets/sounds/music/old-spice-whistle.mp3",
+      "category": "music",
+      "source": "https://www.myinstants.com/es/instant/old-spice-whistle-matthq/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "yodel-goofy",
+      "name": "Yodel Goofy",
+      "file": "/assets/sounds/memes/yodel-goofy.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/yodel-goofy-98204/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "youtube-subscribe",
+      "name": "Youtube Subscribe",
+      "file": "/assets/sounds/notifications/youtube-subscribe.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/youtube-subscribe-and-like-bell-sound-4900/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "discord-calling",
+      "name": "Discord Calling",
+      "file": "/assets/sounds/notifications/discord-calling.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/discord-calling-8030/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "what-the-hell",
+      "name": "What The Hell",
+      "file": "/assets/sounds/memes/what-the-hell.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/what-the-hellllllllllll-17281/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "yoooooooooooo",
+      "name": "Yoooooooooooo",
+      "file": "/assets/sounds/memes/yoooooooooooo.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/yoooooooooooo-60048/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "wilhelm-scream",
+      "name": "Wilhelm Scream",
+      "file": "/assets/sounds/effects/wilhelm-scream.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/wilhelm-scream/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "explosion-meme",
+      "name": "Explosion Meme",
+      "file": "/assets/sounds/effects/explosion-meme.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/explosion-meme-33169/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "extremely-loud-buzzer",
+      "name": "Extremely Loud Buzzer",
+      "file": "/assets/sounds/effects/extremely-loud-buzzer.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/extremely-loud-incorrect-buzzer-43033/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "womp-womp-womp",
+      "name": "Womp Womp Womp",
+      "file": "/assets/sounds/effects/womp-womp-womp.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/womp-womp-womp-55094/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "violin-screech",
+      "name": "Violin Screech",
+      "file": "/assets/sounds/effects/violin-screech.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/violin-screech-meme-67456/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "camera-flash",
+      "name": "Camera Flash",
+      "file": "/assets/sounds/effects/camera-flash.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/camera-flash-sound-effect-89976/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "mouse-click",
+      "name": "Mouse Click",
+      "file": "/assets/sounds/effects/mouse-click.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/mouse-click-sound-63406/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "na-na-na",
+      "name": "Na Na Na",
+      "file": "/assets/sounds/effects/na-na-na.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/na-na-na/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "mac-quack",
+      "name": "Mac Quack",
+      "file": "/assets/sounds/effects/mac-quack.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/mac-quack-83896/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "bark-fart-sound",
+      "name": "Bark Fart Sound",
+      "file": "/assets/sounds/effects/bark-fart-sound.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/bark-fart-sound-82395/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "aww",
+      "name": "Aww",
+      "file": "/assets/sounds/reactions/aww.mp3",
+      "category": "reactions",
+      "source": "https://www.myinstants.com/es/instant/aww/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "rehehehe",
+      "name": "Rehehehe",
+      "file": "/assets/sounds/memes/rehehehe.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/rehehehe-76246/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "pluh",
+      "name": "Pluh",
+      "file": "/assets/sounds/memes/pluh.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/pluh-38652/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "pookie-bear",
+      "name": "Pookie Bear",
+      "file": "/assets/sounds/memes/pookie-bear.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/pookie-bear-80/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "you-are-an-idiot",
+      "name": "You Are An Idiot",
+      "file": "/assets/sounds/memes/you-are-an-idiot.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/you-are-an-idiot-42738/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "aayein-meme",
+      "name": "Aayein Meme",
+      "file": "/assets/sounds/memes/aayein-meme.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/aayein-meme-98363/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "gutenmorgen",
+      "name": "Gutenmorgen",
+      "file": "/assets/sounds/memes/gutenmorgen.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/gutenmorgen-8455/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "wow-anime-meme",
+      "name": "Wow Anime Meme",
+      "file": "/assets/sounds/anime/wow-anime-meme.mp3",
+      "category": "anime",
+      "source": "https://www.myinstants.com/es/instant/wow-anime-meme-55752/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "mario-jump",
+      "name": "Mario Jump",
+      "file": "/assets/sounds/games/mario-jump.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/mario-jump/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "super-mario-death",
+      "name": "Super Mario Death",
+      "file": "/assets/sounds/games/super-mario-death.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/super-mario-death-23969/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "minecraft-eating",
+      "name": "Minecraft Eating",
+      "file": "/assets/sounds/games/minecraft-eating.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/minecraft-eating-sound-39731/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "iphone-notification",
+      "name": "Iphone Notification",
+      "file": "/assets/sounds/notifications/iphone-notification.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/iphone-notification-71441/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "your-phone-ringing",
+      "name": "Your Phone Ringing",
+      "file": "/assets/sounds/notifications/your-phone-ringing.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/your-phone-ringing-52001/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "discord-leave",
+      "name": "Discord Leave",
+      "file": "/assets/sounds/notifications/discord-leave.mp3",
+      "category": "notifications",
+      "source": "https://www.myinstants.com/es/instant/discord-leave-noise-46083/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "windows-95-error",
+      "name": "Windows 95 Error",
+      "file": "/assets/sounds/effects/windows-95-error.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/windows-95-error-chord-wav-66536/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "windows-95-shutdown",
+      "name": "Windows 95 Shutdown",
+      "file": "/assets/sounds/effects/windows-95-shutdown.mp3",
+      "category": "effects",
+      "source": "https://www.myinstants.com/es/instant/windows-95-shutdown-taaadddaaa-21368/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-first-blood",
+      "name": "Lol First Blood",
+      "file": "/assets/sounds/games/lol-first-blood.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/first-blood-league-of-legends-30963/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-double-kill",
+      "name": "Lol Double Kill",
+      "file": "/assets/sounds/games/lol-double-kill.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/league-of-legends-double-kill-1-80694/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-triple-kill",
+      "name": "Lol Triple Kill",
+      "file": "/assets/sounds/games/lol-triple-kill.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/league-of-legends-trible-kill-1-33596/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-quadra-kill",
+      "name": "Lol Quadra Kill",
+      "file": "/assets/sounds/games/lol-quadra-kill.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/league-of-legends-quadra-kill-2-37555/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-pentakill",
+      "name": "Lol Pentakill",
+      "file": "/assets/sounds/games/lol-pentakill.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lol-announcer-pentakill/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-legendary",
+      "name": "Lol Legendary",
+      "file": "/assets/sounds/games/lol-legendary.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/league-of-legends-legendary-kill-1-56473/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-ally-slain",
+      "name": "Lol Ally Slain",
+      "file": "/assets/sounds/games/lol-ally-slain.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lol-an-ally-has-been-slain-76284/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-defeat",
+      "name": "Lol Defeat",
+      "file": "/assets/sounds/games/lol-defeat.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lol-defeat-95029/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-missing",
+      "name": "Lol Missing",
+      "file": "/assets/sounds/games/lol-missing.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/league-of-legends-missing-2964/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-afk",
+      "name": "Lol Afk",
+      "file": "/assets/sounds/games/lol-afk.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/league-of-legends-afk-13202/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-enemy-double",
+      "name": "Lol Enemy Double",
+      "file": "/assets/sounds/games/lol-enemy-double.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lol-enemy-double-kill-49826/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-enemy-triple",
+      "name": "Lol Enemy Triple",
+      "file": "/assets/sounds/games/lol-enemy-triple.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lol-enemy-triple-kill-50500/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-enemy-quadra",
+      "name": "Lol Enemy Quadra",
+      "file": "/assets/sounds/games/lol-enemy-quadra.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lol-enemy-quadra-kill-30918/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lol-enemy-penta",
+      "name": "Lol Enemy Penta",
+      "file": "/assets/sounds/games/lol-enemy-penta.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lol-enemy-penta-kill-38057/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "yasuo-hasaki",
+      "name": "Yasuo Hasaki",
+      "file": "/assets/sounds/games/yasuo-hasaki.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/yasuo-hasaki/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "yasuo-face-wind",
+      "name": "Yasuo Face Wind",
+      "file": "/assets/sounds/games/yasuo-face-wind.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/yasuo-face-the-wind/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "yasuo-ultimate",
+      "name": "Yasuo Ultimate",
+      "file": "/assets/sounds/games/yasuo-ultimate.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/yasuo-ultimate/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "yasuo-korean",
+      "name": "Yasuo Korean",
+      "file": "/assets/sounds/games/yasuo-korean.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/yasuo-ultimate-korean-voiceove/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "lee-sin",
+      "name": "Lee Sin",
+      "file": "/assets/sounds/games/lee-sin.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/lee-sin/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "mordekaiser",
+      "name": "Mordekaiser",
+      "file": "/assets/sounds/games/mordekaiser.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/mordekaiser/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "shaco",
+      "name": "Shaco",
+      "file": "/assets/sounds/games/shaco.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/shaco/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "veigar-laugh",
+      "name": "Veigar Laugh",
+      "file": "/assets/sounds/games/veigar-laugh.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/veigar-laugh-363/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "jinx-panic",
+      "name": "Jinx Panic",
+      "file": "/assets/sounds/games/jinx-panic.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/jinx-everybody-panic-82713/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "alistar-milk",
+      "name": "Alistar Milk",
+      "file": "/assets/sounds/games/alistar-milk.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/you-cant-milk-those-alistar/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "ahri-trust",
+      "name": "Ahri Trust",
+      "file": "/assets/sounds/games/ahri-trust.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/dont-you-trust-me-ahri-70472/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "teemo-captain",
+      "name": "Teemo Captain",
+      "file": "/assets/sounds/games/teemo-captain.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/capt-teemo-on-duty/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "kogmaw",
+      "name": "Kogmaw",
+      "file": "/assets/sounds/games/kogmaw.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/kogmaw-tantantan/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "faker-what",
+      "name": "Faker What",
+      "file": "/assets/sounds/memes/faker-what.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/faker-what-was-that-move-11489/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "seraphine",
+      "name": "Seraphine",
+      "file": "/assets/sounds/games/seraphine.mp3",
+      "category": "games",
+      "source": "https://www.myinstants.com/es/instant/seraphine-16405/",
+      "credits": "Myinstants.com"
+    },
+    {
+      "id": "sigma",
+      "name": "Sigma",
+      "file": "/assets/sounds/memes/sigma.mp3",
+      "category": "memes",
+      "source": "https://www.myinstants.com/es/instant/sigma-25200/",
+      "credits": "Myinstants.com"
+    }
+  ]
+}

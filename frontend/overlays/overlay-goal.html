@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goal Overlay - TikToolStream</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/overlays.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: transparent;
+    font-family: 'Montserrat', system-ui, sans-serif;
+    overflow: hidden;
+    width: 100vw; height: 100vh;
+  }
+
+  /* aurora themed by goal type */
+  .aurora-bg { position: fixed !important; opacity: 0.5; }
+
+  .goal-stage {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  /* Mobile portrait */
+  .mobile .goal-card { min-width:auto; max-width:88vw; padding:16px 20px; gap:14px; border-radius:18px; flex-direction:column; text-align:center; }
+  .mobile .goal-icon-bubble { width:60px; height:60px; font-size:28px; }
+  .mobile .goal-title { font-size:0.9rem; }
+  .mobile .goal-progress-text { font-size:1.1rem; }
+  .mobile .goal-bar-outer { height:12px; }
+  .mobile .goal-info { font-size:0.7rem; }
+  .mobile .goal-footer { font-size:0.6rem; }
+
+  .goal-card {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    background: linear-gradient(135deg, rgba(10,10,30,0.88), rgba(20,15,40,0.88));
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    backdrop-filter: blur(30px) saturate(200%);
+    border: 2px solid var(--goal-accent, #00f5ff);
+    border-radius: 26px;
+    padding: 24px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 0 50px var(--goal-glow, rgba(0,245,255,0.3)), inset 0 1px 0 rgba(255,255,255,0.2);
+    min-width: 540px;
+    position: relative;
+    overflow: visible;
+  }
+  .goal-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--goal-accent, #fff), transparent);
+    pointer-events: none;
+  }
+  .goal-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 1px; height: 100%;
+    background: linear-gradient(180deg, var(--goal-accent, #fff), transparent 60%);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .goal-icon-bubble {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--goal-bg-1, rgba(0,245,255,0.25)), var(--goal-bg-2, rgba(123,47,247,0.25)));
+    border: 3px solid var(--goal-accent, #00f5ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    box-shadow: 0 0 36px var(--goal-glow, rgba(0,245,255,0.4));
+    animation: float 3s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50%      { transform: translateY(-10px) rotate(3deg); }
+  }
+
+  .goal-body { flex: 1; min-width: 0; }
+  .goal-title {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 800;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    letter-spacing: 0.5px;
+  }
+  .goal-type-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--goal-bg-1, rgba(0,245,255,0.2)), var(--goal-bg-2, rgba(123,47,247,0.15)));
+    color: var(--goal-accent, #00f5ff);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    padding: 4px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--goal-accent, #00f5ff);
+    margin-top: 6px;
+  }
+  .goal-numbers {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 14px 0 10px;
+  }
+  .goal-current {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff, var(--goal-accent, #00f5ff));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 16px var(--goal-glow, rgba(0,245,255,0.3)));
+  }
+  .goal-divider { color: rgba(255,255,255,0.3); font-size: 28px; }
+  .goal-target {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+  }
+  .goal-percent {
+    margin-left: auto;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--goal-accent, #00f5ff);
+    text-shadow: 0 0 16px var(--goal-glow, rgba(0,245,255,0.4));
+  }
+  .goal-bar-track {
+    height: 16px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .goal-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--goal-accent, #00f5ff), var(--goal-accent-2, #7b2ff7));
+    transition: width 0.6s var(--ease-spring);
+    box-shadow: 0 0 18px var(--goal-glow, rgba(0,245,255,0.6));
+    position: relative;
+    overflow: hidden;
+  }
+  .goal-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2.5s infinite;
+  }
+  .goal-bar-fill.completed {
+    background: linear-gradient(90deg, #ffd700, #ff6b00);
+    box-shadow: 0 0 22px rgba(255, 215, 0, 0.7);
+  }
+  .goal-bar-fill.completed::after { display: none; }
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .goal-next {
+    text-align: right;
+    color: var(--goal-accent, #00f5ff);
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .goal-next.show { opacity: 1; }
+
+  /* video overlay on goal complete */
+  .goal-video {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .goal-video.show { opacity: 1; }
+  .goal-video video {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+
+  .goal-celebrate {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+  }
+</style>
+</head>
+<body>
+<div class="aurora-bg" id="auroraBg"></div>
+<div class="goal-stage">
+  <div class="goal-card pop-in" id="goalCard">
+    <div class="goal-icon-bubble" id="goalIcon">❤️</div>
+    <div class="goal-body">
+      <div class="goal-title" id="goalTitle">Meta</div>
+      <div class="goal-type-badge" id="goalType">LIKES</div>
+      <div class="goal-numbers">
+        <span class="goal-current" id="goalCurrent">0</span>
+        <span class="goal-divider">/</span>
+        <span class="goal-target" id="goalTarget">1,000</span>
+        <span class="goal-percent" id="goalPercent">0%</span>
+      </div>
+      <div class="goal-bar-track">
+        <div class="goal-bar-fill" id="goalBar" style="width: 0%"></div>
+      </div>
+      <div class="goal-next" id="goalNext">👇 Siguiente: —</div>
+    </div>
+    <div class="goal-celebrate" id="goalCelebrate"></div>
+    <div class="goal-video" id="goalVideo"><video id="goalVideoPlayer" src="/assets/videos/0720.mp4" muted playsinline preload="auto"></video></div>
+  </div>
+</div>
+
+<script>
+  const ICONS = { likes: '❤️', shares: '🔄', followers: '👥', coins: '💎' };
+  const THEMES = {
+    likes:     { accent: '#ff006e', accent2: '#8b5cf6', glow: 'rgba(255,0,110,0.4)',  bg1: 'rgba(255,0,110,0.25)',  bg2: 'rgba(139,92,246,0.15)', aurora: 'pink' },
+    shares:    { accent: '#00f5ff', accent2: '#8b5cf6', glow: 'rgba(0,245,255,0.4)',  bg1: 'rgba(0,245,255,0.25)',  bg2: 'rgba(139,92,246,0.15)', aurora: 'cyan' },
+    followers: { accent: '#00ff88', accent2: '#00d9ff', glow: 'rgba(0,255,136,0.4)',  bg1: 'rgba(0,255,136,0.25)',  bg2: 'rgba(0,217,255,0.15)', aurora: 'green' },
+    coins:     { accent: '#ffd700', accent2: '#ff6b00', glow: 'rgba(255,215,0,0.4)',  bg1: 'rgba(255,215,0,0.25)',  bg2: 'rgba(255,107,0,0.15)', aurora: 'gold' }
+  };
+
+  let currentGoal = null;
+  let ws = null;
+  let reconnectTimer = null;
+  let lastCelebratedTarget = 0;
+  let lastCurrent = 0;
+
+  function getUserId() { return new URLSearchParams(window.location.search).get('userId') || null; }
+  function getGoalType() { return new URLSearchParams(window.location.search).get('type') || null; }
+  const urlSound = new URLSearchParams(window.location.search).get('sound');
+  function fmt(n) { return Number(n || 0).toLocaleString('es-ES'); }
+  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  /* countUp vanilla */
+  function countUp(el, from, to, duration = 1500) {
+    const start = performance.now();
+    const diff = to - from;
+    function frame(now) {
+      const elapsed = now - start;
+      const k = Math.min(1, elapsed / duration);
+      const ease = 1 - Math.pow(1 - k, 3);
+      el.textContent = fmt(Math.round(from + diff * ease));
+      if (k < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* letter reveal for title */
+  function letterReveal(el, text, stagger = 28) {
+    el.innerHTML = '';
+    [...text].forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'reveal-char';
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      span.style.animationDelay = `${i * stagger}ms`;
+      el.appendChild(span);
+    });
+  }
+
+  function applyTheme(type) {
+    const t = THEMES[type] || THEMES.likes;
+    const card = document.getElementById('goalCard');
+    const bubble = document.getElementById('goalIcon');
+    const bar = document.getElementById('goalBar');
+    const aurora = document.getElementById('auroraBg');
+
+    card.style.setProperty('--goal-accent', t.accent);
+    card.style.setProperty('--goal-accent-2', t.accent2);
+    card.style.setProperty('--goal-glow', t.glow);
+    card.style.setProperty('--goal-bg-1', t.bg1);
+    card.style.setProperty('--goal-bg-2', t.bg2);
+    bubble.style.background = `linear-gradient(135deg, ${t.bg1}, ${t.bg2})`;
+    bubble.style.borderColor = t.accent;
+    bubble.style.boxShadow = `0 0 36px ${t.glow}`;
+    bar.style.background = `linear-gradient(90deg, ${t.accent}, ${t.accent2})`;
+    bar.style.boxShadow = `0 0 18px ${t.glow}`;
+    card.style.borderColor = t.accent;
+    card.style.boxShadow = `0 20px 60px rgba(0,0,0,0.55), 0 0 50px ${t.glow}, inset 0 1px 0 rgba(255,255,255,0.2)`;
+    aurora.className = 'aurora-bg theme-' + t.aurora;
+  }
+
+  /* confetti vanilla */
+  function spawnConfetti(x, y, count, palette) {
+    const colors = palette || ['#ff006e', '#00f5ff', '#8b5cf6', '#ffd700', '#00ff88', '#ff6b00', '#fff'];
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = (x - 5) + 'px';
+      p.style.top = (y - 7) + 'px';
+      p.style.background = colors[i % colors.length];
+      p.style.borderRadius = i % 3 === 0 ? '50%' : '2px';
+      document.body.appendChild(p);
+      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+      const dist = 240 + Math.random() * 320;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist - 150;
+      const rot = (Math.random() - 0.5) * 900;
+      const dur = 2000 + Math.random() * 1200;
+      const start = performance.now();
+      function anim(now) {
+        const k = Math.min(1, (now - start) / dur);
+        const ease = 1 - Math.pow(1 - k, 2);
+        const gravity = 400 * ease * ease;
+        p.style.transform = `translate(${dx * ease}px, ${dy * ease + gravity}px) rotate(${rot * ease}deg)`;
+        p.style.opacity = 1 - ease;
+        if (k < 1) requestAnimationFrame(anim);
+        else p.remove();
+      }
+      requestAnimationFrame(anim);
+    }
+  }
+
+  /* video + sound on goal complete */
+  function playGoalSound() {
+    try {
+      const soundPath = (currentGoal?.completion_sound) || urlSound || '/assets/sounds/memes/sigma.mp3';
+      const a = new Audio(soundPath);
+      a.volume = 0.6;
+      a.play().catch(() => {});
+    } catch {}
+  }
+
+  function showGoalVideo() {
+    const vidWrap = document.getElementById('goalVideo');
+    const vid = document.getElementById('goalVideoPlayer');
+    if (!vidWrap || !vid) return;
+    vidWrap.classList.add('show');
+    vid.currentTime = 0;
+    vid.play().catch(() => {});
+    setTimeout(() => {
+      vidWrap.classList.remove('show');
+      vid.pause();
+    }, 5500);
+  }
+
+  function celebrate() {
+    playGoalSound();
+    showGoalVideo();
+    const wrap = document.getElementById('goalCelebrate');
+    wrap.innerHTML = '';
+    const palette = ['#ff006e', '#00f5ff', '#8b5cf6', '#ffd700', '#00ff88', '#ff6b00'];
+    for (let i = 0; i < 40; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.position = 'absolute';
+      c.style.left = '50%'; c.style.top = '50%';
+      c.style.background = palette[i % palette.length];
+      c.style.borderRadius = '2px';
+      wrap.appendChild(c);
+      const angle = (i / 40) * Math.PI * 2;
+      const dist = 200 + Math.random() * 250;
+      c.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+      c.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+      c.style.animation = `confettiBurst 1.8s ease-out forwards`;
+      c.style.animationDelay = `${Math.random() * 0.3}s`;
+    }
+    setTimeout(() => { wrap.innerHTML = ''; }, 2000);
+
+    const rect = document.getElementById('goalCard').getBoundingClientRect();
+    spawnConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2, 60);
+  }
+
+  function updateGoal(goal) {
+    const card = document.getElementById('goalCard');
+    if (!goal) { card.style.display = 'none'; return; }
+    card.style.display = 'flex';
+
+    const isNew = !currentGoal || currentGoal.id !== goal.id;
+    currentGoal = goal;
+    applyTheme(goal.type);
+
+    const icon = ICONS[goal.type] || '🎯';
+    document.getElementById('goalIcon').textContent = icon;
+    const titleEl = document.getElementById('goalTitle');
+    if (isNew) {
+      letterReveal(titleEl, goal.title || 'Meta', 28);
+    } else {
+      titleEl.textContent = goal.title || 'Meta';
+    }
+    document.getElementById('goalType').textContent = (goal.type || 'likes').toUpperCase();
+
+    const current = Number(goal.current) || 0;
+    const target = Number(goal.target) || 1;
+    const percent = Math.min(100, Math.round((current / target) * 100));
+
+    /* countUp for current */
+    if (current !== lastCurrent) {
+      const currentEl = document.getElementById('goalCurrent');
+      countUp(currentEl, lastCurrent, current, 1000);
+      lastCurrent = current;
+    }
+    document.getElementById('goalTarget').textContent = fmt(target);
+    document.getElementById('goalPercent').textContent = `${percent}%`;
+    document.getElementById('goalBar').style.width = `${percent}%`;
+
+    const completed = current >= target;
+    document.getElementById('goalBar').classList.toggle('completed', completed);
+
+    if (target > lastCelebratedTarget && completed) {
+      celebrate();
+      lastCelebratedTarget = target;
+    } else if (!completed) {
+      lastCelebratedTarget = target;
+    }
+
+    const nextEl = document.getElementById('goalNext');
+    if (completed && goal.auto_increment && goal.increment_amount > 0) {
+      const nextTarget = target + (goal.increment_amount || target);
+      nextEl.textContent = `👇 Siguiente: ${fmt(nextTarget)}`;
+      nextEl.classList.add('show');
+    } else {
+      nextEl.classList.remove('show');
+    }
+  }
+
+  async function fetchGoal() {
+    const userId = getUserId();
+    const type = getGoalType();
+    if (!userId) return;
+    try {
+      const url = type ? `/api/goals/public/${userId}?type=${encodeURIComponent(type)}` : `/api/goals/public/${userId}`;
+      const res = await fetch(url);
+      if (res.ok) { const data = await res.json(); updateGoal(data); }
+    } catch (err) { console.error('[GOAL] Fetch error:', err); }
+  }
+
+  function connectWebSocket() {
+    const userId = getUserId();
+    if (!userId) return;
+    if (ws) { try { ws.close(); } catch {} }
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/live`;
+    try {
+      ws = new WebSocket(wsUrl);
+      ws.onopen = () => { ws.send(JSON.stringify({ type: 'subscribe', channelId: userId })); };
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'gift' && currentGoal && currentGoal.type === 'coins') {
+            const diamondCount = msg.data?.diamondCount || 0;
+            const repeatCount = msg.data?.repeatCount || 1;
+            const amount = diamondCount * repeatCount;
+            if (amount > 0) {
+              currentGoal.current = (currentGoal.current || 0) + amount;
+              updateGoal(currentGoal);
+            }
+          } else if (msg.type === 'like' && currentGoal && currentGoal.type === 'likes') {
+            const inc = msg.data?.likeCount || msg.data?.count || 1;
+            currentGoal.current = (currentGoal.current || 0) + inc;
+            updateGoal(currentGoal);
+          } else if (msg.type === 'follow' && currentGoal && currentGoal.type === 'followers') {
+            currentGoal.current = (currentGoal.current || 0) + 1;
+            updateGoal(currentGoal);
+          } else if (msg.type === 'share' && currentGoal && currentGoal.type === 'shares') {
+            currentGoal.current = (currentGoal.current || 0) + 1;
+            updateGoal(currentGoal);
+          }
+        } catch {}
+      };
+      ws.onclose = () => { reconnectTimer = setTimeout(connectWebSocket, 3000); };
+      ws.onerror = () => { try { ws.close(); } catch {} };
+    } catch (e) { reconnectTimer = setTimeout(connectWebSocket, 3000); }
+  }
+
+  /* cleanup confetti when page is hidden */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      document.querySelectorAll('.confetti-piece').forEach(el => el.remove());
+    }
+  });
+
+  const isMobile = new URLSearchParams(window.location.search).get('mode') === 'mobile';
+  if (isMobile) document.body.classList.add('mobile');
+
+  const userId = getUserId();
+  if (userId) {
+    fetchGoal();
+    setInterval(fetchGoal, 10000);
+    connectWebSocket();
+  }
+</script>
+</body>
+</html>

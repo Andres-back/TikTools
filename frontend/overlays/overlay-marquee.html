@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marquee Overlay - TikToolStream</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/overlays.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; overflow: hidden; font-family: 'Poppins', system-ui, sans-serif; }
+
+  .marquee-track {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(180deg, transparent, rgba(10,10,30,0.85) 30%, rgba(10,10,30,0.95));
+    padding: 30px 0 14px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .marquee-content {
+    display: flex;
+    gap: 24px;
+    animation: marquee 30s linear infinite;
+    width: max-content;
+  }
+  .marquee-content:hover { animation-play-state: paused; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(0,217,255,0.12), rgba(123,47,247,0.05));
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 24px;
+    padding: 8px 16px 8px 8px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    animation: itemIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes itemIn { from { opacity:0; transform: scale(0.8); } to { opacity:1; transform:scale(1); } }
+  .marquee-item .mi-icon { width: 32px; height: 32px; border-radius: 8px; background:linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,107,0,0.1)); display:flex; align-items:center; justify-content:center; font-size:1.1rem; overflow:hidden; }
+  .marquee-item .mi-icon img { width:100%; height:100%; object-fit:contain; }
+  .marquee-item .mi-user { color: #00f5ff; }
+  .marquee-item .mi-gift { color: rgba(255,255,255,0.85); font-weight: 600; }
+  .marquee-item .mi-amount { background: linear-gradient(135deg, #ffd700, #ff6b00); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+  .marquee-empty { display:flex; align-items:center; gap:10px; color:rgba(255,255,255,0.2); font-size:0.85rem; font-weight:600; padding:8px 16px; }
+
+  /* Mobile portrait */
+  .mobile .marquee-track { padding:16px 0 8px; }
+  .mobile .marquee-item { font-size:0.75rem; padding:6px 10px 6px 6px; gap:6px; }
+  .mobile .marquee-item .mi-icon { width:24px; height:24px; font-size:0.85rem; }
+  .mobile .marquee-content { gap:14px; animation-duration:20s; }
+</style>
+</head>
+<body>
+<div class="marquee-track">
+  <div class="marquee-content" id="marqueeContent"></div>
+</div>
+<script>
+  let ws = null;
+  let reconnectTimer = null;
+  const GIFT_IMAGES = {};
+  const queue = [];
+  const MAX_ITEMS = 30;
+
+  function getUserId() { return new URLSearchParams(window.location.search).get('userId'); }
+  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
+
+  async function loadGiftCatalog() {
+    try {
+      const res = await fetch('/gifts.json');
+      if (res.ok) {
+        const data = await res.json();
+        for (const g of Object.values(data)) if (g.id && g.image) GIFT_IMAGES[g.id] = g.image;
+      }
+    } catch {}
+  }
+
+  function addItem(user, giftName, amount, giftId) {
+    const giftImg = giftId ? GIFT_IMAGES[giftId] : null;
+    const iconHtml = giftImg
+      ? `<img src="${escapeAttr(giftImg)}" onerror="this.style.display='none';this.parentNode.textContent='🎁'">`
+      : '🎁';
+    const item = document.createElement('div');
+    item.className = 'marquee-item';
+    item.innerHTML = `
+      <div class="mi-icon">${iconHtml}</div>
+      <span class="mi-user">@${escapeHtml(user || 'anon')}</span>
+      <span class="mi-gift">${escapeHtml(giftName || 'regalo')}</span>
+      ${amount ? `<span class="mi-amount">+${amount.toLocaleString()} 💎</span>` : ''}
+    `;
+    queue.push(item);
+    render();
+  }
+
+  function render() {
+    const container = document.getElementById('marqueeContent');
+    if (!container) return;
+    while (queue.length > MAX_ITEMS) queue.shift();
+    container.innerHTML = '';
+    if (queue.length === 0) {
+      container.innerHTML = '<div class="marquee-empty"><span>🎁</span> Esperando regalos...</div>';
+      return;
+    }
+    /* duplicate for seamless loop */
+    const items = [...queue, ...queue];
+    items.forEach(item => {
+      const clone = item.cloneNode(true);
+      container.appendChild(clone);
+    });
+  }
+
+  function connectWS(userId) {
+    if (ws) { try { ws.close(); } catch {} }
+    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    try {
+      ws = new WebSocket(`${proto}//${window.location.host}/live`);
+      ws.onopen = () => ws.send(JSON.stringify({ type: 'subscribe', channelId: userId }));
+      ws.onmessage = (ev) => {
+        try {
+          const msg = JSON.parse(ev.data);
+          if (msg.type === 'gift') {
+            const data = msg.data || {};
+            const total = (data.diamondCount || 0) * (data.repeatCount || 1);
+            if (total > 0) addItem(data.uniqueId, data.giftName, total, data.giftId);
+          }
+        } catch {}
+      };
+      ws.onclose = () => { reconnectTimer = setTimeout(() => connectWS(userId), 3000); };
+      ws.onerror = () => { try { ws.close(); } catch {} };
+    } catch (e) { reconnectTimer = setTimeout(() => connectWS(userId), 3000); }
+  }
+
+  const isMobile = new URLSearchParams(window.location.search).get('mode') === 'mobile';
+  if (isMobile) document.body.classList.add('mobile');
+
+  const userId = getUserId();
+  if (userId) {
+    loadGiftCatalog();
+    connectWS(userId);
+  }
+</script>
+</body>
+</html>

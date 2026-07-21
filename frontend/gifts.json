@@ -1,0 +1,4139 @@
+{
+  "5269": {
+    "id": "5269",
+    "name": "TikTok",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/802a21ae29f9fae5abe3693de9f874bd~tplv-obj.webp"
+  },
+  "5338": {
+    "id": "5338",
+    "name": "Unicorn Fantasy",
+    "cost": 5000,
+    "diamond_count": 5000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/483c644e67e9bb1dd5970f2df00b7576~tplv-obj.webp"
+  },
+  "5478": {
+    "id": "5478",
+    "name": "Castle Fantasy",
+    "cost": 20000,
+    "diamond_count": 20000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8173e9b07875cca37caa5219e4903a40~tplv-obj.webp"
+  },
+  "5487": {
+    "id": "5487",
+    "name": "Finger Heart",
+    "cost": 5,
+    "diamond_count": 5,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49~tplv-obj.webp"
+  },
+  "5509": {
+    "id": "5509",
+    "name": "Sunglasses",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/08af67ab13a8053269bf539fd27f3873~tplv-obj.webp"
+  },
+  "5566": {
+    "id": "5566",
+    "name": "Mishka Bear",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d78ed6496fd57286b42ac033acbee299~tplv-obj.webp"
+  },
+  "5576": {
+    "id": "5576",
+    "name": "Heart",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/98bea1b189fba75bf0ca766b4dc1976e~tplv-obj.webp"
+  },
+  "5582": {
+    "id": "5582",
+    "name": "Mishka Bear",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d78ed6496fd57286b42ac033acbee299~tplv-obj.webp"
+  },
+  "5585": {
+    "id": "5585",
+    "name": "Confetti",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cb4e11b3834e149f08e1cdcc93870b26~tplv-obj.webp"
+  },
+  "5586": {
+    "id": "5586",
+    "name": "Hearts",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/934b5a10dee8376df5870a61d2ea5cb6~tplv-obj.webp"
+  },
+  "5648": {
+    "id": "5648",
+    "name": "Duit Raya",
+    "cost": 5,
+    "diamond_count": 5,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/af543ee556c1c3d3e2610a24d8d02c94~tplv-obj.webp"
+  },
+  "5655": {
+    "id": "5655",
+    "name": "Rose",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eba3a9bb85c33e017f3648eaf88d7189~tplv-obj.webp"
+  },
+  "5658": {
+    "id": "5658",
+    "name": "Perfume",
+    "cost": 20,
+    "diamond_count": 20,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp"
+  },
+  "5659": {
+    "id": "5659",
+    "name": "Paper Crane",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0f158a08f7886189cdabf496e8a07c21~tplv-obj.webp"
+  },
+  "5660": {
+    "id": "5660",
+    "name": "Hand Heart",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6cd022271dc4669d182cad856384870f~tplv-obj.webp"
+  },
+  "5731": {
+    "id": "5731",
+    "name": "Coral",
+    "cost": 499,
+    "diamond_count": 499,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d4faa402c32bf4f92bee654b2663d9f1~tplv-obj.webp"
+  },
+  "5765": {
+    "id": "5765",
+    "name": "Motorcycle",
+    "cost": 2988,
+    "diamond_count": 2988,
+    "image": ""
+  },
+  "5767": {
+    "id": "5767",
+    "name": "Private Jet",
+    "cost": 4888,
+    "diamond_count": 4888,
+    "image": ""
+  },
+  "5794": {
+    "id": "5794",
+    "name": "Coconut",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eb0923dbab5251f4c2e0496b11b55c4f~tplv-obj.webp"
+  },
+  "5827": {
+    "id": "5827",
+    "name": "Ice Cream Cone",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/968820bc85e274713c795a6aef3f7c67~tplv-obj.webp"
+  },
+  "5879": {
+    "id": "5879",
+    "name": "Doughnut",
+    "cost": 30,
+    "diamond_count": 30,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp"
+  },
+  "5897": {
+    "id": "5897",
+    "name": "Swan",
+    "cost": 699,
+    "diamond_count": 699,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/97a26919dbf6afe262c97e22a83f4bf1~tplv-obj.webp"
+  },
+  "5978": {
+    "id": "5978",
+    "name": "Train",
+    "cost": 899,
+    "diamond_count": 899,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4227ed71f2c494b554f9cbe2147d4899~tplv-obj.webp"
+  },
+  "6007": {
+    "id": "6007",
+    "name": "Boxing Gloves",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9f8bd92363c400c284179f6719b6ba9c~tplv-obj.webp"
+  },
+  "6064": {
+    "id": "6064",
+    "name": "GG",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3f02fa9594bd1495ff4e8aa5ae265eef~tplv-obj.webp"
+  },
+  "6089": {
+    "id": "6089",
+    "name": "Sports Car",
+    "cost": 7000,
+    "diamond_count": 7000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e7ce188da898772f18aaffe49a7bd7db~tplv-obj.webp"
+  },
+  "6090": {
+    "id": "6090",
+    "name": "Fireworks",
+    "cost": 1088,
+    "diamond_count": 1088,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9494c8a0bc5c03521ef65368e59cc2b8~tplv-obj.webp"
+  },
+  "6093": {
+    "id": "6093",
+    "name": "Football",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c043cd9e418f13017793ddf6e0c6ee99~tplv-obj.webp"
+  },
+  "6097": {
+    "id": "6097",
+    "name": "Little Crown",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cf3db11b94a975417043b53401d0afe1~tplv-obj.webp"
+  },
+  "6104": {
+    "id": "6104",
+    "name": "Cap",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6c2ab2da19249ea570a2ece5e3377f04~tplv-obj.webp"
+  },
+  "6149": {
+    "id": "6149",
+    "name": "Interstellar",
+    "cost": 10000,
+    "diamond_count": 10000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8520d47b59c202a4534c1560a355ae06~tplv-obj.webp"
+  },
+  "6203": {
+    "id": "6203",
+    "name": "Sunset Speedway",
+    "cost": 10000,
+    "diamond_count": 10000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/df63eee488dc0994f6f5cb2e65f2ae49~tplv-obj.webp"
+  },
+  "6233": {
+    "id": "6233",
+    "name": "Travel with You",
+    "cost": 999,
+    "diamond_count": 999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/753098e5a8f45afa965b73616c04cf89~tplv-obj.webp"
+  },
+  "6246": {
+    "id": "6246",
+    "name": "Thumbs Up",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/570a663e27bdc460e05556fd1596771a~tplv-obj.webp"
+  },
+  "6247": {
+    "id": "6247",
+    "name": "Heart",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dd300fd35a757d751301fba862a258f1~tplv-obj.webp"
+  },
+  "6267": {
+    "id": "6267",
+    "name": "Corgi",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/148eef0884fdb12058d1c6897d1e02b9~tplv-obj.webp"
+  },
+  "6271": {
+    "id": "6271",
+    "name": "Falcon",
+    "cost": 10999,
+    "diamond_count": 10999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6026505eea9b9bce071dd699253abf6a~tplv-obj.webp"
+  },
+  "6369": {
+    "id": "6369",
+    "name": "Lion",
+    "cost": 29999,
+    "diamond_count": 29999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp"
+  },
+  "6427": {
+    "id": "6427",
+    "name": "Hat and Mustache",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2f1e4f3f5c728ffbfa35705b480fdc92~tplv-obj.webp"
+  },
+  "6437": {
+    "id": "6437",
+    "name": "Garland Headpiece",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/bdbdd8aeb2b69c173a3ef666e63310f3~tplv-obj.webp"
+  },
+  "6563": {
+    "id": "6563",
+    "name": "Meteor Shower",
+    "cost": 3000,
+    "diamond_count": 3000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/71883933511237f7eaa1bf8cd12ed575~tplv-obj.webp"
+  },
+  "6646": {
+    "id": "6646",
+    "name": "Leon the Kitten",
+    "cost": 4888,
+    "diamond_count": 4888,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a7748baba012c9e2d98a30dce7cc5a27~tplv-obj.webp"
+  },
+  "6671": {
+    "id": "6671",
+    "name": "Love You",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/134e51c00f46e01976399883ca4e4798~tplv-obj.webp"
+  },
+  "6713": {
+    "id": "6713",
+    "name": "Cheer For You",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1059dfa76c78dc17d7cf0a1fc2ece185~tplv-obj.webp"
+  },
+  "6751": {
+    "id": "6751",
+    "name": "TikTok Shuttle",
+    "cost": 20000,
+    "diamond_count": 20000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8ef48feba8dd293a75ae9d4376fb17c9~tplv-obj.webp"
+  },
+  "6781": {
+    "id": "6781",
+    "name": "Watermelon Love",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1d1650cd9bb0e39d72a6e759525ffe59~tplv-obj.webp"
+  },
+  "6784": {
+    "id": "6784",
+    "name": "Cake Slice",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f681afb4be36d8a321eac741d387f1e2~tplv-obj.webp"
+  },
+  "6788": {
+    "id": "6788",
+    "name": "Glow Stick",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8e1a5d66370c5586545e358e37c10d25~tplv-obj.webp"
+  },
+  "6789": {
+    "id": "6789",
+    "name": "Star of Red Carpet",
+    "cost": 1999,
+    "diamond_count": 1999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5b9bf90278f87b9ca0c286d3c8a12936~tplv-obj.webp"
+  },
+  "6790": {
+    "id": "6790",
+    "name": "Celebration Time",
+    "cost": 6999,
+    "diamond_count": 6999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e73e786041d8218d8e9dbbc150855f1b~tplv-obj.webp"
+  },
+  "6802": {
+    "id": "6802",
+    "name": "Ellie the Elephant",
+    "cost": 5000,
+    "diamond_count": 5000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/389b21dc7ad4e06e6b6132bb83c61b03~tplv-obj.webp"
+  },
+  "6820": {
+    "id": "6820",
+    "name": "Whale Diving",
+    "cost": 2150,
+    "diamond_count": 2150,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/46fa70966d8e931497f5289060f9a794~tplv-obj.webp"
+  },
+  "6833": {
+    "id": "6833",
+    "name": "Castle Fantasy",
+    "cost": 20000,
+    "diamond_count": 20000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8173e9b07875cca37caa5219e4903a40~tplv-obj.webp"
+  },
+  "6862": {
+    "id": "6862",
+    "name": "Cooper Flies Home",
+    "cost": 1999,
+    "diamond_count": 1999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3f1945b0d96e665a759f747e5e0cf7a9~tplv-obj.webp"
+  },
+  "6890": {
+    "id": "6890",
+    "name": "Love you",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ab0a7b44bfc140923bb74164f6f880ab~tplv-obj.webp"
+  },
+  "7032": {
+    "id": "7032",
+    "name": "Maracas",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/00204efcf0573192ad5d872c7beeaf5b~tplv-obj.webp"
+  },
+  "7096": {
+    "id": "7096",
+    "name": "It’s corn",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/37f5c76b65c17d6dbbbd4b6724f61bf2~tplv-obj.webp"
+  },
+  "7121": {
+    "id": "7121",
+    "name": "Marvelous Confetti",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fccc851d351716bc8b34ec65786c727d~tplv-obj.webp"
+  },
+  "7122": {
+    "id": "7122",
+    "name": "Gem Gun",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dd06007ade737f1001977590b11d3f61~tplv-obj.webp"
+  },
+  "7123": {
+    "id": "7123",
+    "name": "Shiny Air Balloon",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9e7ebdca64b8f90fcc284bb04ab92d24~tplv-obj.webp"
+  },
+  "7124": {
+    "id": "7124",
+    "name": "Signature Jet",
+    "cost": 4888,
+    "diamond_count": 4888,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fe27eba54a50c0a687e3dc0f2c02067d~tplv-obj.webp"
+  },
+  "7125": {
+    "id": "7125",
+    "name": "Premium Shuttle",
+    "cost": 20000,
+    "diamond_count": 20000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c2b287adee5151b7889d6e3d45b72e44~tplv-obj.webp"
+  },
+  "7168": {
+    "id": "7168",
+    "name": "Money Gun",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e0589e95a2b41970f0f30f6202f5fce6~tplv-obj.webp"
+  },
+  "7312": {
+    "id": "7312",
+    "name": "TikTok Universe+",
+    "cost": 34999,
+    "diamond_count": 34999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b13105782e8bf8fbefaa83b7af413cee~tplv-obj.webp"
+  },
+  "7319": {
+    "id": "7319",
+    "name": "Phoenix",
+    "cost": 25999,
+    "diamond_count": 25999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ef248375c4167d70c1642731c732c982~tplv-obj.webp"
+  },
+  "7400": {
+    "id": "7400",
+    "name": "Adam’s Dream",
+    "cost": 25999,
+    "diamond_count": 25999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9a586391fbb1e21621c4203e5563a9e0~tplv-obj.webp"
+  },
+  "7467": {
+    "id": "7467",
+    "name": "Chasing the Dream",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1ea8dbb805466c4ced19f29e9590040f~tplv-obj.webp"
+  },
+  "7529": {
+    "id": "7529",
+    "name": "Mystery Firework",
+    "cost": 1999,
+    "diamond_count": 1999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c110230c5db903db5f060a432f5a86cd~tplv-obj.webp"
+  },
+  "7610": {
+    "id": "7610",
+    "name": "Dragon Flame",
+    "cost": 26999,
+    "diamond_count": 26999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/89b4d1d93c1cc614e3a0903ac7a94e0c~tplv-obj.webp"
+  },
+  "7697": {
+    "id": "7697",
+    "name": "LOVE U",
+    "cost": 899,
+    "diamond_count": 899,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/79d45877691333e2ba69a9098406e95c~tplv-obj.webp"
+  },
+  "7764": {
+    "id": "7764",
+    "name": "Star Throne",
+    "cost": 7999,
+    "diamond_count": 7999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/30063f6bc45aecc575c49ff3dbc33831~tplv-obj.webp"
+  },
+  "7823": {
+    "id": "7823",
+    "name": "Leon and Lion",
+    "cost": 34000,
+    "diamond_count": 34000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a291aedacf27d22c3fd2d83575d2bee9~tplv-obj.webp"
+  },
+  "7934": {
+    "id": "7934",
+    "name": "Heart Me",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": ""
+  },
+  "8130": {
+    "id": "8130",
+    "name": "Like-Pop",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/75eb7b4aca24eaa6e566b566c7d21e2f~tplv-obj.webp"
+  },
+  "8239": {
+    "id": "8239",
+    "name": "White Rose",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a2d81f3847457be9083a9c76a59b08cb~tplv-obj.webp"
+  },
+  "8240": {
+    "id": "8240",
+    "name": "Tulip Box",
+    "cost": 200,
+    "diamond_count": 200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/409d2f71e1c416daa476da8ef030f490~tplv-obj.webp"
+  },
+  "8243": {
+    "id": "8243",
+    "name": "Cheer You Up",
+    "cost": 9,
+    "diamond_count": 9,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/97e0529ab9e5cbb60d95fc9ff1133ea6~tplv-obj.webp"
+  },
+  "8244": {
+    "id": "8244",
+    "name": "Hands Up",
+    "cost": 499,
+    "diamond_count": 499,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f4d906542408e6c87cf0a42f7426f0c6~tplv-obj.webp"
+  },
+  "8245": {
+    "id": "8245",
+    "name": "Here We Go",
+    "cost": 1799,
+    "diamond_count": 1799,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/61b76a51a3757f0ff1cdc33b16c4d8ae~tplv-obj.webp"
+  },
+  "8247": {
+    "id": "8247",
+    "name": "Happy Party",
+    "cost": 6999,
+    "diamond_count": 6999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/41774a8ba83c59055e5f2946d51215b4~tplv-obj.webp"
+  },
+  "8248": {
+    "id": "8248",
+    "name": "Fly Love",
+    "cost": 19999,
+    "diamond_count": 19999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a598ba4c7024f4d46c1268be4d82f901~tplv-obj.webp"
+  },
+  "8277": {
+    "id": "8277",
+    "name": "Love Drop",
+    "cost": 1800,
+    "diamond_count": 1800,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1ea684b3104abb725491a509022f7c02~tplv-obj.webp"
+  },
+  "8419": {
+    "id": "8419",
+    "name": "Red Lightning",
+    "cost": 12000,
+    "diamond_count": 12000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f48599c8d2a7bbc6e6fcf11ba2c809f~tplv-obj.webp"
+  },
+  "8420": {
+    "id": "8420",
+    "name": "Star Throne",
+    "cost": 7999,
+    "diamond_count": 7999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/30063f6bc45aecc575c49ff3dbc33831~tplv-obj.webp"
+  },
+  "8469": {
+    "id": "8469",
+    "name": "Wolf",
+    "cost": 5500,
+    "diamond_count": 5500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/002d5e13fd6cd18b7574b43dc4fd13ae~tplv-obj.webp"
+  },
+  "8503": {
+    "id": "8503",
+    "name": "Falcon",
+    "cost": 10999,
+    "diamond_count": 10999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6026505eea9b9bce071dd699253abf6a~tplv-obj.webp"
+  },
+  "8582": {
+    "id": "8582",
+    "name": "TikTok Stars",
+    "cost": 39999,
+    "diamond_count": 39999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b1667c891ed39fd68ba7252fff7a1e7c~tplv-obj.webp"
+  },
+  "8603": {
+    "id": "8603",
+    "name": "Leopard",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3d837cfcac70929abc0f45e4dc7cee04~tplv-obj.webp"
+  },
+  "8624": {
+    "id": "8624",
+    "name": "Zeus",
+    "cost": 34000,
+    "diamond_count": 34000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/01793f9afe15f5037a9dc10435c37c85~tplv-obj.webp"
+  },
+  "8651": {
+    "id": "8651",
+    "name": "Thunder Falcon",
+    "cost": 39999,
+    "diamond_count": 39999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/26f3fbcda383e6093a19b8e7351a164c~tplv-obj.webp"
+  },
+  "8889": {
+    "id": "8889",
+    "name": "Pink Dream",
+    "cost": 2988,
+    "diamond_count": 2988,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0de49ea9a79e65307c674596da517792~tplv-obj.webp"
+  },
+  "8912": {
+    "id": "8912",
+    "name": "Rosa Nebula",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f722088231103b66875dae33f13f8719~tplv-obj.webp"
+  },
+  "8913": {
+    "id": "8913",
+    "name": "Rosa",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eb77ead5c3abb6da6034d3cf6cfeb438~tplv-obj.webp"
+  },
+  "8914": {
+    "id": "8914",
+    "name": "Forever Rosa",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/863e7947bc793f694acbe970d70440a1~tplv-obj.webp"
+  },
+  "8916": {
+    "id": "8916",
+    "name": "Leon and Lili",
+    "cost": 9699,
+    "diamond_count": 9699,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6958244f3eeb69ce754f735b5833a4aa~tplv-obj.webp"
+  },
+  "9072": {
+    "id": "9072",
+    "name": "TikTok Universe",
+    "cost": 44999,
+    "diamond_count": 44999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp"
+  },
+  "9092": {
+    "id": "9092",
+    "name": "Fire Phoenix",
+    "cost": 41999,
+    "diamond_count": 41999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/bfb8425a7e8fa03f9fec05a973a4a506~tplv-obj.webp"
+  },
+  "9101": {
+    "id": "9101",
+    "name": "TikTok Universe",
+    "cost": 44999,
+    "diamond_count": 44999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp"
+  },
+  "9138": {
+    "id": "9138",
+    "name": "Trending Figure",
+    "cost": 999,
+    "diamond_count": 999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/df7b556ccf369bf9a42fe83ec8a77acf~tplv-obj.webp"
+  },
+  "9139": {
+    "id": "9139",
+    "name": "Team Bracelet",
+    "cost": 2,
+    "diamond_count": 2,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/54cb1eeca369e5bea1b97707ca05d189~tplv-obj.webp"
+  },
+  "9355": {
+    "id": "9355",
+    "name": "So Cute",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d40d31241efcf57c630e894bb3007b8a~tplv-obj.webp"
+  },
+  "9427": {
+    "id": "9427",
+    "name": "Pegasus",
+    "cost": 42999,
+    "diamond_count": 42999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f600a2495ab5d250e7da2066484a9383~tplv-obj.webp"
+  },
+  "9465": {
+    "id": "9465",
+    "name": "Fruit Friends",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1153dd51308c556cb4fcc48c7d62209f~tplv-obj.webp"
+  },
+  "9466": {
+    "id": "9466",
+    "name": "Amusement Park",
+    "cost": 17000,
+    "diamond_count": 17000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/12ecc01c2984c5d85bb508e80103a3cb~tplv-obj.webp"
+  },
+  "9467": {
+    "id": "9467",
+    "name": "Lili the Leopard",
+    "cost": 6599,
+    "diamond_count": 6599,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7be03e1af477d1dbc6eb742d0c969372~tplv-obj.webp"
+  },
+  "9468": {
+    "id": "9468",
+    "name": "Rhythmic Bear",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/380ced1977319859807292ce490993d2~tplv-obj.webp"
+  },
+  "9498": {
+    "id": "9498",
+    "name": "Blooming Ribbons",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f76750ab58ee30fc022c9e4e11d25c9d~tplv-obj.webp"
+  },
+  "9500": {
+    "id": "9500",
+    "name": "Flying Jets",
+    "cost": 5000,
+    "diamond_count": 5000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1d067d13988e8754ed6adbebd89b9ee8~tplv-obj.webp"
+  },
+  "9532": {
+    "id": "9532",
+    "name": "Shine Bright",
+    "cost": 4088,
+    "diamond_count": 4088,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d4234483e15952a992ae58a088291be1~tplv-obj.webp"
+  },
+  "9717": {
+    "id": "9717",
+    "name": "Lucky Airdrop Box",
+    "cost": 999,
+    "diamond_count": 999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6ae56f08ae3ee57ea2dda0025bfd39d3~tplv-obj.webp"
+  },
+  "9824": {
+    "id": "9824",
+    "name": "Lover’s Lock",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f3010d1fcb008ce1b17248e5ea18b178~tplv-obj.webp"
+  },
+  "9825": {
+    "id": "9825",
+    "name": "Magic Rhythm",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/00f1882035fcf9407e4b1955f0b4c48b~tplv-obj.webp"
+  },
+  "9909": {
+    "id": "9909",
+    "name": "Greeting Card",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dac91f95d4135654fe16d09369dd8355~tplv-obj.webp"
+  },
+  "9947": {
+    "id": "9947",
+    "name": "Friendship Necklace",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e033c3f28632e233bebac1668ff66a2f~tplv-obj.webp"
+  },
+  "9948": {
+    "id": "9948",
+    "name": "You’re Amazing",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b48c69f4df49c28391bcc069bbc31b41~tplv-obj.webp"
+  },
+  "10065": {
+    "id": "10065",
+    "name": "Gorilla",
+    "cost": 30000,
+    "diamond_count": 30000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/57619959bddbe35d8c684750a1d41d62~tplv-obj.webp"
+  },
+  "10165": {
+    "id": "10165",
+    "name": "Diamond Flight",
+    "cost": 18000,
+    "diamond_count": 18000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ada51a63094568b529b5efd83b182bc4~tplv-obj.webp"
+  },
+  "10168": {
+    "id": "10168",
+    "name": "Gorilla",
+    "cost": 30000,
+    "diamond_count": 30000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/57619959bddbe35d8c684750a1d41d62~tplv-obj.webp"
+  },
+  "10423": {
+    "id": "10423",
+    "name": "Club Music",
+    "cost": 2000,
+    "diamond_count": 2000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/610d14c4f6e25a5ae4c8dfc0e82ec909~tplv-obj.webp"
+  },
+  "10547": {
+    "id": "10547",
+    "name": "Pinch Face",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a10aab8940d3d5aee14b14cde033ab2a~tplv-obj.webp"
+  },
+  "10667": {
+    "id": "10667",
+    "name": "VR Goggles",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/18c51791197b413bbd1b4f1b983bda36~tplv-obj.webp"
+  },
+  "10668": {
+    "id": "10668",
+    "name": "Future Encounter",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/af980f4ec9ed73f3229df8dfb583abe6~tplv-obj.webp"
+  },
+  "10669": {
+    "id": "10669",
+    "name": "Future City",
+    "cost": 6000,
+    "diamond_count": 6000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/963b7c25aa2cedc0de22358342645e87~tplv-obj.webp"
+  },
+  "10670": {
+    "id": "10670",
+    "name": "Future Journey",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dd615b15ed696ee886064d5415dab688~tplv-obj.webp"
+  },
+  "10672": {
+    "id": "10672",
+    "name": "Sam in New City",
+    "cost": 6000,
+    "diamond_count": 6000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/291de897e4a8c3b72c358a9734c5b7d8~tplv-obj.webp"
+  },
+  "10716": {
+    "id": "10716",
+    "name": "Blow a kiss",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cdb55940740d5c83879b2934f9a7d08e~tplv-obj.webp"
+  },
+  "11046": {
+    "id": "11046",
+    "name": "Galaxy",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/79a02148079526539f7599150da9fd28~tplv-obj.webp"
+  },
+  "11177": {
+    "id": "11177",
+    "name": "Coffee Magic",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0cb623f44c34f77fe14c2e11bfe4ee62~tplv-obj.webp"
+  },
+  "11178": {
+    "id": "11178",
+    "name": "Relaxed Goose",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3961645e741423d7b334fb4b6488852f~tplv-obj.webp"
+  },
+  "11179": {
+    "id": "11179",
+    "name": "Naughty Chicken",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/46a839dbc1c3e9103c71d82b35b21ad4~tplv-obj.webp"
+  },
+  "11180": {
+    "id": "11180",
+    "name": "Love Painting",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/de6f01cb2a0deb2da24cb5d1ecf9a23b~tplv-obj.webp"
+  },
+  "11181": {
+    "id": "11181",
+    "name": "Tom's Hug",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/30ba2b172614d3c2da0e7caaca333b41~tplv-obj.webp"
+  },
+  "11183": {
+    "id": "11183",
+    "name": "Play for You",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/34201b86430742595e4dcb5b39560b7a~tplv-obj.webp"
+  },
+  "11526": {
+    "id": "11526",
+    "name": "Eye See You",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b8a0127d04311d8f58731321e073fa53~tplv-obj.webp"
+  },
+  "11527": {
+    "id": "11527",
+    "name": "Diamond Gun",
+    "cost": 5000,
+    "diamond_count": 5000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/651e705c26b704d03bc9c06d841808f1~tplv-obj.webp"
+  },
+  "11583": {
+    "id": "11583",
+    "name": "DJ Glasses",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d4aad726e2759e54a924fbcd628ea143~tplv-obj.webp"
+  },
+  "11584": {
+    "id": "11584",
+    "name": "Under Control",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/af67b28480c552fd8e8c0ae088d07a1d~tplv-obj.webp"
+  },
+  "11585": {
+    "id": "11585",
+    "name": "Work Hard Play Harder",
+    "cost": 6000,
+    "diamond_count": 6000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3257e15b3f6697aed88b4ac51b816603~tplv-obj.webp"
+  },
+  "11586": {
+    "id": "11586",
+    "name": "Party On&amp;On",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c45505ece4a91d9c43e4ba98a000b006~tplv-obj.webp"
+  },
+  "11808": {
+    "id": "11808",
+    "name": "Rock Star",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/57acaf0590c56c219493b71fe8d2961d~tplv-obj.webp"
+  },
+  "11809": {
+    "id": "11809",
+    "name": "Beating Heart",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/11769d71ebd3c6a21f4baa7184791da9~tplv-obj.webp"
+  },
+  "11810": {
+    "id": "11810",
+    "name": "Your Concert",
+    "cost": 4500,
+    "diamond_count": 4500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/86c9c8fb5aa76488b075f139dd575dfe~tplv-obj.webp"
+  },
+  "11811": {
+    "id": "11811",
+    "name": "Animal Band",
+    "cost": 2500,
+    "diamond_count": 2500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/60d8c4148c9cd0c268e570741ccf4150~tplv-obj.webp"
+  },
+  "11838": {
+    "id": "11838",
+    "name": "Diamond Gun",
+    "cost": 5000,
+    "diamond_count": 5000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/651e705c26b704d03bc9c06d841808f1~tplv-obj.webp"
+  },
+  "11900": {
+    "id": "11900",
+    "name": "Couch Potato",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3ee3b9eda0c1b9c869a7b12ad08eb9d7~tplv-obj.webp"
+  },
+  "11901": {
+    "id": "11901",
+    "name": "Dancing Hands",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d5d829bbca08bd500317991fbaa84bc3~tplv-obj.webp"
+  },
+  "12110": {
+    "id": "12110",
+    "name": "Manifesting",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ca11566ae5a41ec8971cc00b51f78dac~tplv-obj.webp"
+  },
+  "12210": {
+    "id": "12210",
+    "name": "Rosie the Rose Bean",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3cbaea405cc61e8eaab6f5a14d127511~tplv-obj.webp"
+  },
+  "12211": {
+    "id": "12211",
+    "name": "Jollie the Joy Bean",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0e3769575f5b7b27b67c6330376961a4~tplv-obj.webp"
+  },
+  "12212": {
+    "id": "12212",
+    "name": "Rocky the Rock Bean",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/767d7ea90f58f3676bbc5b1ae3c9851d~tplv-obj.webp"
+  },
+  "12213": {
+    "id": "12213",
+    "name": "Sage the Smart Bean",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ed2cc456ab1a8619c5093eb8cfd3d303~tplv-obj.webp"
+  },
+  "12336": {
+    "id": "12336",
+    "name": "Manifesting",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ca11566ae5a41ec8971cc00b51f78dac~tplv-obj.webp"
+  },
+  "12355": {
+    "id": "12355",
+    "name": "Club Cheers",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6a934c90e5533a4145bed7eae66d71bd~tplv-obj.webp"
+  },
+  "12356": {
+    "id": "12356",
+    "name": "Club Power",
+    "cost": 9,
+    "diamond_count": 9,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fb8da877eabca4ae295483f7cdfe7d31~tplv-obj.webp"
+  },
+  "12357": {
+    "id": "12357",
+    "name": "Club Victory",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6639eb3590a59052babc9cb772ae4f5b~tplv-obj.webp"
+  },
+  "12504": {
+    "id": "12504",
+    "name": "The Van Cat",
+    "cost": 799,
+    "diamond_count": 799,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6973dd1b6d3dee3ca3f0ebac3c1d2977~tplv-obj.webp"
+  },
+  "12505": {
+    "id": "12505",
+    "name": "Gold Medal",
+    "cost": 200,
+    "diamond_count": 200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/21549ba24f76a01d00373cb8e35660ae~tplv-obj.webp"
+  },
+  "12678": {
+    "id": "12678",
+    "name": "Level-up Sparks",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c6c5b0efea6f1f7e1fd1f3909284d12c~tplv-obj.webp"
+  },
+  "12679": {
+    "id": "12679",
+    "name": "Level-up Spotlight",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9a87567b4bb63b175f146745af412bb5~tplv-obj.webp"
+  },
+  "12680": {
+    "id": "12680",
+    "name": "Level-up Spectacle",
+    "cost": 12999,
+    "diamond_count": 12999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/52a09724bbe8d78227db67bc5fe78613~tplv-obj.webp"
+  },
+  "12852": {
+    "id": "12852",
+    "name": "Level Ship",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/61863cebe02f25d95f187d3b0033718d~tplv-obj.webp"
+  },
+  "12853": {
+    "id": "12853",
+    "name": "Level Ship",
+    "cost": 21000,
+    "diamond_count": 21000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/aca72c59f99d08b0c0d1cd6cc79dbb16~tplv-obj.webp"
+  },
+  "12892": {
+    "id": "12892",
+    "name": "Crocodile",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/68d0ab787e32a0d3229dcbf1cfe6e250~tplv-obj.webp"
+  },
+  "12935": {
+    "id": "12935",
+    "name": "Sage's Slash",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/213605d4582aa3e35b51712c7a0909aa~tplv-obj.webp"
+  },
+  "12944": {
+    "id": "12944",
+    "name": "Dynamic Music",
+    "cost": 4888,
+    "diamond_count": 4888,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/001c4ea85c78e9b35b5ae3228686a24c~tplv-obj.webp"
+  },
+  "12946": {
+    "id": "12946",
+    "name": "TikTok Crown",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/77289ae44d635380fa88e7bdfcfdc408~tplv-obj.webp"
+  },
+  "12947": {
+    "id": "12947",
+    "name": "Lion’s Mane",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/44818035acbbe673514caa600755268c~tplv-obj.webp"
+  },
+  "13072": {
+    "id": "13072",
+    "name": "Dragon Crown",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1d3f3738f57d6a45dd6df904bedd59ae~tplv-obj.webp"
+  },
+  "13073": {
+    "id": "13073",
+    "name": "Butterfly for You",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e02af5a7d59a958bd38536f7e3473f75~tplv-obj.webp"
+  },
+  "13075": {
+    "id": "13075",
+    "name": "Cheering Crab",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7d729b6a8104f5d349ba887608cd35bc~tplv-obj.webp"
+  },
+  "13087": {
+    "id": "13087",
+    "name": "Bubble Gum",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/52ebbe9f3f53b5567ad11ad6f8303c58~tplv-obj.webp"
+  },
+  "13197": {
+    "id": "13197",
+    "name": "Night Star",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3d136834fe9964927d6b30499a68b741~tplv-obj.webp"
+  },
+  "13263": {
+    "id": "13263",
+    "name": "Umbrella of Love",
+    "cost": 1200,
+    "diamond_count": 1200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3b1e8de86d841496b87567014827537b~tplv-obj.webp"
+  },
+  "13298": {
+    "id": "13298",
+    "name": "Wink Charm",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/295d753e095c6ac8b180691f20d64ea8~tplv-obj.webp"
+  },
+  "13300": {
+    "id": "13300",
+    "name": "Heart Gaze",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0fe120fdb52724dd157e41cc5c00a924~tplv-obj.webp"
+  },
+  "13301": {
+    "id": "13301",
+    "name": "Singing Magic",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1b76de4373dec56480903c3d5367fd13~tplv-obj.webp"
+  },
+  "13302": {
+    "id": "13302",
+    "name": "Sparkle Dance",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6d934aacf296e6f24d75b8b2aa4fb22f~tplv-obj.webp"
+  },
+  "13453": {
+    "id": "13453",
+    "name": "Twinkling Star",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f15902127c6750276af4021e818e756e~tplv-obj.webp"
+  },
+  "13454": {
+    "id": "13454",
+    "name": "Star Map Polaris",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6abb39fb8088a1897b8163e54394845c~tplv-obj.webp"
+  },
+  "13604": {
+    "id": "13604",
+    "name": "Fiery Dragon",
+    "cost": 4888,
+    "diamond_count": 4888,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8d1281789de0a5dfa69f90ecf0dc1534~tplv-obj.webp"
+  },
+  "13651": {
+    "id": "13651",
+    "name": "Go Popular",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b342e28d73dac6547e0b3e2ad57f6597~tplv-obj.webp"
+  },
+  "13987": {
+    "id": "13987",
+    "name": "Feather Mask",
+    "cost": 300,
+    "diamond_count": 300,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/088bdb48e5051844d154948b4eb75e5f~tplv-obj.webp"
+  },
+  "13988": {
+    "id": "13988",
+    "name": "Crystal Dreams",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e21d2956bd289847ab8c006d499d25b~tplv-obj.webp"
+  },
+  "13999": {
+    "id": "13999",
+    "name": "Wishing Cake",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6142c30d6b06c1c7748709e02f1293ab~tplv-obj.webp"
+  },
+  "14000": {
+    "id": "14000",
+    "name": "Bowknot",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dd02c4c2cb726134314e89abec0b5476~tplv-obj.webp"
+  },
+  "14087": {
+    "id": "14087",
+    "name": "Balloons",
+    "cost": 200,
+    "diamond_count": 200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/49d51360108c4ff1770f2d7c59d7d7cb~tplv-obj.webp"
+  },
+  "14088": {
+    "id": "14088",
+    "name": "Pink Dream",
+    "cost": 2988,
+    "diamond_count": 2988,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0de49ea9a79e65307c674596da517792~tplv-obj.webp"
+  },
+  "14109": {
+    "id": "14109",
+    "name": "Mark of Love",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/582475419a820e0b0dbc964799b6146e~tplv-obj.webp"
+  },
+  "14214": {
+    "id": "14214",
+    "name": "&nbsp;Let butterfly dances&nbsp;",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/754effcbfbc5c6708c32552ab780e14b~tplv-obj.webp"
+  },
+  "14381": {
+    "id": "14381",
+    "name": "Colorful Wings",
+    "cost": 700,
+    "diamond_count": 700,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/67f29babb4506da83fed2d9143e6079b~tplv-obj.webp"
+  },
+  "14382": {
+    "id": "14382",
+    "name": "Floating Octopus",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/022d496f79aa50d3042f0660d37ed48a~tplv-obj.webp"
+  },
+  "14384": {
+    "id": "14384",
+    "name": "Sage’s Venture",
+    "cost": 4999,
+    "diamond_count": 4999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ea291160b9b69dc5d13938433ba0fae9~tplv-obj.webp"
+  },
+  "14397": {
+    "id": "14397",
+    "name": "Fairy Wings",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d9798af8e406e718e66322caddf04440~tplv-obj.webp"
+  },
+  "14398": {
+    "id": "14398",
+    "name": "Vibrant Stage",
+    "cost": 1400,
+    "diamond_count": 1400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ae0a1abca4313c916e2a4e40813d90d6~tplv-obj.webp"
+  },
+  "14399": {
+    "id": "14399",
+    "name": "Flamingo Groove",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ef1e4cf78bb27e6164f53e1695e7a5bc~tplv-obj.webp"
+  },
+  "14487": {
+    "id": "14487",
+    "name": "Beach Day",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8b87bbb88b80a5bf63abb6abcd4fa147~tplv-obj.webp"
+  },
+  "14488": {
+    "id": "14488",
+    "name": "Capybara",
+    "cost": 30,
+    "diamond_count": 30,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6703facdac34caefbd0617a6321afe9b~tplv-obj.webp"
+  },
+  "14494": {
+    "id": "14494",
+    "name": "Interstellar Trek",
+    "cost": 14999,
+    "diamond_count": 14999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9b96e064a327ac9f720a767a1c2603b3~tplv-obj.webp"
+  },
+  "14497": {
+    "id": "14497",
+    "name": "Time Warp",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4a9a2b3c9ae95efd305eee880ded9c54~tplv-obj.webp"
+  },
+  "14532": {
+    "id": "14532",
+    "name": "Fully Bloomed Sakura",
+    "cost": 599,
+    "diamond_count": 599,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/138d5ae217170678f87d632d1b3649e6~tplv-obj.webp"
+  },
+  "14534": {
+    "id": "14534",
+    "name": "Raya Gift Card",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b83e4e9e80e501617b6d01582109c00f~tplv-obj.webp"
+  },
+  "14543": {
+    "id": "14543",
+    "name": "Congratulations",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8e73d843b23a9e68f8d3cf8c46fc0bee~tplv-obj.webp"
+  },
+  "14544": {
+    "id": "14544",
+    "name": "Go Home",
+    "cost": 3999,
+    "diamond_count": 3999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fa586ca53d45cd656d4df2f4624da2a0~tplv-obj.webp"
+  },
+  "14554": {
+    "id": "14554",
+    "name": "Kitten Kneading",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/40938efafa13a17de483949934570461~tplv-obj.webp"
+  },
+  "14555": {
+    "id": "14555",
+    "name": "Flower Headband",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eaec5f24e45bc66ec44830fa5024ab45~tplv-obj.webp"
+  },
+  "14557": {
+    "id": "14557",
+    "name": "Puppy Kisses",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4ae998a21159b60484169864f8968ba9~tplv-obj.webp"
+  },
+  "14562": {
+    "id": "14562",
+    "name": "Battle Champion",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/adc6156cc7bfb49f336c6f329ebc2830~tplv-obj.webp"
+  },
+  "14568": {
+    "id": "14568",
+    "name": "Shoot the Apple",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/12a72eac62721ef031f22d935f6aac4b~tplv-obj.webp"
+  },
+  "14656": {
+    "id": "14656",
+    "name": "Greeting Heart",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9325524bd9ca181bd8e76eb99b44c042~tplv-obj.webp"
+  },
+  "14657": {
+    "id": "14657",
+    "name": "Budding Heart",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/80cc308eca861fccd859c089b0647193~tplv-obj.webp"
+  },
+  "14658": {
+    "id": "14658",
+    "name": "Blooming Heart",
+    "cost": 1599,
+    "diamond_count": 1599,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ff5453b7569d482c873163ce4b1fb703~tplv-obj.webp"
+  },
+  "14659": {
+    "id": "14659",
+    "name": "Devoted Heart",
+    "cost": 5999,
+    "diamond_count": 5999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/bc3e9b4ce077044956fee2ded85f8ff7~tplv-obj.webp"
+  },
+  "14660": {
+    "id": "14660",
+    "name": "Crystal Heart",
+    "cost": 14999,
+    "diamond_count": 14999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/08095e18ae3da6ad5dcf23ce68eb1483~tplv-obj.webp"
+  },
+  "14661": {
+    "id": "14661",
+    "name": "Infinite Heart",
+    "cost": 23999,
+    "diamond_count": 23999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/de31974d7a94525c6f31872b5b38f76e~tplv-obj.webp"
+  },
+  "14788": {
+    "id": "14788",
+    "name": "Blow Rosie Kisses",
+    "cost": 2199,
+    "diamond_count": 2199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/710076b6be7de742f800c4ab88fab9ff~tplv-obj.webp"
+  },
+  "14789": {
+    "id": "14789",
+    "name": "Jollie's Heartland",
+    "cost": 2199,
+    "diamond_count": 2199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0eafd5c28cdb2563f3386679643abb29~tplv-obj.webp"
+  },
+  "14790": {
+    "id": "14790",
+    "name": "Rocky's Punch",
+    "cost": 2199,
+    "diamond_count": 2199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d17fb8a57c708c4f07f95884131df654~tplv-obj.webp"
+  },
+  "14791": {
+    "id": "14791",
+    "name": "Sage's Coinbot",
+    "cost": 2199,
+    "diamond_count": 2199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/443c163954f4f7636909fb6980518745~tplv-obj.webp"
+  },
+  "14909": {
+    "id": "14909",
+    "name": "XXXL Flowers",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f1ead695e8281b7387e40d48fc6b1fb0~tplv-obj.webp"
+  },
+  "14910": {
+    "id": "14910",
+    "name": "Sparklers",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/192a873e366e2410da4fa406aba0e0af~tplv-obj.webp"
+  },
+  "15063": {
+    "id": "15063",
+    "name": "Journey Pass",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/551ecaf639c5e02354f9e7c1a763ec72~tplv-obj.webp"
+  },
+  "15064": {
+    "id": "15064",
+    "name": "Racing Helmet",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b9321d0563504990e8fcf73466f4c895~tplv-obj.webp"
+  },
+  "15065": {
+    "id": "15065",
+    "name": "Racing Debut",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b5ac8bb9da5569185bfdc1be357d3906~tplv-obj.webp"
+  },
+  "15066": {
+    "id": "15066",
+    "name": "Strong Finish",
+    "cost": 6000,
+    "diamond_count": 6000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9ad035b088dfeaf298fdc9cd84d50000~tplv-obj.webp"
+  },
+  "15095": {
+    "id": "15095",
+    "name": "Woodland Wonder",
+    "cost": 30,
+    "diamond_count": 30,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/be411636ecbd2b0aa314f85abed7042b~tplv-obj.webp"
+  },
+  "15099": {
+    "id": "15099",
+    "name": "Balloons",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c370d5c4ab6e5971b6b17de3eab6f6d4~tplv-obj.webp"
+  },
+  "15100": {
+    "id": "15100",
+    "name": "Wave Firework",
+    "cost": 5,
+    "diamond_count": 5,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/579f1709202892e0356e526fccfcc3c0~tplv-obj.webp"
+  },
+  "15104": {
+    "id": "15104",
+    "name": "Guardian Wings",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/37e3125552d8c8f4f4e4ecb2d8a13f1d~tplv-obj.webp"
+  },
+  "15159": {
+    "id": "15159",
+    "name": "Panda Hug",
+    "cost": 499,
+    "diamond_count": 499,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6a00e64d9582d0e1f4ef0ac66132c272~tplv-obj.webp"
+  },
+  "15160": {
+    "id": "15160",
+    "name": "Hampers",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ebc86b28c55e0462099982d4be02ca38~tplv-obj.webp"
+  },
+  "15187": {
+    "id": "15187",
+    "name": "Big Shout Out",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d79737225a5c68dee52b34d1a7c7dec9~tplv-obj.webp"
+  },
+  "15189": {
+    "id": "15189",
+    "name": "Chatting Popcorn",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f4813ddce6a6b3268df01af9fe3764d9~tplv-obj.webp"
+  },
+  "15190": {
+    "id": "15190",
+    "name": "Powerful Mind",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2184128b55eaef8a390a1a43a2ffdf16~tplv-obj.webp"
+  },
+  "15191": {
+    "id": "15191",
+    "name": "Candy Bouquet",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/935ad03446f993a3630508e5c929b7cf~tplv-obj.webp"
+  },
+  "15192": {
+    "id": "15192",
+    "name": "Alien Buddy",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4d39819a9bd9731b747e42a1ee650406~tplv-obj.webp"
+  },
+  "15193": {
+    "id": "15193",
+    "name": "Hat of Joy",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9fcbc11bf61ee4b5790f2b3677a45ac6~tplv-obj.webp"
+  },
+  "15194": {
+    "id": "15194",
+    "name": "United Heart",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/72ff280b8c6ce16f6efc9bf4cd6a036b~tplv-obj.webp"
+  },
+  "15195": {
+    "id": "15195",
+    "name": "Mic Champ",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d8678a19d13ab6e2feffbea41acd0ed9~tplv-obj.webp"
+  },
+  "15199": {
+    "id": "15199",
+    "name": "Ice Cream Mic",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7f784d1ec7b26d7d8cfd05faede11d76~tplv-obj.webp"
+  },
+  "15205": {
+    "id": "15205",
+    "name": "Flamingo Floaty",
+    "cost": 999,
+    "diamond_count": 999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/66b00f97a576cb9b63d981a079ebefb1~tplv-obj.webp"
+  },
+  "15231": {
+    "id": "15231",
+    "name": "Love you so much",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fc549cf1bc61f9c8a1c97ebab68dced7~tplv-obj.webp"
+  },
+  "15232": {
+    "id": "15232",
+    "name": "You're awesome",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e9cafce8279220ed26016a71076d6a8a~tplv-obj.webp"
+  },
+  "15425": {
+    "id": "15425",
+    "name": "LIVE Ranking Crown",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1bb7f00a3adeb932e5f5518d723fedb5~tplv-obj.webp"
+  },
+  "15487": {
+    "id": "15487",
+    "name": "Kicker Challenge",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8065704646452387f6bed049b194f214~tplv-obj.webp"
+  },
+  "15652": {
+    "id": "15652",
+    "name": "Otter Kiss",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e89d78ac73878f3a3955628c16dc8ee2~tplv-obj.webp"
+  },
+  "15752": {
+    "id": "15752",
+    "name": "Star Goggles",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e14483e67a44ce522ba583ec923941fa~tplv-obj.webp"
+  },
+  "15761": {
+    "id": "15761",
+    "name": "Bounce Speakers",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fc25829fc12db52196c8606000ae17f0~tplv-obj.webp"
+  },
+  "15762": {
+    "id": "15762",
+    "name": "Encore Clap",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5b5e6863e349500d0c8ad6d67353728b~tplv-obj.webp"
+  },
+  "15763": {
+    "id": "15763",
+    "name": "Cheer Mic",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cf2c95f9642541fa9ebe9bdcfe6e7359~tplv-obj.webp"
+  },
+  "15764": {
+    "id": "15764",
+    "name": "Backing Monkey",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/758b0367f5746ec6335f4374dd9b45c3~tplv-obj.webp"
+  },
+  "15911": {
+    "id": "15911",
+    "name": "Rose Bear",
+    "cost": 214,
+    "diamond_count": 214,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/adf6e9bd6219788151edb9fa026a0481~tplv-obj.webp"
+  },
+  "16275": {
+    "id": "16275",
+    "name": "Suitcase",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ebb5bcf8d8fe3f8975eeb76b37ddbd77~tplv-obj.webp"
+  },
+  "16348": {
+    "id": "16348",
+    "name": "Bowtiful Crown",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/49ead973a8b72606222e9afe055d694a~tplv-obj.webp"
+  },
+  "16449": {
+    "id": "16449",
+    "name": "Terminator Face",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eff4d1470793af0ffabb2e29e0909087~tplv-obj.webp"
+  },
+  "16450": {
+    "id": "16450",
+    "name": "You Are Loved",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4d9bbf004850dfc97cfaae9859c1c28d~tplv-obj.webp"
+  },
+  "16477": {
+    "id": "16477",
+    "name": "Become Kitten",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2d89dbc83a0999ebab98b4b06d6f5ce1~tplv-obj.webp"
+  },
+  "16478": {
+    "id": "16478",
+    "name": "Music Bubbles",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b5786e09eb50f1ea512b2ae9f7034254~tplv-obj.webp"
+  },
+  "16479": {
+    "id": "16479",
+    "name": "Masquerade",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8fde56ae6a7ea22d3d17184ac362585f~tplv-obj.webp"
+  },
+  "16527": {
+    "id": "16527",
+    "name": "LIVE Ranking Crown",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1bb7f00a3adeb932e5f5518d723fedb5~tplv-obj.webp"
+  },
+  "16551": {
+    "id": "16551",
+    "name": "Marked with Love",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2859c21a400e1f40d93da7b68c0254d0~tplv-obj.webp"
+  },
+  "16552": {
+    "id": "16552",
+    "name": "Balloon Crown",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d1cc3f587941bd7af50929aee49ac070~tplv-obj.webp"
+  },
+  "16590": {
+    "id": "16590",
+    "name": "Potato Transformation",
+    "cost": 150,
+    "diamond_count": 150,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9051d25150463ee088103d8e5c8f6d9a~tplv-obj.webp"
+  },
+  "16591": {
+    "id": "16591",
+    "name": "Prince",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ea1fc9cb68514ec3c844179c6f09e8de~tplv-obj.webp"
+  },
+  "16637": {
+    "id": "16637",
+    "name": "Bunny Crown",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/296fc5bf7a4df1db6de50d80414c5407~tplv-obj.webp"
+  },
+  "16669": {
+    "id": "16669",
+    "name": "Hi! Rosie!",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c5d90ed49d326785882decc35c4200b0~tplv-obj.webp"
+  },
+  "16670": {
+    "id": "16670",
+    "name": "Fox Legend",
+    "cost": 1800,
+    "diamond_count": 1800,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fac01b1cc3a676a38e749959faca9fb2~tplv-obj.webp"
+  },
+  "16671": {
+    "id": "16671",
+    "name": "Rosie's Concert",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9e9ccba3ad69fb79462faad2d4bab4a5~tplv-obj.webp"
+  },
+  "16672": {
+    "id": "16672",
+    "name": "Join Butterflies",
+    "cost": 600,
+    "diamond_count": 600,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/79afcda7ceb1228d393f4987e12a857c~tplv-obj.webp"
+  },
+  "16690": {
+    "id": "16690",
+    "name": "Super Popular",
+    "cost": 9,
+    "diamond_count": 9,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2fa794a99919386b85402d9a0a991b2b~tplv-obj.webp"
+  },
+  "16711": {
+    "id": "16711",
+    "name": "Panda Climb",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4673a50f307ef9735bb64b2f663b222f~tplv-obj.webp"
+  },
+  "16748": {
+    "id": "16748",
+    "name": "Vinyl Flip",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5f5ed81e3e714fc1a30ec6efd379cd91~tplv-obj.webp"
+  },
+  "16749": {
+    "id": "16749",
+    "name": "Grand show",
+    "cost": 999,
+    "diamond_count": 999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/61348c8f1a776122088de3d43fc16fab~tplv-obj.webp"
+  },
+  "16896": {
+    "id": "16896",
+    "name": "Rose Hand",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/805e6b8051d50ca6e6c9b74d5fc89045~tplv-obj.webp"
+  },
+  "16897": {
+    "id": "16897",
+    "name": "Magic Prop",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/51b0adff1cf290651c87ec26128658b9~tplv-obj.webp"
+  },
+  "16899": {
+    "id": "16899",
+    "name": "Magic World",
+    "cost": 4088,
+    "diamond_count": 4088,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a91fdba590b29bab1287ec746d8323a8~tplv-obj.webp"
+  },
+  "17004": {
+    "id": "17004",
+    "name": "Rose Hand",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/805e6b8051d50ca6e6c9b74d5fc89045~tplv-obj.webp"
+  },
+  "17069": {
+    "id": "17069",
+    "name": "Sour Buddy",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/963e12ba84805721d96b06deaf5d660b~tplv-obj.webp"
+  },
+  "17085": {
+    "id": "17085",
+    "name": "Music  Album",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2a5378fbb272f5b4be0678084c66bdc1~tplv-obj.webp"
+  },
+  "17100": {
+    "id": "17100",
+    "name": "Feather Tiara",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/23a0d8c3317d8be5e5a63488a7b2b8c4~tplv-obj.webp"
+  },
+  "17101": {
+    "id": "17101",
+    "name": "Coconut Juice",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8157f47f794c8395969034574dd12082~tplv-obj.webp"
+  },
+  "17102": {
+    "id": "17102",
+    "name": "Palm Breeze",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dc8043965da9348b305de279cb2fb451~tplv-obj.webp"
+  },
+  "17103": {
+    "id": "17103",
+    "name": "Juicy Cap",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e6ce2ee0daae3693268b77efec17507f~tplv-obj.webp"
+  },
+  "17104": {
+    "id": "17104",
+    "name": "Forest Elf",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1aeb39ecbb493ea520e23588df61caa1~tplv-obj.webp"
+  },
+  "17105": {
+    "id": "17105",
+    "name": "Sundae Bowl",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/725ba28c17d775db510ca7b240cdd84e~tplv-obj.webp"
+  },
+  "17179": {
+    "id": "17179",
+    "name": "Air Dancer",
+    "cost": 300,
+    "diamond_count": 300,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/97c975dcce2483027ececde2b6719761~tplv-obj.webp"
+  },
+  "17357": {
+    "id": "17357",
+    "name": "Pirate's Treasure",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ec205551b4ed75a5a12e2dd49e70b723~tplv-obj.webp"
+  },
+  "17358": {
+    "id": "17358",
+    "name": "Go Hamster",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/582131434f4f6edc3f97b96fbc33a492~tplv-obj.webp"
+  },
+  "17359": {
+    "id": "17359",
+    "name": "Caterpillar Chaos",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5fc71d8f491568b0e258e2de1718e37c~tplv-obj.webp"
+  },
+  "17360": {
+    "id": "17360",
+    "name": "Chirpy Kisses",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c75ec50c453f5b09e4d25c5c69c30ed5~tplv-obj.webp"
+  },
+  "17400": {
+    "id": "17400",
+    "name": "Melon Juice",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/912d29e708fe00d72487908114803e77~tplv-obj.webp"
+  },
+  "17491": {
+    "id": "17491",
+    "name": "Roses",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5bbfdb351eb6d69cfe9576b4f3683709~tplv-obj.webp"
+  },
+  "17565": {
+    "id": "17565",
+    "name": "Pawfect",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8710c33f4929aa91c7ec7154f5f90268~tplv-obj.webp"
+  },
+  "17589": {
+    "id": "17589",
+    "name": "Side by Side",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/14b52e1933131d94a2634acf1625559d~tplv-obj.webp"
+  },
+  "17667": {
+    "id": "17667",
+    "name": "Side by Side",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/14b52e1933131d94a2634acf1625559d~tplv-obj.webp"
+  },
+  "17677": {
+    "id": "17677",
+    "name": "Juicy Smile",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b897b374103a142ce550afec4c54d9aa~tplv-obj.webp"
+  },
+  "17689": {
+    "id": "17689",
+    "name": "Batwing Hat",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/973267050ccb12c111d8048226ac7218~tplv-obj.webp"
+  },
+  "17762": {
+    "id": "17762",
+    "name": "Party Bus",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/719e1f271c29f2165bda5d787501c307~tplv-obj.webp"
+  },
+  "17821": {
+    "id": "17821",
+    "name": "Face-pulling",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fbbe8af4280240dfdb11ad1100be0282~tplv-obj.webp"
+  },
+  "17827": {
+    "id": "17827",
+    "name": "Candy Loot",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/942191ca3bdc5b648c725e2800a1c3d2~tplv-obj.webp"
+  },
+  "17844": {
+    "id": "17844",
+    "name": "Catrina",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fadb0050e89ad6a1731c1a4742360846~tplv-obj.webp"
+  },
+  "17845": {
+    "id": "17845",
+    "name": "Bat Headwear",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1ba0996c3dd7db45807fd7f255eb66a4~tplv-obj.webp"
+  },
+  "17846": {
+    "id": "17846",
+    "name": "Halloween Fun Hat",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/45a573035e301087d1ffe91e0f1513cb~tplv-obj.webp"
+  },
+  "17922": {
+    "id": "17922",
+    "name": "Charmer Bow",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3cbe9384885eab12ace419cc4f28cf4f~tplv-obj.webp"
+  },
+  "17923": {
+    "id": "17923",
+    "name": "Joker Ball",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4227bdbc22921d8cdceb3ab14366624d~tplv-obj.webp"
+  },
+  "17947": {
+    "id": "17947",
+    "name": "Bubbly Kiss",
+    "cost": 530,
+    "diamond_count": 530,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/780e304a1f0926d9e4b08e4665bbc93d~tplv-obj.webp"
+  },
+  "17948": {
+    "id": "17948",
+    "name": "Joy Floats",
+    "cost": 1030,
+    "diamond_count": 1030,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/be17076f04429b60eb2d7c3e03a2ea9d~tplv-obj.webp"
+  },
+  "17949": {
+    "id": "17949",
+    "name": "You're So Fly",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6250163a81c588fca53191e2ae01031a~tplv-obj.webp"
+  },
+  "17950": {
+    "id": "17950",
+    "name": "Candy Puffs",
+    "cost": 1030,
+    "diamond_count": 1030,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/776b2cab31f92e2592d27a4c6bd3df53~tplv-obj.webp"
+  },
+  "17951": {
+    "id": "17951",
+    "name": "Astrobear",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9a8c487c3245fbce45f83f1d4dbb956e~tplv-obj.webp"
+  },
+  "17952": {
+    "id": "17952",
+    "name": "Sky Drift",
+    "cost": 2000,
+    "diamond_count": 2000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/761bac6eb7c53852bfc702282fd9be85~tplv-obj.webp"
+  },
+  "17953": {
+    "id": "17953",
+    "name": "By the Glaziers",
+    "cost": 2380,
+    "diamond_count": 2380,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/89106a5f53730a2aa745d74602bb9e1c~tplv-obj.webp"
+  },
+  "17954": {
+    "id": "17954",
+    "name": "Samfaring Tom",
+    "cost": 2850,
+    "diamond_count": 2850,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d170a2612408d59bde870ffae406747b~tplv-obj.webp"
+  },
+  "17955": {
+    "id": "17955",
+    "name": "Look Up",
+    "cost": 3350,
+    "diamond_count": 3350,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/87ed725a0b451b9d007a27fb4e315ab9~tplv-obj.webp"
+  },
+  "17956": {
+    "id": "17956",
+    "name": "Dream Big",
+    "cost": 3350,
+    "diamond_count": 3350,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7bc2c2c9cccc164f07841e6575972311~tplv-obj.webp"
+  },
+  "17957": {
+    "id": "17957",
+    "name": "Sugar Whiskers",
+    "cost": 4918,
+    "diamond_count": 4918,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3d306be32f7d6d52c4e74df15a063d45~tplv-obj.webp"
+  },
+  "17958": {
+    "id": "17958",
+    "name": "Fluffy Buddies",
+    "cost": 5388,
+    "diamond_count": 5388,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/368504add2c0f4369d6940552783510e~tplv-obj.webp"
+  },
+  "17959": {
+    "id": "17959",
+    "name": "Cub on Clouds",
+    "cost": 5888,
+    "diamond_count": 5888,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e9c3eec846fb6be179ded64e57252918~tplv-obj.webp"
+  },
+  "17960": {
+    "id": "17960",
+    "name": "Valiant Odyssey",
+    "cost": 5888,
+    "diamond_count": 5888,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3b238017dd782ab45f8243abde1406e7~tplv-obj.webp"
+  },
+  "17961": {
+    "id": "17961",
+    "name": "Majestic Hearts",
+    "cost": 7238,
+    "diamond_count": 7238,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4585c4d71865a5193fafe229c09512b~tplv-obj.webp"
+  },
+  "17962": {
+    "id": "17962",
+    "name": "Magic Genie",
+    "cost": 200,
+    "diamond_count": 200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3d306be32f7d6d52c4e74df15a063d45~tplv-obj.webp"
+  },
+  "17983": {
+    "id": "17983",
+    "name": "Rose Soundwave",
+    "cost": 499,
+    "diamond_count": 499,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/116f10b4d15bcfc0c945554778d52c7c~tplv-obj.webp"
+  },
+  "17984": {
+    "id": "17984",
+    "name": "Beach Maracas",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/db8bf15e39052e17289b70d9eaa926e0~tplv-obj.webp"
+  },
+  "17985": {
+    "id": "17985",
+    "name": "Treasured Voice",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/99bb73b9eb5851a2bcafadb6fe9a9815~tplv-obj.webp"
+  },
+  "17986": {
+    "id": "17986",
+    "name": "Raving Snail",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ef4e1229a2f0b67f7d4e92b508667060~tplv-obj.webp"
+  },
+  "18025": {
+    "id": "18025",
+    "name": "Music Conductor",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1351df201d2481a07a33af2ea06af84f~tplv-obj.webp"
+  },
+  "18026": {
+    "id": "18026",
+    "name": "Melody Glasses",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7e4e83b1f8746e2c3205e14f99eaae08~tplv-obj.webp"
+  },
+  "18107": {
+    "id": "18107",
+    "name": "Style Me Up",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b676cd3356e7dc11d4dad13fed18d29e~tplv-obj.webp"
+  },
+  "18124": {
+    "id": "18124",
+    "name": "Melodic birds",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/345514d111481a58d76bd53c42f0445d~tplv-obj.webp"
+  },
+  "18137": {
+    "id": "18137",
+    "name": "Captured Vocals",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/73613a349fbac56473acd823675f5752~tplv-obj.webp"
+  },
+  "18187": {
+    "id": "18187",
+    "name": "Song of Harvest",
+    "cost": 150,
+    "diamond_count": 150,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8af5604b926b8d045246d25d4de24550~tplv-obj.webp"
+  },
+  "18195": {
+    "id": "18195",
+    "name": "Vintage flight",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e9764af4b6dce95b8f993b3902eb1d76~tplv-obj.webp"
+  },
+  "18196": {
+    "id": "18196",
+    "name": "Surfing Penguin",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/de7454192584813d5bcb0e64d44bfc64~tplv-obj.webp"
+  },
+  "18197": {
+    "id": "18197",
+    "name": "Batting Cutie",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/94b42ab4ffd5ccc79279dffc6b109de2~tplv-obj.webp"
+  },
+  "18198": {
+    "id": "18198",
+    "name": "Tiger Lift",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5150422ca02095eef30bd508fe0b7cdd~tplv-obj.webp"
+  },
+  "18199": {
+    "id": "18199",
+    "name": "Space Love",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/186d36ad446fe5336a3ddce47eae5dab~tplv-obj.webp"
+  },
+  "18226": {
+    "id": "18226",
+    "name": "Xmas Tree Hat",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/07611650030bc00a33787a7a0d91dcec~tplv-obj.webp"
+  },
+  "18228": {
+    "id": "18228",
+    "name": "Gingerbread Man",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/47417dd0758e895c33632863017f5d78~tplv-obj.webp"
+  },
+  "18229": {
+    "id": "18229",
+    "name": "Reindeer Milk",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c7b922a59b8e77e748803717bd483ccf~tplv-obj.webp"
+  },
+  "18230": {
+    "id": "18230",
+    "name": "Penguin Snowpal",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/29828fedfc36982c9395822e9e5aab20~tplv-obj.webp"
+  },
+  "18231": {
+    "id": "18231",
+    "name": "Santa Owl Surprise",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d70298039a39a03723b95b9a76421bc1~tplv-obj.webp"
+  },
+  "18232": {
+    "id": "18232",
+    "name": "Cozy Xmas Set",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cea35adc166d87bd2f9ca00580ce80e2~tplv-obj.webp"
+  },
+  "18299": {
+    "id": "18299",
+    "name": "Viking Hammer",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5b95101816bc9f61f65bd265641ef4d6~tplv-obj.webp"
+  },
+  "18334": {
+    "id": "18334",
+    "name": "Puyo Shuffle!",
+    "cost": 999,
+    "diamond_count": 999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/438a980bdb83101f60621e261fa06a29~tplv-obj.webp"
+  },
+  "18335": {
+    "id": "18335",
+    "name": "Judy Pose",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d29ad841081c55a1586c10c8d29e6fe7~tplv-obj.webp"
+  },
+  "18337": {
+    "id": "18337",
+    "name": "Invincible Hammer",
+    "cost": 14999,
+    "diamond_count": 14999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/52d8c2e23c1800e85ad621e431220724~tplv-obj.webp"
+  },
+  "18338": {
+    "id": "18338",
+    "name": "Cyber Roar",
+    "cost": 25999,
+    "diamond_count": 25999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e36175fdd1bdcda3716a857a509042b2~tplv-obj.webp"
+  },
+  "18339": {
+    "id": "18339",
+    "name": "Julius the Champion",
+    "cost": 43999,
+    "diamond_count": 43999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/78260c7f1dac82bd979279b5e04bffeb~tplv-obj.webp"
+  },
+  "18461": {
+    "id": "18461",
+    "name": "Community Gift",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dfde5e8d8321ff1251023466f3fce61b~tplv-obj.webp"
+  },
+  "18505": {
+    "id": "18505",
+    "name": "Confetti Bear",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6e2944bf91135c52cc8004d9b7ef36ab~tplv-obj.webp"
+  },
+  "18506": {
+    "id": "18506",
+    "name": "Party Blossom",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3065f931274a9c1e6d4cdd0b29ff3c8d~tplv-obj.webp"
+  },
+  "18507": {
+    "id": "18507",
+    "name": "Candy Bouquet",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/13a78105483d213723d66d7fbf308001~tplv-obj.webp"
+  },
+  "18508": {
+    "id": "18508",
+    "name": "Mystery Box",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/17667837f58f77f6e189617880315f7c~tplv-obj.webp"
+  },
+  "18509": {
+    "id": "18509",
+    "name": "Celebration Hat",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/39ae5c2723ac3754b25c05ef7c6744c3~tplv-obj.webp"
+  },
+  "18605": {
+    "id": "18605",
+    "name": "Dreamy Strings",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/68e68d79a6ad382321c9cbdee966c025~tplv-obj.webp"
+  },
+  "18606": {
+    "id": "18606",
+    "name": "Singing Sax",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0962211de9b80bda00a7da89400d2a5a~tplv-obj.webp"
+  },
+  "18607": {
+    "id": "18607",
+    "name": "City Pop",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d70148f36f3f740123bb9be341c13d77~tplv-obj.webp"
+  },
+  "18608": {
+    "id": "18608",
+    "name": "Rocking Shroom",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cbc0508afc678106f11392ae1ed3c055~tplv-obj.webp"
+  },
+  "18610": {
+    "id": "18610",
+    "name": "Music Mate",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/789d404702b42340359a4b5ea9366dbb~tplv-obj.webp"
+  },
+  "18789": {
+    "id": "18789",
+    "name": "Lucky Pony",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8d005c54c988a6353777ce9c06cfb9cc~tplv-obj.webp"
+  },
+  "18790": {
+    "id": "18790",
+    "name": "Doll New Year Greeting",
+    "cost": 1999,
+    "diamond_count": 1999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5ec37123593a6fd309cee3ddc1f93de6~tplv-obj.webp"
+  },
+  "18791": {
+    "id": "18791",
+    "name": "Ring Of Honor-Cube",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/bb5cbc1ff2bf4370873a1fe98e2b6b50~tplv-obj.webp"
+  },
+  "18792": {
+    "id": "18792",
+    "name": "Golden Gallop",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ec26ec5a61ad0490b70e31d6dbe128bc~tplv-obj.webp"
+  },
+  "19065": {
+    "id": "19065",
+    "name": "League Ball",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/85e79c76fd9b5ded418565427a67f424~tplv-obj.webp"
+  },
+  "19067": {
+    "id": "19067",
+    "name": "League Countdown",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/936d94c2e9267c3fa099127fba4e30a2~tplv-obj.webp"
+  },
+  "19068": {
+    "id": "19068",
+    "name": "League Trophy",
+    "cost": 599,
+    "diamond_count": 599,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fe5bf1d97adafcdc675222a9facfe6ee~tplv-obj.webp"
+  },
+  "19071": {
+    "id": "19071",
+    "name": "League Fandom",
+    "cost": 5000,
+    "diamond_count": 5000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b49db707b60b5e71e7fc2335a5d93b22~tplv-obj.webp"
+  },
+  "19074": {
+    "id": "19074",
+    "name": "LIVE Ranking Headband",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/330ec9fbb2ac4f12465caf4b862d9bcf~tplv-obj.webp"
+  },
+  "19131": {
+    "id": "19131",
+    "name": "Chocolate",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8e8bfebfad922eed81f4a31a114fc0d3~tplv-obj.webp"
+  },
+  "19132": {
+    "id": "19132",
+    "name": "Rose Bear",
+    "cost": 214,
+    "diamond_count": 214,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/adf6e9bd6219788151edb9fa026a0481~tplv-obj.webp"
+  },
+  "19133": {
+    "id": "19133",
+    "name": "Love Flight",
+    "cost": 800,
+    "diamond_count": 800,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ed700c6f77e12689ca0e8f9b3bd90982~tplv-obj.webp"
+  },
+  "19134": {
+    "id": "19134",
+    "name": "Paris",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f7a810a338bc0e69709badd3a596559c~tplv-obj.webp"
+  },
+  "19168": {
+    "id": "19168",
+    "name": "Love Glasses",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7b3f141efe8a943faba19f855a003943~tplv-obj.webp"
+  },
+  "19306": {
+    "id": "19306",
+    "name": "Cupid Koala",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/823041a7f03f56fafd40b7b8c9812bd8~tplv-obj.webp"
+  },
+  "19307": {
+    "id": "19307",
+    "name": "Heart Guitar",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5fcee4f89ea8119ecc5e9c47c008d54b~tplv-obj.webp"
+  },
+  "19308": {
+    "id": "19308",
+    "name": "Sweet Flutter",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f70e199a23a5ff232ce241d07c3dc99b~tplv-obj.webp"
+  },
+  "19309": {
+    "id": "19309",
+    "name": "Heart Hood",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/79801ad5ce9f4a97793be5b06ac6804b~tplv-obj.webp"
+  },
+  "19310": {
+    "id": "19310",
+    "name": "Smile Latte",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5ccf72a732f0f4b436052e9b0585dc89~tplv-obj.webp"
+  },
+  "19311": {
+    "id": "19311",
+    "name": "Love Call",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b9f95b541fa21eb5325fd8f6ffe1a551~tplv-obj.webp"
+  },
+  "19312": {
+    "id": "19312",
+    "name": "Fairy Locket",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/02549f9db46985f897f0597b21939947~tplv-obj.webp"
+  },
+  "19314": {
+    "id": "19314",
+    "name": "Panda Snap",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a96c32f3272df1905eb3f3d51b53308b~tplv-obj.webp"
+  },
+  "19438": {
+    "id": "19438",
+    "name": "Pop",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0b4f61e8ab637f11449300d03929ef87~tplv-obj.webp"
+  },
+  "19439": {
+    "id": "19439",
+    "name": "Oldies",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/77f6ab69b0b03bda98a0a3d2bfdeb46f~tplv-obj.webp"
+  },
+  "19441": {
+    "id": "19441",
+    "name": "Freestyle",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1f5ca5cfb4b98c2761fb85987f47c641~tplv-obj.webp"
+  },
+  "19443": {
+    "id": "19443",
+    "name": "Bravo!",
+    "cost": 15,
+    "diamond_count": 15,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/075e206d6da035f10ff5f8fecd82abcc~tplv-obj.webp"
+  },
+  "19445": {
+    "id": "19445",
+    "name": "Name shoutout",
+    "cost": 5,
+    "diamond_count": 5,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9b1d432109c95e77e8de11dd442c0a1f~tplv-obj.webp"
+  },
+  "19446": {
+    "id": "19446",
+    "name": "Wink wink",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4a68411b3e92fc2bf68d458d5f906b74~tplv-obj.webp"
+  },
+  "19447": {
+    "id": "19447",
+    "name": "Overreact",
+    "cost": 5,
+    "diamond_count": 5,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dfd48ef1952b6d315856adda7705d02d~tplv-obj.webp"
+  },
+  "19448": {
+    "id": "19448",
+    "name": "Slow motion",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/12374117770f779919bf002461fdfac0~tplv-obj.webp"
+  },
+  "48221": {
+    "id": "48221",
+    "name": "Paw Call",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0be8fcd307c249a9051dcc4e9dc51507~tplv-obj.webp"
+  },
+  "48224": {
+    "id": "48224",
+    "name": "Fairy Hide",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fe9b86bd3afac7fa5dc82b5109a809c4~tplv-obj.webp"
+  },
+  "48225": {
+    "id": "48225",
+    "name": "Party Pony",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/07c5a2297a00cacc94d329d047d045c8~tplv-obj.webp"
+  },
+  "48231": {
+    "id": "48231",
+    "name": "Pony Lantern",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/513e60117034e851dc6c923ea8a3125b~tplv-obj.webp"
+  },
+  "48232": {
+    "id": "48232",
+    "name": "Sparkle Pony",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/28bf38fda66300cd185fd8e3dc28d716~tplv-obj.webp"
+  },
+  "51285": {
+    "id": "51285",
+    "name": "Diamond Shield",
+    "cost": 7999,
+    "diamond_count": 7999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/764470625220ea94a003b56a0348d638~tplv-obj.webp"
+  },
+  "52616": {
+    "id": "52616",
+    "name": "Party Laser",
+    "cost": 1300,
+    "diamond_count": 1300,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/469999dc1598d243114e9969f8d19467~tplv-obj.webp"
+  },
+  "52617": {
+    "id": "52617",
+    "name": "Wild Mic",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/61e7dc294d766a81abf7bce5591db60c~tplv-obj.webp"
+  },
+  "52618": {
+    "id": "52618",
+    "name": "Wave Lights",
+    "cost": 2200,
+    "diamond_count": 2200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5734e71ba84d872c08d8c68e94b5ce36~tplv-obj.webp"
+  },
+  "52619": {
+    "id": "52619",
+    "name": "Hip-Hop Hen",
+    "cost": 3200,
+    "diamond_count": 3200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/796b15068f06c947eeead7517e0bd5e4~tplv-obj.webp"
+  },
+  "54294": {
+    "id": "54294",
+    "name": "Lucky Crown",
+    "cost": 14999,
+    "diamond_count": 14999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b2566977022eacff45fa1c268f4bea91~tplv-obj.webp"
+  },
+  "54539": {
+    "id": "54539",
+    "name": "Tidecaller Trident",
+    "cost": 14999,
+    "diamond_count": 14999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7bb5606841ee8deaec981c85587ab2be~tplv-obj.webp"
+  },
+  "54540": {
+    "id": "54540",
+    "name": "Undersea Kingdom",
+    "cost": 25999,
+    "diamond_count": 25999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/13f9ea9d3798f67f6d55cc612c152338~tplv-obj.webp"
+  },
+  "54541": {
+    "id": "54541",
+    "name": "Legend Marcellus",
+    "cost": 42999,
+    "diamond_count": 42999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2493534c2e9d914e6b503c3a836e72e9~tplv-obj.webp"
+  },
+  "54557": {
+    "id": "54557",
+    "name": "Blossom Fairy",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6bfb67efafa3b5fb509cee8b05a1418f~tplv-obj.webp"
+  },
+  "54558": {
+    "id": "54558",
+    "name": "Spring Bouquet",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/97a432fdd0ec5b9a30b2a8bc4d594700~tplv-obj.webp"
+  },
+  "54560": {
+    "id": "54560",
+    "name": "Superwoman",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0b229a89d79cee14ca681b1ce2abac9b~tplv-obj.webp"
+  },
+  "54562": {
+    "id": "54562",
+    "name": "Spring Sprout",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b81807a156aad66d757bacffebae830f~tplv-obj.webp"
+  },
+  "54566": {
+    "id": "54566",
+    "name": "Snow Bloom",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8384e240d21a75fd1084e6f9da833ab6~tplv-obj.webp"
+  },
+  "54724": {
+    "id": "54724",
+    "name": "Creeper",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d686d45bd66e16b0aca8b0e5eb52a977~tplv-obj.webp"
+  },
+  "54725": {
+    "id": "54725",
+    "name": "Baby Chicks",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f1b0b043890f33ba610f2b30fffad49f~tplv-obj.webp"
+  },
+  "54726": {
+    "id": "54726",
+    "name": "Surprise Baby Mob",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f074f1f73a40902e6087c6ccc747b88f~tplv-obj.webp"
+  },
+  "54727": {
+    "id": "54727",
+    "name": "Chick Stampede",
+    "cost": 6000,
+    "diamond_count": 6000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/33798b669e13c98ea076ed8eaabc8810~tplv-obj.webp"
+  },
+  "54728": {
+    "id": "54728",
+    "name": "Sneaky Jockey",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6401ca229c2a1a07f88701da7a5b2925~tplv-obj.webp"
+  },
+  "55700": {
+    "id": "55700",
+    "name": "EID Gift Box",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ec3bedf704efdbbcfdfd36a99c98d94a~tplv-obj.webp"
+  },
+  "56080": {
+    "id": "56080",
+    "name": "Surprise Baby Mob",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/abd6c56f59d4f7e097fd7dcd32995ef6~tplv-obj.webp"
+  },
+  "56560": {
+    "id": "56560",
+    "name": "My First Rose",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/55163429fc2a3043a3273d2fcd7cd85e~tplv-obj.webp"
+  },
+  "56589": {
+    "id": "56589",
+    "name": "Magic Genie",
+    "cost": 200,
+    "diamond_count": 200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c750548817a633185d2c46391cc64214~tplv-obj.webp"
+  },
+  "56590": {
+    "id": "56590",
+    "name": "Prairie Diny",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/adfedd8992012cf75ddce5496335d16c~tplv-obj.webp"
+  },
+  "56591": {
+    "id": "56591",
+    "name": "Prairie Tom",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/32154aa9a0fab3d772475044c03e5dc7~tplv-obj.webp"
+  },
+  "56592": {
+    "id": "56592",
+    "name": "Prairie Blitzy",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1ccdd049480b94bb71516e554802024f~tplv-obj.webp"
+  },
+  "56593": {
+    "id": "56593",
+    "name": "Prairie Cooper",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9af6a041ed6a17c927a9065970c34baf~tplv-obj.webp"
+  },
+  "56594": {
+    "id": "56594",
+    "name": "Jungle Diny",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e45ac77c24fb1cbe25bdfeffdf648b4e~tplv-obj.webp"
+  },
+  "56595": {
+    "id": "56595",
+    "name": "Jungle Tom",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/35ee084d755964dca0d11fb4c2d47108~tplv-obj.webp"
+  },
+  "56596": {
+    "id": "56596",
+    "name": "Jungle Blitzy",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d82ab0f0fbcf33755e41f4542b94dadd~tplv-obj.webp"
+  },
+  "56597": {
+    "id": "56597",
+    "name": "Jungle Cooper",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e5fb5ade8480a67eb34604672bd47aa8~tplv-obj.webp"
+  },
+  "56598": {
+    "id": "56598",
+    "name": "Firepit Diny",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/72a65ac318d312205722af6155d0f515~tplv-obj.webp"
+  },
+  "56599": {
+    "id": "56599",
+    "name": "Firepit Tom",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f6667616681d4ef9f5945ccef351c854~tplv-obj.webp"
+  },
+  "56600": {
+    "id": "56600",
+    "name": "Firepit Blitzy",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8aa0c072b2c5d71f4d2504a00c5fe08a~tplv-obj.webp"
+  },
+  "56601": {
+    "id": "56601",
+    "name": "Firepit Cooper",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f464e4a99446b547d6b2249a962c7086~tplv-obj.webp"
+  },
+  "56602": {
+    "id": "56602",
+    "name": "Desert Diny",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f113fb9245bd7a936ddbedaf0a0f42b9~tplv-obj.webp"
+  },
+  "56603": {
+    "id": "56603",
+    "name": "Desert Tom",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/97c9e63f89ad26b6b84a471ae60f1935~tplv-obj.webp"
+  },
+  "56604": {
+    "id": "56604",
+    "name": "Desert Blitzy",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/802026bfb4c7aa6d267bc773ac2a4746~tplv-obj.webp"
+  },
+  "56605": {
+    "id": "56605",
+    "name": "Desert Cooper",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4c571e1b88028b8abc1758c8f55fd383~tplv-obj.webp"
+  },
+  "56606": {
+    "id": "56606",
+    "name": "Tundra Diny",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a689e0a5a9f88b2f6225f5db8411f8ca~tplv-obj.webp"
+  },
+  "56607": {
+    "id": "56607",
+    "name": "Tundra Tom",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dfee67f570dd81056ac2f3d783959a98~tplv-obj.webp"
+  },
+  "56608": {
+    "id": "56608",
+    "name": "Tundra Blitzy",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eedbfd263f8817d34f3690900cb571b9~tplv-obj.webp"
+  },
+  "56609": {
+    "id": "56609",
+    "name": "Tundra Cooper",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2a60e733698f3cb36904bb716d736d2a~tplv-obj.webp"
+  },
+  "56610": {
+    "id": "56610",
+    "name": "Sea Diny",
+    "cost": 3088,
+    "diamond_count": 3088,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cbe9ac457d2cb8f0fb83fbc51997707b~tplv-obj.webp"
+  },
+  "56611": {
+    "id": "56611",
+    "name": "Sea Tom",
+    "cost": 3088,
+    "diamond_count": 3088,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/52dd3147fb1e1ac1d8c0674a5437d98f~tplv-obj.webp"
+  },
+  "56612": {
+    "id": "56612",
+    "name": "Sea Blitzy",
+    "cost": 3088,
+    "diamond_count": 3088,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fc9a249032a0dedd01f86106ff0b54d9~tplv-obj.webp"
+  },
+  "56613": {
+    "id": "56613",
+    "name": "Sea Cooper",
+    "cost": 3088,
+    "diamond_count": 3088,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8833bf214cd51ae9d03bcc784815c0e6~tplv-obj.webp"
+  },
+  "56855": {
+    "id": "56855",
+    "name": "Festival Bracelet",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6faf18511ee366ec80c955d8e6b4153a~tplv-obj.webp"
+  },
+  "56861": {
+    "id": "56861",
+    "name": "Leon's Sigil Cape",
+    "cost": 5000,
+    "diamond_count": 5000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/385d00992b83a2e8a2ab5d8ec82d9715~tplv-obj.webp"
+  },
+  "57008": {
+    "id": "57008",
+    "name": "Clover Hat",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c53bd514827a6c5db739540ea4b8d126~tplv-obj.webp"
+  },
+  "57009": {
+    "id": "57009",
+    "name": "Wakey Mallow",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dc170f6fcc00a7253cd0744d7b01809d~tplv-obj.webp"
+  },
+  "57010": {
+    "id": "57010",
+    "name": "Dreamy Hat",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5074a9b0dd0de8ba6fc8573913ed9cde~tplv-obj.webp"
+  },
+  "57011": {
+    "id": "57011",
+    "name": "Starry Fluff",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f5e709a56ba9e238f0a87dfd4510b44f~tplv-obj.webp"
+  },
+  "57593": {
+    "id": "57593",
+    "name": "Hive Escape",
+    "cost": 549,
+    "diamond_count": 549,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/92bd8c4f0d4fef2cee16e9adcd50a222~tplv-obj.webp"
+  },
+  "57594": {
+    "id": "57594",
+    "name": "Cheeky Pup",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e9fbad0840d145dd95dabede5a309587~tplv-obj.webp"
+  },
+  "57595": {
+    "id": "57595",
+    "name": "Sloth Peek",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/602e3444f1810b8b048a2e706eb19898~tplv-obj.webp"
+  },
+  "57596": {
+    "id": "57596",
+    "name": "Sax Groove",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/48af771dd2405a0d01b4dd7184e8cfad~tplv-obj.webp"
+  },
+  "57597": {
+    "id": "57597",
+    "name": "Vocal Bear",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3afb4aeb6abf9335864ce85f364156e2~tplv-obj.webp"
+  },
+  "58213": {
+    "id": "58213",
+    "name": "coldy",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d25321ec8d38f41a39854878606751ac~tplv-obj.webp"
+  },
+  "58235": {
+    "id": "58235",
+    "name": "Seahorse Pop",
+    "cost": 649,
+    "diamond_count": 649,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7b023066149c8d1f865348257d49556f~tplv-obj.webp"
+  },
+  "58236": {
+    "id": "58236",
+    "name": "Cactus Shuffle",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b243b36466f8e18116deb7be245e1a56~tplv-obj.webp"
+  },
+  "58237": {
+    "id": "58237",
+    "name": "Clown Boogie",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/379f132acd166deee7b1db9132b29342~tplv-obj.webp"
+  },
+  "58238": {
+    "id": "58238",
+    "name": "Drum Hamster",
+    "cost": 549,
+    "diamond_count": 549,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a7b5c0dd3569b6bea5e4456bd8b38da7~tplv-obj.webp"
+  },
+  "59313": {
+    "id": "59313",
+    "name": "Red Lightning",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0053dc95af7a3c7475c7687bc42925f9~tplv-obj.webp"
+  },
+  "59314": {
+    "id": "59314",
+    "name": "Banana Peel",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4130324b5b9120ae88989889d16ed9c3~tplv-obj.webp"
+  },
+  "59315": {
+    "id": "59315",
+    "name": "Traffic Cone",
+    "cost": 20,
+    "diamond_count": 20,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f16725cc0a80273348d18c47dfa3b4fb~tplv-obj.webp"
+  },
+  "59316": {
+    "id": "59316",
+    "name": "Energy Capsule",
+    "cost": 30,
+    "diamond_count": 30,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ae6e7024207fb82bab2c9b78405796a2~tplv-obj.webp"
+  },
+  "59317": {
+    "id": "59317",
+    "name": "Power Chip",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c9fc0b9b66a506752ec005c2630e1700~tplv-obj.webp"
+  },
+  "59318": {
+    "id": "59318",
+    "name": "Scroll",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7e1418f2402a2986f432a96ae27f7c76~tplv-obj.webp"
+  },
+  "59319": {
+    "id": "59319",
+    "name": "Health Potion",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2b8d9407362560e13fd7373325cc233b~tplv-obj.webp"
+  },
+  "59320": {
+    "id": "59320",
+    "name": "Mystery Box",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/072142399e6e37c05107a687b274b91b~tplv-obj.webp"
+  },
+  "59321": {
+    "id": "59321",
+    "name": "Magic Potion",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6c23ae1c6775bddde447dec074cd5940~tplv-obj.webp"
+  },
+  "59322": {
+    "id": "59322",
+    "name": "Summoning Horn",
+    "cost": 3000,
+    "diamond_count": 3000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a976032a9325f2c4ef711fea4ded7cbe~tplv-obj.webp"
+  },
+  "59511": {
+    "id": "59511",
+    "name": "Blue Lightning",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6a517f35a26bfbcbeb72075ea41b66e0~tplv-obj.webp"
+  },
+  "59512": {
+    "id": "59512",
+    "name": "Yellow Lightning",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2ab44118950b4a18acabcdc55635d91a~tplv-obj.webp"
+  },
+  "59589": {
+    "id": "59589",
+    "name": "Music Burst",
+    "cost": 999,
+    "diamond_count": 999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/695bef7983e7a16e2fe1d130cc1be8bc~tplv-obj.webp"
+  },
+  "59710": {
+    "id": "59710",
+    "name": "Chrono Rewinder",
+    "cost": 14999,
+    "diamond_count": 14999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5048798ca9ee16042152157bad492e47~tplv-obj.webp"
+  },
+  "59711": {
+    "id": "59711",
+    "name": "Light Castle",
+    "cost": 25999,
+    "diamond_count": 25999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3c6e2297ca0ddd194653cae1d3baaffa~tplv-obj.webp"
+  },
+  "59712": {
+    "id": "59712",
+    "name": "King Leonardo",
+    "cost": 42999,
+    "diamond_count": 42999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6e89cc0269bbd2190499368a2c0ce250~tplv-obj.webp"
+  },
+  "59774": {
+    "id": "59774",
+    "name": "DJ Wave",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fe27af553f82c4370a6a62c636ee4f7b~tplv-obj.webp"
+  },
+  "59775": {
+    "id": "59775",
+    "name": "Amped Up",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/50c72a9440674a6ef58c08fc51a56071~tplv-obj.webp"
+  },
+  "59881": {
+    "id": "59881",
+    "name": "A Shard of Hope",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/34207c50c472435d7d582ef5c1ca8ff2~tplv-obj.webp"
+  },
+  "59882": {
+    "id": "59882",
+    "name": "Shell of a Warrior",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b56ae46e704d451ca4477042363d7f2c~tplv-obj.webp"
+  },
+  "59883": {
+    "id": "59883",
+    "name": "Ignition Check",
+    "cost": 1500,
+    "diamond_count": 1500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f260aeb10751f0ad9092e6c0c52c950e~tplv-obj.webp"
+  },
+  "59884": {
+    "id": "59884",
+    "name": "Rust Reforged",
+    "cost": 6000,
+    "diamond_count": 6000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c3a6635093aade8983cbeebd356343ee~tplv-obj.webp"
+  },
+  "59885": {
+    "id": "59885",
+    "name": "Rust vs World",
+    "cost": 18999,
+    "diamond_count": 18999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0a295ee8674ff2a9a05ef8e9151bbe75~tplv-obj.webp"
+  },
+  "59994": {
+    "id": "59994",
+    "name": "Crowd Cheering",
+    "cost": 5000,
+    "diamond_count": 5000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f8801f079c04aa58e0e732340f393740~tplv-obj.webp"
+  },
+  "60073": {
+    "id": "60073",
+    "name": "FANDOM Stamp",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/24cd1ef8bf88891453a1909e42ae5fb2~tplv-obj.webp"
+  },
+  "60074": {
+    "id": "60074",
+    "name": "FANDOM Fever",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ecb8f62b08087f2740890d18e13342a6~tplv-obj.webp"
+  },
+  "60075": {
+    "id": "60075",
+    "name": "FANDOM Cheer",
+    "cost": 2500,
+    "diamond_count": 2500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e361cafb0a92f7994442b9e72a6379e1~tplv-obj.webp"
+  },
+  "60076": {
+    "id": "60076",
+    "name": "Ultimate FANDOM",
+    "cost": 8000,
+    "diamond_count": 8000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d14912141985070526e227375d4806f5~tplv-obj.webp"
+  },
+  "60077": {
+    "id": "60077",
+    "name": "FANDOM Fan",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cb5bc2512623f0454156429f7088973b~tplv-obj.webp"
+  },
+  "60547": {
+    "id": "60547",
+    "name": "Punch Cuddle",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e66fda832bfce34ad2169ccac08dd6e4~tplv-obj.webp"
+  },
+  "60548": {
+    "id": "60548",
+    "name": "Labor Power",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b7b2b32d19f276cf7dac34e906512a4b~tplv-obj.webp"
+  },
+  "60549": {
+    "id": "60549",
+    "name": "Craft Dreamer",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/48a2ba41b964c6e8b3bc9320c539498d~tplv-obj.webp"
+  },
+  "60550": {
+    "id": "60550",
+    "name": "Glorious Chef",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fbde1e4231b695c9e81d623ab59ca8fb~tplv-obj.webp"
+  },
+  "60553": {
+    "id": "60553",
+    "name": "Roo Mother",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/21ecb3e59170b2fa5a38d23823cff6ff~tplv-obj.webp"
+  },
+  "60554": {
+    "id": "60554",
+    "name": "Mom's Bonnet",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e643a2e1553926564f4c07ef1a3b6a08~tplv-obj.webp"
+  },
+  "60555": {
+    "id": "60555",
+    "name": "Echo Mom",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f08244625c497c58f33d9fa66e9544b1~tplv-obj.webp"
+  },
+  "62487": {
+    "id": "62487",
+    "name": "Soccer Holo",
+    "cost": 599,
+    "diamond_count": 599,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a24eb19fa7391552d68fb4201934631a~tplv-obj.webp"
+  },
+  "62501": {
+    "id": "62501",
+    "name": "Tom Thunderfoot",
+    "cost": 2499,
+    "diamond_count": 2499,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d4b6678e07d123b38531cfebc8f2a24f~tplv-obj.webp"
+  },
+  "62675": {
+    "id": "62675",
+    "name": "Sing Together",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/df5ff4cb7fd148c81580dbe2b4a6b8b1~tplv-obj.webp"
+  },
+  "62816": {
+    "id": "62816",
+    "name": "Community Heart",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8d2a21bead102d4cc1ffade117c9dc46~tplv-obj.webp"
+  },
+  "62817": {
+    "id": "62817",
+    "name": "Community Style",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e6e26cd58803f2afaf896d126ee409fe~tplv-obj.webp"
+  },
+  "62818": {
+    "id": "62818",
+    "name": "Jollie's Community",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/370a8914a23ae65bbd7000b3f08d2aff~tplv-obj.webp"
+  },
+  "62819": {
+    "id": "62819",
+    "name": "Community Rally",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/975476a220c95dd1a8a167565485c210~tplv-obj.webp"
+  },
+  "101198": {
+    "id": "101198",
+    "name": "Frog Conductor",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6ccccbdcc6cddece3c4056643cb99c4e~tplv-obj.webp"
+  },
+  "101384": {
+    "id": "101384",
+    "name": "Fan Cat",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5ba710c0d42a87fc4086dc6ee553070b~tplv-obj.webp"
+  },
+  "101857": {
+    "id": "101857",
+    "name": "Storm Blade",
+    "cost": 14999,
+    "diamond_count": 14999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/42e35e23a5439831c470ed784c470a5c~tplv-obj.webp"
+  },
+  "101862": {
+    "id": "101862",
+    "name": "Skyforge Citadel",
+    "cost": 25999,
+    "diamond_count": 25999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b8eebe2344701646d38641f0ed06816a~tplv-obj.webp"
+  },
+  "101868": {
+    "id": "101868",
+    "name": "Valerian's Oath",
+    "cost": 43999,
+    "diamond_count": 43999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8b4c99e8e50c117ce1a79c5f09eb0cca~tplv-obj.webp"
+  },
+  "105610": {
+    "id": "105610",
+    "name": "Goal Highlight-US",
+    "cost": 6000,
+    "diamond_count": 6000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/23bdd4cc4095faef63c2cfbbb529a4af~tplv-obj.webp"
+  },
+  "105781": {
+    "id": "105781",
+    "name": "Spinning Soccer",
+    "cost": 5,
+    "diamond_count": 5,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/74a30ed3492d3e7d317efe7e10c3ba51~tplv-obj.webp"
+  },
+  "105795": {
+    "id": "105795",
+    "name": "Freestyle",
+    "cost": 1800,
+    "diamond_count": 1800,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f2e3e6c9dba93abe56ffbd2af60309d3~tplv-obj.webp"
+  },
+  "105810": {
+    "id": "105810",
+    "name": "Guardian's Pledge",
+    "cost": 4999,
+    "diamond_count": 4999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1fc62b695705581a91cc2f7902eba1d2~tplv-obj.webp"
+  },
+  "105817": {
+    "id": "105817",
+    "name": "Stadium",
+    "cost": 15999,
+    "diamond_count": 15999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5d4509c515147c6e7f563d54b2dac6ce~tplv-obj.webp"
+  },
+  "110506": {
+    "id": "110506",
+    "name": "Rock Cats",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4a8097309c114d76bcd615ab54efc8bd~tplv-obj.webp"
+  },
+  "110508": {
+    "id": "110508",
+    "name": "Retro Melody",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ec7722263eb34a0f54e84eb40e50acfd~tplv-obj.webp"
+  },
+  "115510": {
+    "id": "115510",
+    "name": "umbrella",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ba0dd88772b3aef05a9089db317553a2~tplv-obj.webp"
+  },
+  "115513": {
+    "id": "115513",
+    "name": "Rain Doll",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ad91c7acb6b745d37739d326cb2e0c61~tplv-obj.webp"
+  },
+  "115516": {
+    "id": "115516",
+    "name": "Hydrangea Sea",
+    "cost": 1299,
+    "diamond_count": 1299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0e821f9f9a67f7299e6939b7823d8ab6~tplv-obj.webp"
+  },
+  "115518": {
+    "id": "115518",
+    "name": "Dream Ride",
+    "cost": 15000,
+    "diamond_count": 15000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/bce42fbffa8a0a0ebe0597bc0bf7c1f7~tplv-obj.webp"
+  },
+  "115520": {
+    "id": "115520",
+    "name": "Stage of ring",
+    "cost": 4999,
+    "diamond_count": 4999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fc5601ce67877245f5a322fb7df64bec~tplv-obj.webp"
+  },
+  "115543": {
+    "id": "115543",
+    "name": "LIVE Ranking Ticket",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4c307f79c6296df713c00c31e044e161~tplv-obj.webp"
+  },
+  "115548": {
+    "id": "115548",
+    "name": "LIVE Ranking Party",
+    "cost": 3999,
+    "diamond_count": 3999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/018a62473f7a3989a19ced0af369a99e~tplv-obj.webp"
+  },
+  "115549": {
+    "id": "115549",
+    "name": "Red Devil Corgi",
+    "cost": 20000,
+    "diamond_count": 20000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/28b39c9cbca8643bc31776dfed95ec94~tplv-obj.webp"
+  },
+  "118812": {
+    "id": "118812",
+    "name": "Divine Fingers",
+    "cost": 6,
+    "diamond_count": 6,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f7928d51f54a1e15b3eda2336e14c7b6~tplv-obj.webp"
+  },
+  "118814": {
+    "id": "118814",
+    "name": "Poetry Score",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d3b6863a4f43cbce53aad602fe8f2470~tplv-obj.webp"
+  },
+  "118817": {
+    "id": "118817",
+    "name": "Epic Pianist",
+    "cost": 800,
+    "diamond_count": 800,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5502bfb46b11ef92c70597eae10b35e3~tplv-obj.webp"
+  },
+  "118926": {
+    "id": "118926",
+    "name": "Ukulele Player",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2385dccf1c6ce8b31233186a1072c5ac~tplv-obj.webp"
+  },
+  "118928": {
+    "id": "118928",
+    "name": "Lost in Your Music",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cc2fe165b4365bda331c47f0fd212acd~tplv-obj.webp"
+  },
+  "118939": {
+    "id": "118939",
+    "name": "Electronic Love Song",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5aa9258af43983e39f90cf300c3e98d4~tplv-obj.webp"
+  },
+  "121582": {
+    "id": "121582",
+    "name": "Chopin in the Rain",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/991cb8b02429d17007db77e38c1aeaf6~tplv-obj.webp"
+  },
+  "121583": {
+    "id": "121583",
+    "name": "Cello Romance",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4756a2a4604d2cb5bb5b0639b259e9b5~tplv-obj.webp"
+  },
+  "127088": {
+    "id": "127088",
+    "name": "Single Strike",
+    "cost": 70,
+    "diamond_count": 70,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b2aed3cd741688ea0d8a86363604bcbb~tplv-obj.webp"
+  },
+  "127089": {
+    "id": "127089",
+    "name": "Triple Thunder",
+    "cost": 289,
+    "diamond_count": 289,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/09a90416e09340b2d5a1046d2fc3ef01~tplv-obj.webp"
+  },
+  "127090": {
+    "id": "127090",
+    "name": "Cursed Kick",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/23c19297764926e43446d60904d6f9c5~tplv-obj.webp"
+  },
+  "127094": {
+    "id": "127094",
+    "name": "Wobbler",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/23c19297764926e43446d60904d6f9c5~tplv-obj.webp"
+  },
+  "127096": {
+    "id": "127096",
+    "name": "Bruiser",
+    "cost": 153,
+    "diamond_count": 153,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/34614d14c99c17e8a6094e5ed34c1bc6~tplv-obj.webp"
+  },
+  "127098": {
+    "id": "127098",
+    "name": "Stabilizer",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f44c38189c169012c7fbd3537cdc3c40~tplv-obj.webp"
+  },
+  "130787": {
+    "id": "130787",
+    "name": "Come On!",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/1bc7335bffaba2703a5ce4caf22afe61~tplv-obj.webp"
+  },
+  "131882": {
+    "id": "131882",
+    "name": "It's Match Time",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/be170a9d325c02c1d5786301679bf013~tplv-obj.webp"
+  },
+  "131887": {
+    "id": "131887",
+    "name": "Match Master",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a98343930fc478c09c754f15a4283cf3~tplv-obj.webp"
+  },
+  "131888": {
+    "id": "131888",
+    "name": "Matchtacular!",
+    "cost": 1000,
+    "diamond_count": 1000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/7313da93d4d6aff687f383011e158a61~tplv-obj.webp"
+  },
+  "131894": {
+    "id": "131894",
+    "name": "Match Maniac",
+    "cost": 2999,
+    "diamond_count": 2999,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c047a4e7e21631260f1d0ae9f820a7c4~tplv-obj.webp"
+  },
+  "133359": {
+    "id": "133359",
+    "name": "DJ Set",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3798f7dd8de451efca9f0c357a591177~tplv-obj.webp"
+  },
+  "133360": {
+    "id": "133360",
+    "name": "Pink Cowboy",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9cb5646b4aec619c78e22d42c47ee48d~tplv-obj.webp"
+  },
+  "139582": {
+    "id": "139582",
+    "name": "Cheering Towel",
+    "cost": 299,
+    "diamond_count": 299,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/21d7109b0ee067d1c01662c6c7803d0f~tplv-obj.webp"
+  },
+  "139584": {
+    "id": "139584",
+    "name": "Drum Pop",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b446be331b24f136afbdff8eaf5cf9d5~tplv-obj.webp"
+  },
+  "139586": {
+    "id": "139586",
+    "name": "Celebration Tape",
+    "cost": 2800,
+    "diamond_count": 2800,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/54ebb513c937a6f68f97273e200fbab1~tplv-obj.webp"
+  },
+  "153750": {
+    "id": "153750",
+    "name": "Club Cheers",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ef892165e333be97bd98978ec2593f43~tplv-obj.webp"
+  },
+  "153751": {
+    "id": "153751",
+    "name": "Club Power",
+    "cost": 9,
+    "diamond_count": 9,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d560ca406897466cf88965fc13098e15~tplv-obj.webp"
+  },
+  "153753": {
+    "id": "153753",
+    "name": "Club Victory",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/078faaebda61db576a163aedcd32b980~tplv-obj.webp"
+  },
+  "160170": {
+    "id": "160170",
+    "name": "Goal Highlight",
+    "cost": 6000,
+    "diamond_count": 6000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ab92641aef7ff447a66a83bc599ec171~tplv-obj.webp"
+  },
+  "166576": {
+    "id": "166576",
+    "name": "Sakura-style DJ",
+    "cost": 600,
+    "diamond_count": 600,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b2b60cbadb2a4ac3b73c1af63c1be972~tplv-obj.webp"
+  },
+  "166578": {
+    "id": "166578",
+    "name": "Singing Frog",
+    "cost": 249,
+    "diamond_count": 249,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/5385a0355ce6eb61e886d7030bce7221~tplv-obj.webp"
+  },
+  "166579": {
+    "id": "166579",
+    "name": "Rock and Roll",
+    "cost": 449,
+    "diamond_count": 449,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/73af504cd0bf8733febcf7fb98249f0f~tplv-obj.webp"
+  },
+  "166581": {
+    "id": "166581",
+    "name": "Sound Spell",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/39628d1ff0e4ec68e4053fd936bee2a8~tplv-obj.webp"
+  },
+  "166583": {
+    "id": "166583",
+    "name": "Electro Vibes",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/dc9e4fbd4db927e383cae3166bfa1a7e~tplv-obj.webp"
+  },
+  "170193": {
+    "id": "170193",
+    "name": "Semsemia",
+    "cost": 200,
+    "diamond_count": 200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/964574672ba78aec095a139e955de948~tplv-obj.webp"
+  },
+  "170277": {
+    "id": "170277",
+    "name": "Baglama",
+    "cost": 200,
+    "diamond_count": 200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/59ce7287377c4a6523eaf0706e5b04f7~tplv-obj.webp"
+  },
+  "170498": {
+    "id": "170498",
+    "name": "Bloom Brass",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/fd29f58a9a2e25a01cd296f032caebe2~tplv-obj.webp"
+  },
+  "170501": {
+    "id": "170501",
+    "name": "Magic Accordion",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d078c71be3f27bac1cbb9e2c8a5ab945~tplv-obj.webp"
+  },
+  "170503": {
+    "id": "170503",
+    "name": "Beat Wings",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/9abdd62c5ea93108bf8c8a8aec7a8e70~tplv-obj.webp"
+  },
+  "170504": {
+    "id": "170504",
+    "name": "Melody Headset",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0a2a365726e4eddddc7d71c43110c9b4~tplv-obj.webp"
+  },
+  "170505": {
+    "id": "170505",
+    "name": "Retro Headset",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/304e6fc712fae569cefe24c48f157c7d~tplv-obj.webp"
+  },
+  "170506": {
+    "id": "170506",
+    "name": "Singing Mushroom",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/072a4e4c2f4435282354492360e16571~tplv-obj.webp"
+  },
+  "170507": {
+    "id": "170507",
+    "name": "Bloom Melody",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/96bde97172e9ad387dac78b7e2bd0354~tplv-obj.webp"
+  },
+  "170508": {
+    "id": "170508",
+    "name": "Rhythm Bot",
+    "cost": 199,
+    "diamond_count": 199,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ab9626d3236e46633b67883c5aa1b7b9~tplv-obj.webp"
+  },
+  "191116": {
+    "id": "191116",
+    "name": "Super Dad",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/051c27a3b0193820ca640c5921d01b9c~tplv-obj.webp"
+  },
+  "191117": {
+    "id": "191117",
+    "name": "Office Penguin",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6ea833f3d87ee4a9f08805204195ba69~tplv-obj.webp"
+  },
+  "191123": {
+    "id": "191123",
+    "name": "Papa Capybara",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8442dc0eed7795d7515c99a45b5a6f2b~tplv-obj.webp"
+  },
+  "223562": {
+    "id": "223562",
+    "name": "Penlight",
+    "cost": 1599,
+    "diamond_count": 1599,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f9a026be1ba5c9db25ef92a5308bcbec~tplv-obj.webp"
+  },
+  "230707": {
+    "id": "230707",
+    "name": "Eye on the Ball",
+    "cost": 499,
+    "diamond_count": 499,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d51f4635c731cb50a8fae54d65eee71e~tplv-obj.webp"
+  },
+  "230709": {
+    "id": "230709",
+    "name": "Steady on the Beam",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d6a4174d2f5680155191647710f05aa5~tplv-obj.webp"
+  },
+  "231882": {
+    "id": "231882",
+    "name": "Songs of LIVE",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/de82765efea449c436117788583cf817~tplv-obj.webp"
+  },
+  "231955": {
+    "id": "231955",
+    "name": "Good Job",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/047bfa2dcc6813c72fd2d8f649ee8ee2~tplv-obj.webp"
+  },
+  "231956": {
+    "id": "231956",
+    "name": "Clap Clap",
+    "cost": 1,
+    "diamond_count": 1,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f2349d1d943c0c3bbcc03044268ee535~tplv-obj.webp"
+  },
+  "231957": {
+    "id": "231957",
+    "name": "Intimacy",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/64725abbd8f186262d93c339b361c593~tplv-obj.webp"
+  },
+  "231958": {
+    "id": "231958",
+    "name": "Mind Blown",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3f230e969ca578becbee3709fee859be~tplv-obj.webp"
+  },
+  "232592": {
+    "id": "232592",
+    "name": "Tempo Flute",
+    "cost": 149,
+    "diamond_count": 149,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/007d61b4f2a4b92f8890d795f304dedc~tplv-obj.webp"
+  },
+  "232593": {
+    "id": "232593",
+    "name": "Groove Guitar",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c0a2578376807945b44568eb1dfdec7f~tplv-obj.webp"
+  },
+  "437561": {
+    "id": "437561",
+    "name": "Pearl Chime",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a2c0c1ccd1262e8aad4d2f6e5ebc8585~tplv-obj.webp"
+  },
+  "437599": {
+    "id": "437599",
+    "name": "Aurora Groove",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/c4f86eba5aa4db031fb8aa88a4d9581f~tplv-obj.webp"
+  },
+  "437629": {
+    "id": "437629",
+    "name": "Butterfly Vibe",
+    "cost": 349,
+    "diamond_count": 349,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/6267eee0ceafab651e4cf6ff970cb4ec~tplv-obj.webp"
+  },
+  "437669": {
+    "id": "437669",
+    "name": "Pop Parrot",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/0b833cc809215f28cc594a915b3bb93a~tplv-obj.webp"
+  },
+  "437679": {
+    "id": "437679",
+    "name": "Bunny DJ",
+    "cost": 1200,
+    "diamond_count": 1200,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a153c23e583bb07d39c6fa5789c865fd~tplv-obj.webp"
+  },
+  "437689": {
+    "id": "437689",
+    "name": "Drum Genius",
+    "cost": 500,
+    "diamond_count": 500,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e36563ca73d22d82d51fd0317d0dcf6d~tplv-obj.webp"
+  },
+  "437699": {
+    "id": "437699",
+    "name": "Rock Idol",
+    "cost": 400,
+    "diamond_count": 400,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d6dd4a9e05d9adcc90eefeb54f32b3ef~tplv-obj.webp"
+  },
+  "437709": {
+    "id": "437709",
+    "name": "Key Master",
+    "cost": 499,
+    "diamond_count": 499,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f4d326af96042b6f542dca3c91e67fb8~tplv-obj.webp"
+  },
+  "444785": {
+    "id": "444785",
+    "name": "Music Cloud",
+    "cost": 10,
+    "diamond_count": 10,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/815765226ad8c24e55f9966a7943abe7~tplv-obj.webp"
+  },
+  "444819": {
+    "id": "444819",
+    "name": "Rainbow Slide",
+    "cost": 100,
+    "diamond_count": 100,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ff0da9e2f979075d657dae1372f170f9~tplv-obj.webp"
+  },
+  "444843": {
+    "id": "444843",
+    "name": "Over the Cloud",
+    "cost": 450,
+    "diamond_count": 450,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/ccd4ab7671ba4cae00f8f3c2b7e316c2~tplv-obj.webp"
+  },
+  "444871": {
+    "id": "444871",
+    "name": "Cloud DJ",
+    "cost": 4000,
+    "diamond_count": 4000,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e9bfca726137aa63f48d01224911f74e~tplv-obj.webp"
+  },
+  "462621": {
+    "id": "462621",
+    "name": "Soccer Jaguar",
+    "cost": 99,
+    "diamond_count": 99,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/be19211ffcecb708048317c506aacacb~tplv-obj.webp"
+  },
+  "462669": {
+    "id": "462669",
+    "name": "MX Soccer Stadium",
+    "cost": 399,
+    "diamond_count": 399,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/bc589a24190408035bc0aaa5a8fd0652~tplv-obj.webp"
+  },
+  "626056": {
+    "id": "626056",
+    "name": "Kudos for My Star",
+    "cost": 15,
+    "diamond_count": 15,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/538dd8c1904f795fced4ae91f0a2aab0~tplv-obj.webp"
+  },
+  "626064": {
+    "id": "626064",
+    "name": "G.O.A.T. Busker",
+    "cost": 20,
+    "diamond_count": 20,
+    "image": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a9ff60f42b278cc1e8278139dfebfca2~tplv-obj.webp"
+  }
+}

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS Overlay - TikToolStream</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/overlays.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; overflow: hidden; font-family: 'Poppins', system-ui, sans-serif; }
+
+  .tts-stage {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Mobile portrait */
+  .mobile .tts-stage { bottom:16px; width:92vw; }
+  .mobile .tts-bubble { min-width:auto; max-width:100%; padding:12px 16px 12px 12px; gap:10px; border-radius:16px; }
+  .mobile .tts-avatar-wrap { width:44px; height:44px; }
+  .mobile .tts-avatar { width:44px; height:44px; font-size:18px; border-width:2px; }
+  .mobile .tts-user { font-size:0.8rem; }
+  .mobile .tts-text { font-size:0.8rem; }
+  .mobile .tts-wave-bars { height:20px; gap:2px; }
+  .mobile .tts-wave-bars span { width:3px; }
+
+  .tts-bubble {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: linear-gradient(135deg, rgba(10,10,30,0.88), rgba(20,15,40,0.88));
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    backdrop-filter: blur(30px) saturate(200%);
+    border: 1.5px solid rgba(0, 217, 255, 0.4);
+    border-radius: 22px;
+    padding: 16px 28px 16px 16px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.55), 0 0 36px rgba(0, 217, 255, 0.25), inset 0 1px 0 rgba(255,255,255,0.18);
+    min-width: 360px;
+    max-width: 600px;
+    position: relative;
+    will-change: transform, opacity;
+  }
+  .tts-bubble::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, #00f5ff, transparent);
+    pointer-events: none;
+  }
+  .tts-bubble.speaking {
+    border-color: rgba(0, 245, 255, 0.6);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.55), 0 0 50px rgba(0, 245, 255, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .tts-bubble.fade { animation: ttsFadeOut 0.5s ease-out forwards; }
+
+  .tts-avatar-wrap {
+    position: relative;
+    width: 72px; height: 72px;
+    flex-shrink: 0;
+  }
+  .tts-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00f5ff, #7b2ff7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 800;
+    font-size: 28px;
+    font-family: 'Montserrat', sans-serif;
+    border: 3px solid rgba(0, 245, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+    overflow: hidden;
+  }
+  .tts-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* speaking pulse */
+  .tts-bubble.speaking .tts-avatar { animation: avatarPulse 1.4s ease-in-out infinite; }
+  @keyframes ttsFadeOut {
+    to { transform: translateY(-10px) scale(0.9); opacity: 0; }
+  }
+
+  @keyframes avatarPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 245, 255, 0.5); transform: scale(1); }
+    50%      { box-shadow: 0 0 36px rgba(0, 245, 255, 0.9); transform: scale(1.05); }
+  }
+
+  .tts-waves {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    background: rgba(10, 10, 30, 0.92);
+    border-radius: 12px;
+    padding: 4px 6px;
+    border: 1.5px solid rgba(0, 245, 255, 0.4);
+  }
+  .tts-waves span {
+    display: inline-block;
+    width: 3px;
+    background: #00f5ff;
+    border-radius: 2px;
+    animation: waveBar 0.9s ease-in-out infinite;
+    transform-origin: bottom;
+  }
+  .tts-waves span:nth-child(1) { height: 8px;  animation-delay: 0s; }
+  .tts-waves span:nth-child(2) { height: 14px; animation-delay: 0.12s; }
+  .tts-waves span:nth-child(3) { height: 10px; animation-delay: 0.24s; }
+  .tts-waves span:nth-child(4) { height: 16px; animation-delay: 0.36s; }
+  .tts-waves span:nth-child(5) { height: 8px;  animation-delay: 0.48s; }
+  @keyframes waveBar {
+    0%, 100% { transform: scaleY(0.3); }
+    50%      { transform: scaleY(1.5); }
+  }
+
+  .tts-body { flex: 1; min-width: 0; }
+  .tts-user {
+    color: #00f5ff;
+    font-weight: 800;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .tts-msg {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+
+  /* queue badge below bubble */
+  .tts-queue {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(123, 47, 247, 0.05));
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 14px;
+    padding: 8px 18px;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .tts-queue .qcount {
+    background: linear-gradient(135deg, #00f5ff, #7b2ff7);
+    color: #fff;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 8px;
+    min-width: 28px;
+    text-align: center;
+  }
+
+  /* mini cards for queue preview */
+  .queue-mini {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 600px;
+  }
+  .queue-mini-item {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .queue-mini-item .quser { color: #00f5ff; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="tts-stage">
+  <div id="ttsContainer"><div class="tts-idle">🔊 Esperando mensajes...</div></div>
+  <div class="queue-mini" id="ttsQueueMini"></div>
+  <div class="tts-queue" id="ttsQueue" style="display:none">
+    <span>📋 En cola</span>
+    <span class="qcount" id="ttsQueueCount">0</span>
+  </div>
+</div>
+<script>
+  let ws = null;
+  let reconnectTimer = null;
+  const synth = window.speechSynthesis;
+  let queue = [];
+  let speaking = false;
+  let voice = null;
+  let rate = 1.0;
+  let pitch = 1.0;
+  let volume = 0.8;
+  let lang = 'es-ES';
+  let minLength = 0;
+  let enabled = true;
+  let userData = {};
+
+  function getUserId() { return new URLSearchParams(window.location.search).get('userId'); }
+  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function loadConfig() {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      rate = parseFloat(p.get('rate')) || 1.0;
+      pitch = parseFloat(p.get('pitch')) || 1.0;
+      volume = parseFloat(p.get('volume')) || 0.8;
+      lang = p.get('lang') || 'es-ES';
+      minLength = parseInt(p.get('minLength')) || 0;
+      enabled = p.get('enabled') !== 'false';
+    } catch {}
+  }
+
+  function setVoice() {
+    const voices = synth.getVoices();
+    const candidates = voices.filter(v => v.lang.startsWith(lang.split('-')[0]));
+    voice = candidates[0] || voices[0] || null;
+  }
+
+  function updateQueueUI() {
+    const mini = document.getElementById('ttsQueueMini');
+    const badge = document.getElementById('ttsQueue');
+    const count = document.getElementById('ttsQueueCount');
+
+    if (queue.length === 0) {
+      mini.innerHTML = '';
+      badge.style.display = 'none';
+    } else {
+      mini.innerHTML = queue.slice(0, 6).map(item => {
+        return `<div class="queue-mini-item"><span class="quser">@${escapeHtml(item.user)}</span> ${escapeHtml(item.text.substring(0, 30))}${item.text.length > 30 ? '…' : ''}</div>`;
+      }).join('');
+      badge.style.display = 'flex';
+      count.textContent = queue.length;
+    }
+  }
+
+  /* letter reveal */
+  function letterReveal(el, text, stagger = 25) {
+    el.innerHTML = '';
+    const chars = [...text];
+    chars.forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'reveal-char';
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      span.style.animationDelay = `${i * stagger}ms`;
+      el.appendChild(span);
+    });
+  }
+
+  function showBubble({ user, text, avatar, isFinal }) {
+    const wrap = document.getElementById('ttsContainer');
+    wrap.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'tts-bubble speaking slide-in-bottom';
+    const initial = (user || '?').charAt(0).toUpperCase();
+    const avatarHtml = avatar
+      ? `<img src="${escapeHtml(avatar)}" onerror="this.style.display='none';this.parentNode.textContent='${initial}'">`
+      : initial;
+    div.innerHTML = `
+      <div class="tts-avatar-wrap">
+        <div class="tts-avatar">${avatarHtml}</div>
+        <div class="tts-waves"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="tts-body">
+        <div class="tts-user">@${escapeHtml(user || 'alguien')}</div>
+        <div class="tts-msg" data-msg></div>
+      </div>
+    `;
+    wrap.appendChild(div);
+    letterReveal(div.querySelector('[data-msg]'), text || '', 18);
+    if (isFinal) {
+      const totalMs = Math.max(2000, text.length * 60 + 1500);
+      setTimeout(() => {
+        div.classList.remove('speaking');
+        div.classList.add('fade');
+        setTimeout(() => { div.remove(); const c = document.getElementById('ttsContainer'); if (c && !c.children.length) c.innerHTML = '<div class=\"tts-idle\">🔊 Esperando mensajes...</div>'; }, 500);
+      }, totalMs - 500);
+    }
+  }
+
+  function speakNext() {
+    if (!enabled || speaking || queue.length === 0) return;
+    speaking = true;
+    const item = queue.shift();
+    updateQueueUI();
+
+    const utterance = new SpeechSynthesisUtterance(item.text);
+    if (voice) utterance.voice = voice;
+    utterance.rate = rate;
+    utterance.pitch = pitch;
+    utterance.volume = volume;
+    utterance.lang = lang;
+
+    showBubble({ user: item.user, text: item.text, avatar: item.avatar, isFinal: false });
+
+    utterance.onend = () => {
+      speaking = false;
+      const totalMs = Math.max(2000, item.text.length * 60 + 1500);
+      setTimeout(() => speakNext(), 200);
+      /* remove the bubble on natural end */
+      const cur = document.querySelector('.tts-bubble');
+      if (cur) { cur.classList.remove('speaking'); cur.classList.add('fade'); setTimeout(() => cur.remove(), 500); }
+    };
+    utterance.onerror = () => { speaking = false; speakNext(); };
+
+    const totalMs = Math.max(2000, item.text.length * 60 + 1500);
+    setTimeout(() => { speaking = false; speakNext(); }, totalMs);
+
+    try { synth.speak(utterance); } catch (e) { speaking = false; speakNext(); }
+  }
+
+  function addTTS(user, text, avatar) {
+    if (!text || !text.trim()) return;
+    const clean = text.trim();
+    if (clean.length < minLength) return;
+    queue.push({ user, text: clean.substring(0, 200), avatar });
+    updateQueueUI();
+    if (!speaking) speakNext();
+  }
+
+  function connectWS(userId) {
+    if (ws) { try { ws.close(); } catch {} }
+    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    try {
+      ws = new WebSocket(`${proto}//${window.location.host}/live`);
+      ws.onopen = () => ws.send(JSON.stringify({ type: 'subscribe', channelId: userId }));
+      ws.onmessage = (ev) => {
+        try {
+          const msg = JSON.parse(ev.data);
+          const data = msg.data || {};
+          if (msg.type === 'chat' || msg.type === 'comment') {
+            const user = data.nickname || data.uniqueId || 'alguien';
+            const text = data.comment || data.message || '';
+            userData[data.uniqueId] = { nick: user, avatar: data.profilePictureUrl };
+            addTTS(user, text, data.profilePictureUrl);
+          }
+        } catch {}
+      };
+      ws.onclose = () => { reconnectTimer = setTimeout(() => connectWS(userId), 3000); };
+      ws.onerror = () => { try { ws.close(); } catch {} };
+    } catch (e) { reconnectTimer = setTimeout(() => connectWS(userId), 3000); }
+  }
+
+  const isMobile = new URLSearchParams(window.location.search).get('mode') === 'mobile';
+  if (isMobile) document.body.classList.add('mobile');
+
+  loadConfig();
+  setVoice();
+  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = setVoice;
+  const userId = getUserId();
+  if (userId && enabled) connectWS(userId);
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extendable Timer - TikToolStream</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: transparent;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow: hidden;
+    width: 400px;
+  }
+  /* Mobile portrait */
+  body.mobile .timer-container { max-width:92vw; padding:14px 18px; }
+  body.mobile .timer-title { font-size:11px; }
+  body.mobile .timer-number { font-size:2.2rem; }
+  body.mobile .timer-extend { font-size:0.75rem; padding:3px 8px; }
+  body.mobile .timer-paused { font-size:0.7rem; }
+  body.mobile .timer-remaining { font-size:0.65rem; }
+  .timer-container {
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 20px 28px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  .timer-title {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .timer-display {
+    font-size: 64px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(0,217,255,0.3);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin-bottom: 12px;
+    transition: color 0.5s;
+  }
+  .timer-display.warning { color: #ff6b35; text-shadow: 0 0 30px rgba(255,107,53,0.4); }
+  .timer-display.danger { color: #ff1744; text-shadow: 0 0 30px rgba(255,23,68,0.5); animation: blink 0.5s ease-in-out infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .timer-bar-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .timer-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s linear;
+    background: linear-gradient(90deg, #00d9ff, #7b2ff7);
+  }
+  .timer-bar-fill.warning { background: linear-gradient(90deg, #ff6b35, #ff1744); }
+  .timer-info {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .timer-extend {
+    color: #00d9ff;
+    font-weight: 700;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .timer-paused {
+    color: #ffd700;
+    font-size: 16px;
+    font-weight: 700;
+    animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="timer-container" id="timerContainer">
+  <div class="timer-title" id="timerTitle">COUNTDOWN</div>
+  <div class="timer-display" id="timerDisplay">05:00</div>
+  <div class="timer-bar-track">
+    <div class="timer-bar-fill" id="timerBar" style="width: 100%"></div>
+  </div>
+  <div class="timer-info">
+    <span id="timerElapsed">0s</span>
+    <span class="timer-extend" id="timerExtend">+10s por gift 💎</span>
+  </div>
+  <div class="timer-paused hidden" id="timerPaused">⏸ PAUSADO</div>
+</div>
+
+<script>
+  if (new URLSearchParams(window.location.search).get('mode') === 'mobile') document.body.classList.add('mobile');
+
+  let ws = null;
+  let reconnectTimer = null;
+  let timerInterval = null;
+  let currentTimer = null;
+  let remaining = 0;
+  let duration = 0;
+
+  function getUserId() {
+    return new URLSearchParams(window.location.search).get('userId');
+  }
+
+  function formatTime(secs) {
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
+  function updateDisplay() {
+    if (!currentTimer) return;
+    const display = document.getElementById('timerDisplay');
+    const bar = document.getElementById('timerBar');
+    const elapsed = document.getElementById('timerElapsed');
+
+    display.textContent = formatTime(remaining);
+    const pct = duration > 0 ? (remaining / duration) * 100 : 0;
+    bar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+
+    const elapsedSecs = duration - remaining;
+    elapsed.textContent = `${Math.floor(elapsedSecs)}s`;
+
+    display.className = 'timer-display';
+    bar.className = 'timer-bar-fill';
+    if (remaining <= 10) { display.classList.add('danger'); bar.classList.add('warning'); }
+    else if (remaining <= 30) { display.classList.add('warning'); bar.classList.add('warning'); }
+
+    document.getElementById('timerPaused').classList.toggle('hidden', !currentTimer.paused);
+    document.getElementById('timerExtend').textContent = `+${currentTimer.gift_extension}s por gift 💎`;
+  }
+
+  function applyTimer(timer) {
+    if (!timer) {
+      document.getElementById('timerContainer').style.display = 'none';
+      if (timerInterval) clearInterval(timerInterval);
+      currentTimer = null;
+      return;
+    }
+    document.getElementById('timerContainer').style.display = 'block';
+    document.getElementById('timerTitle').textContent = timer.title || 'COUNTDOWN';
+    currentTimer = timer;
+    remaining = timer.remaining;
+    duration = timer.duration;
+    updateDisplay();
+
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (!currentTimer || !currentTimer.active || currentTimer.paused) return;
+      remaining = Math.max(0, remaining - 1);
+      updateDisplay();
+      if (remaining <= 0 && timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    }, 1000);
+  }
+
+  async function fetchTimer(userId) {
+    try {
+      const res = await fetch(`/api/timers/public/${userId}`);
+      if (res.ok) { const data = await res.json(); applyTimer(data); }
+    } catch (e) {}
+  }
+
+  function connectWS(userId) {
+    if (ws) ws.close();
+    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${proto}//${window.location.host}/live`);
+    ws.onopen = () => ws.send(JSON.stringify({ type: 'subscribe', channelId: userId }));
+    ws.onmessage = (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.type === 'gift' && currentTimer && currentTimer.active && !currentTimer.paused) {
+          remaining += currentTimer.gift_extension;
+          updateDisplay();
+        }
+      } catch (e) {}
+    };
+    ws.onclose = () => { reconnectTimer = setTimeout(() => connectWS(userId), 3000); };
+    ws.onerror = () => ws.close();
+  }
+
+  const userId = getUserId();
+  if (userId) {
+    fetchTimer(userId);
+    setInterval(() => fetchTimer(userId), 10000);
+    connectWS(userId);
+  }
+</script>
+</body>
+</html>

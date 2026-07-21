@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikToolStream</title>
+<link rel="icon" type="image/png" href="/assets/LOGOSINFONDO.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/variables.css">
+<link rel="stylesheet" href="/app/css/layout.css">
+<link rel="stylesheet" href="/app/css/components.css">
+<link rel="stylesheet" href="/app/css/ux-polish.css">
+<link rel="stylesheet" href="/assets/css/overlays.css">
+</head>
+<body>
+<a href="#app-view" class="skip-link">Saltar al contenido</a>
+
+<header class="app-header" role="banner">
+  <div class="header-left">
+    <button class="hamburger" id="sidebarToggle" aria-label="Menu">Menu</button>
+    <img src="/assets/LOGOSINFONDO.png" alt="TikToolStream" class="header-logo">
+    <span class="header-title">TikToolStream</span>
+  </div>
+  <div class="header-right">
+    <span class="ws-indicator" id="wsIndicator" title="Estado WebSocket"></span>
+    <button class="user-menu-btn" id="userMenuBtn">
+      <span id="userNameDisplay">Cargando...</span>
+    </button>
+  </div>
+</header>
+
+<aside class="main-sidebar" id="mainSidebar" role="navigation" aria-label="Navegacion principal">
+  <div class="sidebar-brand">
+    <img src="/assets/LOGOSINFONDO.png" alt="" class="sidebar-logo">
+    <span class="sidebar-brand-text">Herramientas</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Live Studio</div>
+    <a href="/app/dashboard" class="nav-item is-primary" data-route="/app/dashboard"><span class="nav-icon">D</span> Dashboard</a>
+    <a href="/app/hype-arena" class="nav-item is-primary" data-route="/app/hype-arena"><span class="nav-icon">🐺</span> Hype Arena</a>
+    <a href="/app/overlays" class="nav-item is-primary" data-route="/app/overlays"><span class="nav-icon">O</span> Overlays</a>
+    <a href="/app/integrations" class="nav-item is-primary" data-route="/app/integrations"><span class="nav-icon">G</span> Game &amp; HTTP Lab</a>
+    <a href="/app/actions" class="nav-item" data-route="/app/actions"><span class="nav-icon">A</span> Acciones</a>
+    <div class="nav-divider"></div>
+    <div class="nav-section-title">Interaccion</div>
+    <a href="/app/auctions" class="nav-item" data-route="/app/auctions"><span class="nav-icon">S</span> Subastas</a>
+    <a href="/app/roulette" class="nav-item" data-route="/app/roulette"><span class="nav-icon">R</span> Ruleta</a>
+    <a href="/app/timers" class="nav-item" data-route="/app/timers"><span class="nav-icon">T</span> Timers</a>
+    <a href="/app/goals" class="nav-item" data-route="/app/goals"><span class="nav-icon">M</span> Metas</a>
+    <a href="/app/sounds" class="nav-item" data-route="/app/sounds"><span class="nav-icon">S</span> Sonidos</a>
+    <div class="nav-divider"></div>
+    <div class="nav-section-title">Comunidad</div>
+    <a href="/app/chat" class="nav-item" data-route="/app/chat"><span class="nav-icon">C</span> Chat</a>
+    <a href="/app/chatbot" class="nav-item" data-route="/app/chatbot"><span class="nav-icon">B</span> Chatbot</a>
+    <a href="/app/songrequests" class="nav-item" data-route="/app/songrequests"><span class="nav-icon">Q</span> Canciones</a>
+    <a href="/app/analytics" class="nav-item" data-route="/app/analytics"><span class="nav-icon">I</span> Analytics</a>
+    <div class="nav-divider"></div>
+    <div class="nav-section-title">Cuenta</div>
+    <a href="/app/payments" class="nav-item" data-route="/app/payments"><span class="nav-icon">P</span> Plan</a>
+    <a href="/app/profile" class="nav-item" data-route="/app/profile"><span class="nav-icon">U</span> Perfil</a>
+    <a href="/app/settings" class="nav-item" data-route="/app/settings"><span class="nav-icon">E</span> Configuracion</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/admin.html" style="display:block;margin-bottom:6px;color:var(--text-muted);font-size:12px;" id="adminLink">Panel Admin</a>
+    <a href="#" id="logoutLink" style="color:var(--color-danger);font-size:12px;">Cerrar sesion</a>
+    <div style="margin-top:8px;">v2.0.0</div>
+  </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<main class="app-main" id="app-view" tabindex="-1" role="main">
+  <div class="app-loading" id="appLoading">
+    <div class="spinner"></div>
+    <p>Cargando...</p>
+  </div>
+</main>
+
+<script type="module" src="/app/js/app.js"></script>
+</body>
+</html>

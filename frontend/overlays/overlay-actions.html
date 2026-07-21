@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actions Overlay - TikToolStream</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/overlays.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; overflow: hidden; font-family: 'Poppins', system-ui, sans-serif; }
+
+  .actions-stage { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+
+  .actions-idle { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.15); font-size:1rem; font-weight:600; letter-spacing:2px; pointer-events:none; animation:actionsIdlePulse 3s ease-in-out infinite; }
+  @keyframes actionsIdlePulse { 0%,100%{opacity:0.15;} 50%{opacity:0.35;} }
+
+  .action-popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+    will-change: transform, opacity;
+  }
+
+  /* Mobile portrait */
+  .mobile .action-text { min-width:auto; max-width:88vw; padding:24px 28px; border-radius:18px; }
+  .mobile .action-text .trigger-badge { font-size:9px; padding:4px 10px; }
+  .mobile .action-text .action-title { font-size:1.2rem; }
+  .mobile .action-text .action-label { font-size:0.95rem; }
+  .mobile .action-text .action-subtitle { font-size:0.7rem; }
+  .mobile .action-text .action-amount { font-size:0.8rem; }
+  .mobile img.action-image { width:120px; height:120px; }
+  .mobile video.action-video { max-width:260px; max-height:160px; }
+
+  /* text / alert containers with glass morphism */
+  .action-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(10,10,30,0.85), rgba(20,15,40,0.85));
+    -webkit-backdrop-filter: blur(36px) saturate(200%);
+    backdrop-filter: blur(36px) saturate(200%);
+    border: 2px solid var(--accent, #00f5ff);
+    border-radius: 26px;
+    padding: 40px 60px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px var(--accent-glow, rgba(0,245,255,0.3)), inset 0 1px 0 rgba(255,255,255,0.2);
+    text-align: center;
+    min-width: 420px;
+    max-width: 600px;
+  }
+  .action-text.alert {
+    border-width: 3px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 80px var(--accent-glow, rgba(255,215,0,0.5)), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .action-text::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent, #fff), transparent);
+    pointer-events: none;
+  }
+
+  .trigger-badge {
+    display: inline-block;
+    background: rgba(0,0,0,0.4);
+    color: var(--accent, #00f5ff);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    padding: 5px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--accent, #00f5ff);
+    margin-bottom: 14px;
+  }
+  .icon {
+    font-size: 72px;
+    margin-bottom: 12px;
+    line-height: 1;
+    filter: drop-shadow(0 0 24px var(--accent-glow, rgba(0,245,255,0.6)));
+  }
+  .icon img { width: 72px; height: 72px; object-fit: contain; }
+  .username {
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .message {
+    color: #fff;
+    font-size: 30px;
+    font-weight: 800;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.2;
+  }
+  .action-text.alert .message {
+    background: linear-gradient(135deg, var(--accent, #ffd700), var(--accent-2, #ff6b00));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* media (image/video) */
+  .action-media {
+    max-width: 80vw;
+    max-height: 80vh;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px var(--accent-glow, rgba(0,245,255,0.3));
+    border: 2px solid var(--accent, #00f5ff);
+  }
+  .action-media img, .action-media video {
+    display: block;
+    max-width: 80vw;
+    max-height: 80vh;
+    border-radius: 24px;
+  }
+
+  /* bottom toast variant */
+  .action-bottom {
+    position: fixed;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(10,10,30,0.85), rgba(20,15,40,0.85));
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 2px solid var(--accent, #00f5ff);
+    border-radius: 18px;
+    padding: 16px 32px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px var(--accent-glow, rgba(0,245,255,0.3));
+    max-width: 80vw;
+    z-index: 10;
+  }
+  .action-bottom .trigger {
+    color: var(--accent, #00f5ff);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .action-bottom .label {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 800;
+    margin-top: 4px;
+  }
+  .action-bottom .username { color: rgba(255,255,255,0.6); font-size: 13px; margin-top: 4px; }
+  html.tts-reduced-motion *,
+  html.tts-reduced-motion *::before,
+  html.tts-reduced-motion *::after { animation: none !important; transition: none !important; }
+  html.tts-reduced-motion .confetti-piece { display: none !important; }
+
+</style>
+</head>
+<body>
+<div class="actions-stage" id="actionsStage"><div class="actions-idle">⚡ Escuchando eventos...</div></div>
+<script src="/assets/js/overlay-runtime.js"></script>
+<script>
+  /* ============================================================
+     Premium Actions Overlay — TikToolStream
+     Pop entrance, glass, aurora per trigger, liquid metal SVG,
+     vanilla particles with physics, confetti
+     ============================================================ */
+  const { LiveChannelClient, SerialQueue, motion, channelIdFromUrl, sleep } = window.TikToolOverlay;
+  let liveClient = null;
+  const cooldowns = Object.create(null);
+  const liquidSvgs = [];
+
+  /* periodic cooldown cleanup */
+  setInterval(() => {
+    const now = Date.now();
+    for (const key of Object.keys(cooldowns)) {
+      if (now - cooldowns[key] > 600000) delete cooldowns[key];
+    }
+  }, 300000);
+  let actions = [];
+  const GIFT_IMAGES = {};
+  const actionQueue = new SerialQueue(
+    ({ action, triggerData }) => executeAction(action, triggerData),
+    { maxLength: 24 }
+  );
+  if (motion.reduced) document.documentElement.classList.add('tts-reduced-motion');
+
+  /* trigger theme palette */
+  const TRIGGER_THEMES = {
+    gift:        { accent: '#ff006e', accent2: '#8b5cf6', glow: 'rgba(255,0,110,0.4)' },
+    follow:      { accent: '#00ff88', accent2: '#00d9ff', glow: 'rgba(0,255,136,0.4)' },
+    share:       { accent: '#00f5ff', accent2: '#8b5cf6', glow: 'rgba(0,245,255,0.4)' },
+    like:        { accent: '#ff006e', accent2: '#ff6b6b', glow: 'rgba(255,107,107,0.4)' },
+    connect:     { accent: '#00f5ff', accent2: '#7b2ff7', glow: 'rgba(123,47,247,0.4)' },
+    disconnect:  { accent: '#ff6b6b', accent2: '#ff1744', glow: 'rgba(255,23,68,0.4)' },
+    default:     { accent: '#ffd700', accent2: '#ff6b00', glow: 'rgba(255,215,0,0.4)' }
+  };
+
+  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
+
+  /* ====== liquid metal text (SVG turbulence) ====== */
+  function applyLiquidMetal(textEl) {
+    if (!textEl || motion.reduced) return;
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const wrapper = document.createElement('span');
+    wrapper.style.cssText = 'position:relative;display:inline-block;';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('width', '0'); svg.setAttribute('height', '0');
+    svg.style.position = 'absolute';
+    svg.innerHTML = `<defs>
+      <filter id="liquid-${Date.now()}">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02 0.04" numOctaves="2" seed="${Math.random()*10}">
+          <animate attributeName="baseFrequency" dur="4s" values="0.02 0.04;0.03 0.05;0.02 0.04" repeatCount="indefinite"/>
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" scale="4"/>
+      </filter>
+    </defs>`;
+    document.body.appendChild(svg);
+    liquidSvgs.push(svg);
+    const id = svg.querySelector('filter').id;
+    textEl.style.filter = `url(#${id})`;
+    textEl.style.background = 'linear-gradient(135deg, #fff 0%, #d0d0e0 30%, #888 50%, #1a1a2e 70%, #b0b0c0 100%)';
+    textEl.style.webkitBackgroundClip = 'text';
+    textEl.style.backgroundClip = 'text';
+    textEl.style.webkitTextFillColor = 'transparent';
+  }
+
+  /* ====== confetti vanilla with physics ====== */
+  function spawnConfetti(x, y, count, palette) {
+    if (motion.reduced) return;
+    const colors = palette || ['#ff006e', '#00f5ff', '#8b5cf6', '#ffd700', '#00ff88', '#ff6b00'];
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = (x - 5) + 'px';
+      p.style.top = (y - 7) + 'px';
+      p.style.background = colors[i % colors.length];
+      p.style.borderRadius = i % 3 === 0 ? '50%' : '2px';
+      document.body.appendChild(p);
+      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.6;
+      const dist = 200 + Math.random() * 320;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist - 150;
+      const rot = (Math.random() - 0.5) * 900;
+      const dur = 2000 + Math.random() * 1200;
+      const start = performance.now();
+      function anim(now) {
+        const k = Math.min(1, (now - start) / dur);
+        const ease = 1 - Math.pow(1 - k, 2);
+        // gravity adds to vertical motion over time
+        const gravity = 400 * ease * ease;
+        p.style.transform = `translate(${dx * ease}px, ${dy * ease + gravity}px) rotate(${rot * ease}deg)`;
+        p.style.opacity = 1 - ease;
+        if (k < 1) requestAnimationFrame(anim);
+        else p.remove();
+      }
+      requestAnimationFrame(anim);
+    }
+  }
+
+  /* ====== screen shake ====== */
+  function screenShake(intensity) {
+    const stage = document.getElementById('actionsStage');
+    if (!stage || motion.reduced) return;
+    stage.style.animation = 'none';
+    void stage.offsetHeight;
+    stage.style.setProperty('--shake-intensity', intensity);
+    stage.style.animation = 'screenShake 0.5s ease-in-out';
+  }
+
+
+  /* ====== load gift catalog ====== */
+  async function loadGiftCatalog() {
+    try {
+      const res = await fetch('/gifts.json');
+      if (res.ok) {
+        const data = await res.json();
+        for (const g of Object.values(data)) if (g.id && g.image) GIFT_IMAGES[g.id] = g.image;
+      }
+    } catch {}
+  }
+
+  /* ====== load actions ====== */
+  async function loadActions(userId) {
+    try {
+      const res = await fetch(`/api/actions/public/${userId}`);
+      if (res.ok) actions = await res.json();
+    } catch (e) {}
+  }
+
+  /* ====== icon picker ====== */
+  function pickIcon(triggerData) {
+    if (triggerData?.giftName) {
+      const img = GIFT_IMAGES[triggerData.giftId];
+      return img
+        ? `<img src="${escapeAttr(img)}" onerror="this.style.display='none';this.parentNode.textContent='🎁'">`
+        : '🎁';
+    }
+    if (triggerData?.followRole || /follow|seguir/i.test(triggerData?.nickname || '')) return '👤';
+    return triggerData?.nickname ? '💬' : '⚡';
+  }
+  function revealAction(node) {
+    const visual = node?.firstElementChild || node;
+    motion.fromTo(
+      visual,
+      { autoAlpha: 0, y: 24, scale: 0.86 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(1.5)' }
+    );
+  }
+
+  function restoreIdle() {
+    const stage = document.getElementById('actionsStage');
+    if (stage && !stage.querySelector('.action-popup')) {
+      const existing = stage.querySelector('.actions-idle');
+      if (!existing) {
+        const idle = document.createElement('div');
+        idle.className = 'actions-idle';
+        idle.textContent = '⚡ Escuchando eventos...';
+        stage.appendChild(idle);
+      }
+    }
+  }
+
+  async function dismissAction(node, visibleMs) {
+    await sleep(visibleMs);
+    if (!node?.isConnected) { restoreIdle(); return; }
+    if (motion.reduced) {
+      node.remove();
+      restoreIdle();
+      return;
+    }
+    /* cleanup liquid metal SVGs */
+    while (liquidSvgs.length > 3) {
+      const old = liquidSvgs.shift();
+      old?.remove();
+    }
+
+    await new Promise((resolve) => {
+      let finished = false;
+      let fallbackTimer;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(fallbackTimer);
+        node.remove();
+        restoreIdle();
+        resolve();
+      };
+      fallbackTimer = setTimeout(finish, 600);
+      motion.to(node, { autoAlpha: 0, duration: 0.35, ease: 'power2.in', onComplete: finish });
+    });
+  }
+
+  async function playSound(value, volume) {
+    if (!value) return;
+    await new Promise((resolve) => {
+      let finished = false;
+      const audio = new Audio(value);
+      const requestedVolume = Number(volume);
+      audio.volume = Number.isFinite(requestedVolume)
+        ? Math.min(1, Math.max(0, requestedVolume))
+        : 0.8;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(fallbackTimer);
+        resolve();
+      };
+      const fallbackTimer = setTimeout(finish, 12000);
+      audio.addEventListener('ended', finish, { once: true });
+      audio.addEventListener('error', finish, { once: true });
+      audio.play().catch(finish);
+    });
+  }
+
+  function actionEnabled(action) {
+    return ![false, 0, '0', 'false'].includes(action?.enabled);
+  }
+
+  function actionMatchesEvent(action, event) {
+    if (!actionEnabled(action)) return false;
+    if (event.type === 'gift' && action.trigger_type === 'gift') {
+      const giftId = String(event.data?.giftId ?? '');
+      return !action.trigger_id || action.trigger_id === giftId || action.trigger_id === 'any';
+    }
+    if (event.type === 'connected' && action.trigger_type === 'connect') return true;
+    if (event.type === 'disconnected' && action.trigger_type === 'disconnect') return true;
+    if (event.type === 'follow' && action.trigger_type === 'follow') return true;
+    if (event.type === 'share' && action.trigger_type === 'share') return true;
+    if (event.type === 'like' && action.trigger_type === 'like') return true;
+    return false;
+  }
+
+  function enqueueAction(action, triggerData) {
+    const now = Date.now();
+    const cooldownMs = Math.max(0, Number(action.cooldown) || 0) * 1000;
+    const key = String(action.id);
+    if (cooldowns[key] && now - cooldowns[key] < cooldownMs) return;
+    cooldowns[key] = now;
+    actionQueue.push({ action, triggerData });
+  }
+
+  /* ====== show popup ====== */
+  async function showPopup({ type, value, triggerData, action, config }) {
+    const stage = document.getElementById('actionsStage');
+    document.querySelector('.actions-idle')?.remove();
+
+    const old = document.getElementById('actionCurrent');
+    if (old) old.remove();
+
+    const username = triggerData?.nickname || triggerData?.uniqueId || 'Alguien';
+    const triggerType = action?.trigger_type || 'gift';
+    const theme = TRIGGER_THEMES[triggerType] || TRIGGER_THEMES.default;
+    const isAlert = type === 'alert';
+
+    /* set CSS variables on stage for accent */
+    stage.style.setProperty('--accent', theme.accent);
+    stage.style.setProperty('--accent-2', theme.accent2);
+    stage.style.setProperty('--accent-glow', theme.glow);
+
+
+    if (type === 'text' || type === 'alert') {
+      const div = document.createElement('div');
+      div.id = 'actionCurrent';
+      div.className = `action-popup ${isAlert ? 'alert' : ''}`;
+      const textHtml = escapeHtml(value || '');
+      div.innerHTML = `
+        <div class="action-text ${isAlert ? 'alert' : ''}">
+          <div class="trigger-badge">${escapeHtml(action?.name || (triggerData?.giftName ? 'Regalo: ' + triggerData.giftName : 'Evento'))}</div>
+          <div class="icon">${pickIcon(triggerData)}</div>
+          <div class="username">@${escapeHtml(username)}</div>
+          <div class="message" data-msg>${textHtml}</div>
+        </div>
+      `;
+      stage.appendChild(div);
+      revealAction(div);
+
+      /* liquid metal for high-value alerts */
+      if (isAlert && (triggerData?.diamondCount || 0) >= 1000) {
+        setTimeout(() => applyLiquidMetal(div.querySelector('[data-msg]')), 100);
+      }
+
+      const rect = div.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      if (isAlert) {
+        spawnConfetti(cx, cy, 50, [theme.accent, theme.accent2, '#fff', '#ffd700']);
+        screenShake(1.3);
+      } else if ((triggerData?.diamondCount || 0) >= 1000) {
+        spawnConfetti(cx, cy, 30, [theme.accent, theme.accent2, '#fff']);
+      }
+
+      await dismissAction(div, isAlert ? 4500 : 5000);
+    } else if (type === 'video' || type === 'gif' || type === 'image') {
+      const div = document.createElement('div');
+      div.id = 'actionCurrent';
+      div.className = 'action-popup';
+      let inner = '';
+      if (type === 'video') {
+        inner = `<video src="${escapeAttr(value)}" autoplay playsinline></video>`;
+      } else {
+        inner = `<img src="${escapeAttr(value)}" onerror="this.alt='Imagen no disponible'" style="max-width:${type === 'image' ? '60vw' : '80vw'};max-height:${type === 'image' ? '60vh' : '80vh'}">`;
+      }
+      div.innerHTML = `<div class="action-media">${inner}</div>`;
+      stage.appendChild(div);
+      revealAction(div);
+      const rect = div.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      spawnConfetti(cx, cy, 30, [theme.accent, theme.accent2, '#fff']);
+      await dismissAction(div, type === 'video' ? 8000 : (type === 'gif' ? 5000 : 4000));
+    } else if (type === 'overlay') {
+      const div = document.createElement('div');
+      div.className = 'action-bottom';
+      div.innerHTML = `
+        <div class="trigger">${escapeHtml(action?.name || 'Evento')}</div>
+        <div class="label">${escapeHtml(value || '')}</div>
+        <div class="username">— @${escapeHtml(username)}</div>
+      `;
+      stage.appendChild(div);
+      revealAction(div);
+      await dismissAction(div, 4000);
+    } else if (type === 'sound') {
+      await playSound(value, config.volume);
+    }
+  }
+
+  async function executeAction(action, triggerData) {
+    let config = {};
+    try { config = typeof action.action_config === 'string' ? JSON.parse(action.action_config) : (action.action_config || {}); } catch { config = {}; }
+    const value = config.value || config.url || action.name;
+    await showPopup({ type: action.action_type, value, triggerData, action, config });
+  }
+
+  function handleLiveEvent(event) {
+    if (!actions.length) return;
+    const matching = actions.filter((action) => actionMatchesEvent(action, event));
+    matching.forEach((action) => enqueueAction(action, event.data || event));
+  }
+
+  function connectLive(channelId) {
+    liveClient?.stop();
+    liveClient = new LiveChannelClient({ channelId });
+    liveClient.on('event', handleLiveEvent);
+    liveClient.start();
+  }
+
+  const isMobile = new URLSearchParams(window.location.search).get('mode') === 'mobile';
+  if (isMobile) document.body.classList.add('mobile');
+
+  const channelId = channelIdFromUrl();
+  if (channelId) {
+    Promise.all([loadGiftCatalog(), loadActions(channelId)]).finally(() => connectLive(channelId));
+    setInterval(() => loadActions(channelId), 15000);
+    window.addEventListener('beforeunload', () => {
+      liveClient?.stop();
+      actionQueue.clear();
+    }, { once: true });
+  }
+</script>
+</body>
+</html>

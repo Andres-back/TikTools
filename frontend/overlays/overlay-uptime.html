@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uptime Overlay - TikToolStream</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/overlays.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; overflow: hidden; font-family: 'Poppins', system-ui, sans-serif; }
+
+  .uptime-widget {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    background: linear-gradient(135deg, rgba(10,10,30,0.92), rgba(20,15,40,0.92));
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    backdrop-filter: blur(24px) saturate(200%);
+    border: 2px solid rgba(255, 215, 0, 0.4);
+    border-radius: 16px;
+    padding: 14px 20px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 30px rgba(255, 215, 0, 0.2);
+    pointer-events: none;
+    z-index: 10;
+    min-width: 180px;
+  }
+  .uptime-widget::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  }
+
+  .uptime-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 215, 0, 0.7);
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .uptime-label .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 8px #00ff88;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  .uptime-time {
+    font-family: 'Rajdhani', monospace;
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff, #ffd700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .uptime-time.waiting { opacity:0.3; font-size:1.6rem; }
+
+  /* Mobile portrait */
+  .mobile .uptime-widget { bottom:12px; left:50%; transform:translateX(-50%); padding:10px 16px; min-width:auto; border-radius:12px; }
+  .mobile .uptime-time { font-size:1.5rem; text-align:center; }
+  .mobile .uptime-label { font-size:0.6rem; justify-content:center; }
+</style>
+</head>
+<body>
+<div class="uptime-widget">
+  <div class="uptime-label"><span class="dot"></span> ⏱️ Tiempo en vivo</div>
+  <div class="uptime-time" id="uptimeTime">--:--:--</div>
+</div>
+<script>
+  let ws = null;
+  let reconnectTimer = null;
+  let startTime = null;
+  let tickInterval = null;
+
+  function getUserId() { return new URLSearchParams(window.location.search).get('userId'); }
+  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function fmt(seconds) {
+    seconds = Math.max(0, Math.floor(seconds));
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
+  function tick() {
+    if (!startTime) {
+      const el = document.getElementById('uptimeTime');
+      if (el) { el.textContent = '--:--:--'; el.classList.add('waiting'); }
+      return;
+    }
+    const elapsed = (Date.now() - startTime) / 1000;
+    const el = document.getElementById('uptimeTime');
+    if (el) { el.textContent = fmt(elapsed); el.classList.remove('waiting'); }
+  }
+
+  function connectWS(userId) {
+    if (ws) { try { ws.close(); } catch {} }
+    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    try {
+      ws = new WebSocket(`${proto}//${window.location.host}/live`);
+      ws.onopen = () => ws.send(JSON.stringify({ type: 'subscribe', channelId: userId }));
+      ws.onmessage = (ev) => {
+        try {
+          const msg = JSON.parse(ev.data);
+          if (msg.type === 'connected' || msg.type === 'streamStart') {
+            startTime = Date.now();
+            if (tickInterval) clearInterval(tickInterval);
+            tickInterval = setInterval(tick, 1000);
+            tick();
+          } else if (msg.type === 'disconnected' || msg.type === 'streamEnd') {
+            if (tickInterval) clearInterval(tickInterval);
+            tickInterval = null;
+          }
+        } catch {}
+      };
+      ws.onclose = () => { reconnectTimer = setTimeout(() => connectWS(userId), 3000); };
+      ws.onerror = () => { try { ws.close(); } catch {} };
+    } catch (e) { reconnectTimer = setTimeout(() => connectWS(userId), 3000); }
+  }
+
+  const isMobile = new URLSearchParams(window.location.search).get('mode') === 'mobile';
+  if (isMobile) document.body.classList.add('mobile');
+
+  const userId = getUserId();
+  if (userId) connectWS(userId);
+</script>
+</body>
+</html>
