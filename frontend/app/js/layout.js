@@ -74,9 +74,20 @@ export async function initLayout() {
 }
 
 export function updateWsIndicator(state) {
-  const el = document.getElementById('wsIndicator');
+  const el = document.getElementById('globalLiveIndicator');
+  const userEl = document.getElementById('globalLiveUser');
   if (!el) return;
-  el.className = 'ws-indicator ' + state;
-  el.title = state.charAt(0).toUpperCase() + state.slice(1);
+  if (state === 'connected') {
+    const user = localStorage.getItem('tiktok_user') || '';
+    el.style.display = 'flex';
+    if (userEl) userEl.textContent = `📡 @${user}`;
+    el.style.borderColor = 'rgba(34,214,94,0.3)';
+  } else if (state === 'disconnected' || state === 'idle') {
+    el.style.display = 'none';
+  } else if (state === 'connecting' || state === 'reconnecting') {
+    el.style.display = 'flex';
+    if (userEl) userEl.textContent = '🔄 Conectando...';
+    el.style.borderColor = 'rgba(255,183,0,0.3)';
+  }
 }
 

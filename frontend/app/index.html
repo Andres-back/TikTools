@@ -118,6 +118,10 @@
   </nav>
 
   <div class="sidebar-footer">
+    <div id="globalLiveIndicator" style="display:none;padding:4px 12px;margin-bottom:6px;border-radius:8px;background:rgba(34,214,94,0.1);border:1px solid rgba(34,214,94,0.2);font-size:11px;font-weight:600;color:var(--color-success);align-items:center;gap:6px">
+      <span class="status-dot connected" style="width:6px;height:6px;flex-shrink:0"></span>
+      <span id="globalLiveUser" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">En vivo</span>
+    </div>
     <a href="/admin.html" id="adminLink" style="color:var(--text-muted)">Panel Admin</a>
     <a href="#" id="logoutLink" style="color:var(--color-danger)"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a>
     <div style="margin-top:8px;opacity:0.6">v2.0.0</div>
