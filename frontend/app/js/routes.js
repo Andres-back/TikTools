@@ -9,7 +9,6 @@ defineRoutes([
   // Tool views
   { path: '/app/dashboard', load: () => import('./views/dashboard.js'), guard: 'auth', title: 'Dashboard | TikToolStream' },
   { path: '/app/goals', load: () => import('./views/goals.js'), guard: 'auth', title: 'Metas | TikToolStream' },
-  { path: '/app/sounds', load: () => import('./views/sounds.js'), guard: 'auth', title: 'Alertas de Sonido | TikToolStream' },
   { path: '/app/chatbot', load: () => import('./views/chatbot.js'), guard: 'auth', title: 'Chatbot | TikToolStream' },
   { path: '/app/songrequests', load: () => import('./views/songrequests.js'), guard: 'auth', title: 'Solicitar Canciones | TikToolStream' },
   { path: '/app/actions', load: () => import('./views/actions.js'), guard: 'auth', title: 'Acciones y Eventos | TikToolStream' },
