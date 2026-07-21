@@ -1,257 +1,531 @@
 /**
- * Overlays View - TikToolStream
- * Fast OBS preview with clean copy/open workflow.
+ * Overlay Studio View - TikToolStream
+ * Organized responsive catalog for OBS overlays.
  */
 
 const OVERLAYS = [
-  { id: 'hype-arena', name: 'Hype Arena', file: '/overlays/overlay-hype-arena.html', desc: 'Hype, rachas, regalos y resultados de juego en una escena premium.', icon: 'HA', bg: '#070914', category: 'Interactivo', featured: true, previewDemo: true, badges: ['Nuevo', 'Interactivo'] },
-  { id: 'actions', name: 'Acciones y Eventos', file: '/overlays/overlay-actions.html', desc: 'Alertas visuales, audio, video e imagenes por evento.', icon: 'AE', bg: '#0a0a1e', category: 'Alertas', badges: ['Cola'] },
-  { id: 'chat', name: 'Chat en Vivo', file: '/overlays/overlay-chat.html', desc: 'Comentarios del LIVE para mostrar en pantalla.', icon: 'CH', bg: '#0a0a1e', category: 'Comunidad' },
-  { id: 'events', name: 'Eventos Recientes', file: '/overlays/overlay-recent-events.html', desc: 'Timeline lateral de follows, shares y regalos.', icon: 'EV', bg: '#0a0a1e', category: 'Comunidad' },
-  { id: 'viewers', name: 'Contador Viewers', file: '/overlays/overlay-viewer-count.html', desc: 'Indicador LIVE con espectadores actuales.', icon: 'VW', bg: '#0a0a1e', category: 'HUD' },
-  { id: 'marquee', name: 'Ticker de Regalos', file: '/overlays/overlay-marquee.html', desc: 'Barra inferior para actividad reciente de regalos.', icon: 'TK', bg: '#0a0a1e', category: 'HUD' },
-  { id: 'goal', name: 'Metas', file: '/overlays/overlay-goal.html', desc: 'Barra de progreso para likes, shares, follows o monedas.', icon: 'MT', bg: '#0a0a1e', category: 'Objetivos' },
-  { id: 'timer', name: 'Timer Subasta', file: '/overlays/overlay-timer.html', desc: 'Temporizador principal con fases y ganador.', icon: 'TM', bg: '#0a0a1e', category: 'Subasta' },
-  { id: 'extimer', name: 'Timer Extensible', file: '/overlays/overlay-timer-extendable.html', desc: 'Countdown que aumenta con regalos.', icon: 'TE', bg: '#0a0a1e', category: 'Subasta' },
-  { id: 'roulette', name: 'Ruleta', file: '/overlays/overlay-ruleta.html', desc: 'Escena de ruleta para dinamicas en vivo.', icon: 'RL', bg: '#0a0a1e', category: 'Juego' },
-  { id: 'participants', name: 'Participantes', file: '/overlays/overlay-participantes.html', desc: 'Lista de usuarios participantes.', icon: 'PA', bg: '#0a0a1e', category: 'Juego' },
-  { id: 'leaderboard', name: 'Leaderboard', file: '/overlays/overlay-generic.html', desc: 'Top donadores generico.', icon: 'LB', bg: '#0a0a1e', category: 'Ranking' },
-  { id: 'sounds', name: 'Alertas de Sonido', file: '/overlays/overlay-sounds.html', desc: 'Reproduce sonidos al recibir regalos.', icon: 'SO', bg: '#0a0a1e', category: 'Alertas' },
-  { id: 'tts', name: 'Texto a Voz', file: '/overlays/overlay-tts.html', desc: 'Lee comentarios del chat en voz alta.', icon: 'VO', bg: '#111827', category: 'Comunidad' },
-  { id: 'uptime', name: 'Tiempo en Vivo', file: '/overlays/overlay-uptime.html', desc: 'Contador de duracion del stream.', icon: 'UP', bg: '#0a0a1e', category: 'HUD' }
+  {
+    id: 'hype-arena',
+    name: 'Hype Arena',
+    file: '/overlays/overlay-hype-arena.html',
+    desc: 'Escena central con hype, rachas, regalos y resultados de juego.',
+    icon: 'HA',
+    category: 'Interactivo',
+    scene: 'Show principal',
+    tone: 'Premium / competitivo',
+    format: 'Full screen',
+    bg: '#050713',
+    featured: true,
+    previewDemo: true,
+    badges: ['Nuevo', 'Interactivo', 'Demo']
+  },
+  {
+    id: 'actions',
+    name: 'Acciones y Eventos',
+    file: '/overlays/overlay-actions.html',
+    desc: 'Alertas visuales, audio, video e imagenes disparadas por eventos.',
+    icon: 'AE',
+    category: 'Alertas',
+    scene: 'Momentos especiales',
+    tone: 'Impacto visual',
+    format: 'Overlay transparente',
+    bg: '#070a19',
+    badges: ['Cola', 'Automatizable']
+  },
+  {
+    id: 'sounds',
+    name: 'Alertas de Sonido',
+    file: '/overlays/overlay-sounds.html',
+    desc: 'Reproduce sonidos y muestra una tarjeta animada cuando llegan regalos.',
+    icon: 'SO',
+    category: 'Alertas',
+    scene: 'Reacciones',
+    tone: 'Energico',
+    format: 'Centro / transparente',
+    bg: '#080716',
+    badges: ['Biblioteca', 'Regalos']
+  },
+  {
+    id: 'tts',
+    name: 'Texto a Voz',
+    file: '/overlays/overlay-tts.html',
+    desc: 'Convierte comentarios seleccionados en una experiencia de voz.',
+    icon: 'VO',
+    category: 'Comunidad',
+    scene: 'Chat interactivo',
+    tone: 'Participativo',
+    format: 'Audio + tarjeta',
+    bg: '#101827',
+    badges: ['Chat', 'Voz']
+  },
+  {
+    id: 'chat',
+    name: 'Chat en Vivo',
+    file: '/overlays/overlay-chat.html',
+    desc: 'Muestra mensajes del LIVE en una capa limpia para pantalla.',
+    icon: 'CH',
+    category: 'Comunidad',
+    scene: 'Lateral / full',
+    tone: 'Social',
+    format: 'Panel',
+    bg: '#07101f',
+    badges: ['Mensajes']
+  },
+  {
+    id: 'events',
+    name: 'Eventos Recientes',
+    file: '/overlays/overlay-recent-events.html',
+    desc: 'Timeline de follows, shares, likes y regalos para mostrar actividad.',
+    icon: 'EV',
+    category: 'Comunidad',
+    scene: 'Lateral',
+    tone: 'Informativo',
+    format: 'Feed',
+    bg: '#07101f',
+    badges: ['Timeline']
+  },
+  {
+    id: 'viewers',
+    name: 'Contador Viewers',
+    file: '/overlays/overlay-viewer-count.html',
+    desc: 'Indicador LIVE compacto con espectadores actuales.',
+    icon: 'VW',
+    category: 'HUD',
+    scene: 'Esquina',
+    tone: 'Minimal',
+    format: 'Widget',
+    bg: '#05111b',
+    badges: ['Live']
+  },
+  {
+    id: 'marquee',
+    name: 'Ticker de Regalos',
+    file: '/overlays/overlay-marquee.html',
+    desc: 'Barra inferior con actividad reciente para mantener movimiento.',
+    icon: 'TK',
+    category: 'HUD',
+    scene: 'Lower third',
+    tone: 'Dinamico',
+    format: 'Barra',
+    bg: '#07101f',
+    badges: ['Ticker']
+  },
+  {
+    id: 'uptime',
+    name: 'Tiempo en Vivo',
+    file: '/overlays/overlay-uptime.html',
+    desc: 'Cronometro simple para mostrar duracion del stream.',
+    icon: 'UP',
+    category: 'HUD',
+    scene: 'Esquina',
+    tone: 'Minimal',
+    format: 'Widget',
+    bg: '#06111d',
+    badges: ['Timer']
+  },
+  {
+    id: 'goal',
+    name: 'Metas',
+    file: '/overlays/overlay-goal.html',
+    desc: 'Barra de progreso para likes, follows, shares o monedas.',
+    icon: 'MT',
+    category: 'Objetivos',
+    scene: 'Superior / inferior',
+    tone: 'Motivacional',
+    format: 'Progress bar',
+    bg: '#10110a',
+    badges: ['Progreso']
+  },
+  {
+    id: 'timer',
+    name: 'Timer Subasta',
+    file: '/overlays/overlay-timer.html',
+    desc: 'Temporizador principal con fases, extension y ganador.',
+    icon: 'TM',
+    category: 'Subasta',
+    scene: 'Centro / esquina',
+    tone: 'Competitivo',
+    format: 'Timer',
+    bg: '#110b08',
+    badges: ['Subasta']
+  },
+  {
+    id: 'extimer',
+    name: 'Timer Extensible',
+    file: '/overlays/overlay-timer-extendable.html',
+    desc: 'Countdown que aumenta cuando llegan regalos configurados.',
+    icon: 'TE',
+    category: 'Subasta',
+    scene: 'Centro',
+    tone: 'Urgente',
+    format: 'Timer interactivo',
+    bg: '#110b08',
+    badges: ['Regalos']
+  },
+  {
+    id: 'roulette',
+    name: 'Ruleta',
+    file: '/overlays/overlay-ruleta.html',
+    desc: 'Escena de ruleta para retos, premios y dinamicas del chat.',
+    icon: 'RL',
+    category: 'Juego',
+    scene: 'Full screen',
+    tone: 'Show',
+    format: 'Juego',
+    bg: '#0c0715',
+    badges: ['Juego']
+  },
+  {
+    id: 'participants',
+    name: 'Participantes',
+    file: '/overlays/overlay-participantes.html',
+    desc: 'Lista visual de usuarios participantes en dinamicas.',
+    icon: 'PA',
+    category: 'Juego',
+    scene: 'Panel',
+    tone: 'Comunidad',
+    format: 'Lista',
+    bg: '#0c0715',
+    badges: ['Usuarios']
+  },
+  {
+    id: 'leaderboard',
+    name: 'Leaderboard',
+    file: '/overlays/overlay-generic.html',
+    desc: 'Ranking de donadores o actividad para reforzar competencia.',
+    icon: 'LB',
+    category: 'Ranking',
+    scene: 'Panel / full',
+    tone: 'Competitivo',
+    format: 'Ranking',
+    bg: '#071015',
+    badges: ['Top']
+  }
 ];
 
-export async function mount({ target }) {
-  const userId = getCurrentUserId();
-  let selected = OVERLAYS[0];
-  let activeCategory = 'Todos';
-  let mobileMode = false;
+const CATEGORY_ORDER = ['Todos', 'Interactivo', 'Alertas', 'Comunidad', 'HUD', 'Objetivos', 'Subasta', 'Juego', 'Ranking'];
+const VIEW_MODES = {
+  desktop: { label: 'Desktop', short: '16:9', obs: '1920 x 1080', param: null },
+  mobile: { label: 'Vertical', short: '9:16', obs: '1080 x 1920', param: 'mobile' }
+};
 
-  const categories = ['Todos', ...new Set(OVERLAYS.map((item) => item.category))];
+export async function mount({ target, signal } = {}) {
+  const userId = getCurrentUserId();
+  let selected = OVERLAYS.find((overlay) => overlay.featured) || OVERLAYS[0];
+  let activeCategory = 'Todos';
+  let activeMode = 'desktop';
+
+  const categories = CATEGORY_ORDER.filter((category) => category === 'Todos' || OVERLAYS.some((overlay) => overlay.category === category));
 
   target.innerHTML = `
     <style>
-      .ov-shell { display:grid; grid-template-columns:minmax(260px, 340px) minmax(0, 1fr); gap:18px; min-height:calc(100vh - var(--header-height) - 44px); }
-      .ov-sidebar { display:flex; flex-direction:column; gap:12px; min-width:0; }
-      .ov-search { width:100%; min-height:40px; padding:9px 11px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-input); color:var(--text-primary); }
-      .ov-tabs { display:flex; gap:6px; overflow:auto; padding-bottom:2px; }
-      .ov-tab { flex:0 0 auto; min-height:32px; padding:6px 10px; border:1px solid var(--border-color); border-radius:999px; background:rgba(255,255,255,.035); color:var(--text-secondary); font-size:var(--text-xs); font-weight:700; }
-      .ov-tab.active { border-color:rgba(37,217,242,.45); background:rgba(37,217,242,.12); color:var(--text-primary); }
-      .ov-list { display:flex; flex-direction:column; gap:8px; overflow:auto; padding-right:2px; }
-      .ov-item { display:grid; grid-template-columns:38px minmax(0,1fr) auto; gap:10px; align-items:center; width:100%; min-height:64px; padding:10px; border:1px solid var(--border-color); border-radius:8px; background:rgba(255,255,255,.035); color:var(--text-primary); text-align:left; }
-      .ov-item:hover { border-color:rgba(37,217,242,.32); background:rgba(255,255,255,.055); }
-      .ov-item.active { border-color:rgba(37,217,242,.55); background:rgba(37,217,242,.11); box-shadow:inset 3px 0 0 var(--color-primary); }
-      .ov-icon { width:38px; height:38px; display:grid; place-items:center; border-radius:8px; background:linear-gradient(135deg, rgba(37,217,242,.18), rgba(255,61,113,.14)); color:var(--color-primary); font-size:12px; font-weight:900; }
-      .ov-name { overflow:hidden; font-size:var(--text-sm); font-weight:800; text-overflow:ellipsis; white-space:nowrap; }
-      .ov-desc { overflow:hidden; margin-top:2px; color:var(--text-muted); font-size:var(--text-xs); text-overflow:ellipsis; white-space:nowrap; }
-      .ov-pill { padding:3px 7px; border-radius:999px; background:rgba(255,255,255,.06); color:var(--text-muted); font-size:10px; font-weight:800; text-transform:uppercase; }
-      .ov-stage { display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:12px; min-width:0; }
-      .ov-panel { border:1px solid var(--border-color); border-radius:8px; background:rgba(18,22,34,.88); box-shadow:0 18px 50px rgba(0,0,0,.28); overflow:hidden; }
-      .ov-preview-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border-bottom:1px solid var(--border-color); }
-      .ov-preview-title { min-width:0; }
-      .ov-preview-title h2 { margin:0; overflow:hidden; font-size:1rem; text-overflow:ellipsis; white-space:nowrap; }
-      .ov-preview-title p { margin:3px 0 0; color:var(--text-muted); font-size:var(--text-xs); }
-      .ov-preview-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
-      .ov-mode-toggle { display:flex; border:1px solid var(--border-color); border-radius:8px; overflow:hidden; }
-      .ov-mode-btn { min-height:32px; padding:6px 12px; border:none; background:rgba(255,255,255,.035); color:var(--text-muted); font-size:var(--text-xs); font-weight:700; cursor:pointer; transition:all .15s; }
-      .ov-mode-btn.active { background:var(--color-primary-gradient); color:#fff; }
-      .ov-mode-btn:not(:last-child) { border-right:1px solid var(--border-color); }
-      .ov-frame-wrap { position:relative; aspect-ratio:16/9; background:#02030a; transition:aspect-ratio .3s ease; }
-      .ov-frame-wrap.mobile { aspect-ratio:9/16; max-height:70vh; margin:0 auto; width:auto; }
-      .ov-frame-wrap .ov-label { position:absolute; left:10px; bottom:8px; z-index:1; padding:4px 7px; border-radius:6px; background:rgba(0,0,0,.55); color:rgba(255,255,255,.62); font:10px var(--font-mono); pointer-events:none; }
-      .ov-frame { width:100%; height:100%; border:0; background:transparent; }
-      .ov-url-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; padding:12px; border-top:1px solid var(--border-color); }
-      .ov-url { min-width:0; padding:10px 11px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-input); color:var(--color-primary); font:12px var(--font-mono); }
-      .ov-help { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; }
-      .ov-help-item { padding:12px; border:1px solid var(--border-color); border-radius:8px; background:rgba(255,255,255,.035); }
-      .ov-help-item strong { display:block; margin-bottom:4px; font-size:var(--text-sm); }
-      .ov-help-item span { color:var(--text-muted); font-size:var(--text-xs); line-height:1.5; }
-      @media (max-width: 1040px) { .ov-shell { grid-template-columns:1fr; } .ov-list { max-height:360px; } }
-      @media (max-width: 680px) { .ov-preview-head, .ov-url-row { grid-template-columns:1fr; } .ov-preview-head { align-items:flex-start; flex-direction:column; } .ov-preview-actions { justify-content:flex-start; } .ov-help { grid-template-columns:1fr; } }
+      .overlay-studio { --os-line: rgba(255,255,255,.095); --os-soft: rgba(255,255,255,.055); --os-card: rgba(10,14,28,.78); --os-card-2: rgba(14,20,38,.92); --os-cyan: #25d9f2; --os-pink: #ff3d71; --os-gold: #f2bd4d; display: grid; gap: 22px; }
+      .os-hero { position: relative; overflow: hidden; border: 1px solid var(--os-line); border-radius: 26px; padding: clamp(22px, 3vw, 34px); background: radial-gradient(circle at 8% 0%, rgba(37,217,242,.20), transparent 34%), radial-gradient(circle at 92% 12%, rgba(255,61,113,.18), transparent 30%), linear-gradient(135deg, rgba(13,18,36,.96), rgba(8,11,24,.96)); box-shadow: 0 24px 70px rgba(0,0,0,.34); }
+      .os-hero::after { content: ''; position: absolute; inset: auto -10% -45% 35%; height: 190px; background: linear-gradient(90deg, transparent, rgba(37,217,242,.16), transparent); transform: rotate(-8deg); pointer-events: none; }
+      .os-hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+      .os-kicker { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px; color: var(--os-cyan); font-size: .78rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+      .os-title { margin: 0; color: #fff; font-size: clamp(2rem, 4vw, 4.6rem); line-height: .95; letter-spacing: -.06em; font-weight: 950; }
+      .os-subtitle { max-width: 850px; margin: 14px 0 0; color: rgba(245,248,255,.70); font-size: clamp(.98rem, 1.4vw, 1.12rem); line-height: 1.7; }
+      .os-hero-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+      .os-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 22px; max-width: 720px; }
+      .os-metric { padding: 14px 16px; border: 1px solid var(--os-line); border-radius: 16px; background: rgba(255,255,255,.045); }
+      .os-metric strong { display: block; color: #fff; font-size: 1.35rem; font-weight: 950; }
+      .os-metric span { display: block; margin-top: 3px; color: rgba(245,248,255,.58); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+      .os-layout { display: grid; grid-template-columns: minmax(290px, 372px) minmax(0, 1fr); gap: 22px; align-items: start; }
+      .os-card { border: 1px solid var(--os-line); border-radius: 22px; background: var(--os-card); box-shadow: 0 18px 48px rgba(0,0,0,.25); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+      .os-sidebar { position: sticky; top: calc(var(--header-height, 76px) + 18px); display: grid; gap: 16px; padding: 16px; max-height: calc(100vh - var(--header-height, 76px) - 36px); overflow: hidden; }
+      .os-search-wrap { position: relative; }
+      .os-search { width: 100%; min-height: 50px; padding: 14px 44px 14px 16px; border: 1px solid var(--os-line); border-radius: 15px; background: rgba(2,5,14,.68); color: #fff; outline: none; font-size: .98rem; }
+      .os-search:focus { border-color: rgba(37,217,242,.55); box-shadow: 0 0 0 3px rgba(37,217,242,.12); }
+      .os-search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,.40); font-size: .78rem; font-weight: 900; }
+      .os-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+      .os-tab { flex: 0 0 auto; min-height: 36px; padding: 9px 12px; border: 1px solid var(--os-line); border-radius: 999px; background: rgba(255,255,255,.04); color: rgba(245,248,255,.68); font-size: .78rem; font-weight: 900; cursor: pointer; transition: transform .16s ease, border-color .16s ease, background .16s ease; }
+      .os-tab:hover { transform: translateY(-1px); border-color: rgba(37,217,242,.34); }
+      .os-tab.active { border-color: rgba(37,217,242,.55); background: rgba(37,217,242,.14); color: #fff; }
+      .os-list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: rgba(245,248,255,.58); font-size: .76rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+      .os-list { display: grid; gap: 10px; overflow: auto; padding-right: 4px; scrollbar-width: thin; }
+      .os-item { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 12px; align-items: center; width: 100%; padding: 12px; border: 1px solid transparent; border-radius: 16px; background: rgba(255,255,255,.035); color: #fff; text-align: left; cursor: pointer; transition: transform .16s ease, border-color .16s ease, background .16s ease; }
+      .os-item:hover { transform: translateY(-1px); border-color: rgba(37,217,242,.24); background: rgba(255,255,255,.06); }
+      .os-item.active { border-color: rgba(37,217,242,.55); background: linear-gradient(135deg, rgba(37,217,242,.14), rgba(255,61,113,.08)); box-shadow: inset 4px 0 0 var(--os-cyan); }
+      .os-item-icon { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, rgba(37,217,242,.20), rgba(255,61,113,.18)); color: var(--os-cyan); font-weight: 950; letter-spacing: -.03em; }
+      .os-item-name { display: block; overflow: hidden; font-size: .96rem; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+      .os-item-meta { display: flex; gap: 7px; align-items: center; margin-top: 5px; color: rgba(245,248,255,.52); font-size: .74rem; font-weight: 700; }
+      .os-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(245,248,255,.35); }
+      .os-empty { padding: 18px; border: 1px dashed var(--os-line); border-radius: 16px; color: rgba(245,248,255,.58); text-align: center; }
+      .os-main { display: grid; gap: 18px; min-width: 0; }
+      .os-preview-card { overflow: hidden; background: linear-gradient(180deg, rgba(15,22,42,.92), rgba(8,10,22,.92)); }
+      .os-preview-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: start; padding: clamp(18px, 2.2vw, 26px); border-bottom: 1px solid var(--os-line); }
+      .os-selected-kicker { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+      .os-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 5px 9px; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; background: rgba(255,255,255,.055); color: rgba(245,248,255,.72); font-size: .70rem; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; }
+      .os-chip.hot { border-color: rgba(255,61,113,.32); background: rgba(255,61,113,.12); color: #fff; }
+      .os-selected-title { display: flex; gap: 14px; align-items: center; min-width: 0; }
+      .os-selected-icon { width: 58px; height: 58px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 18px; background: linear-gradient(135deg, rgba(37,217,242,.25), rgba(255,61,113,.20)); color: var(--os-cyan); font-size: 1.05rem; font-weight: 950; }
+      .os-selected-title h2 { margin: 0; overflow: hidden; color: #fff; font-size: clamp(1.45rem, 2.4vw, 2.2rem); line-height: 1; letter-spacing: -.04em; text-overflow: ellipsis; white-space: nowrap; }
+      .os-selected-title p { margin: 8px 0 0; color: rgba(245,248,255,.66); line-height: 1.65; }
+      .os-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; min-width: min(390px, 100%); }
+      .os-mode-toggle { display: inline-flex; min-height: 42px; padding: 4px; border: 1px solid var(--os-line); border-radius: 14px; background: rgba(0,0,0,.22); }
+      .os-mode { border: 0; border-radius: 10px; padding: 9px 12px; background: transparent; color: rgba(245,248,255,.60); font-size: .78rem; font-weight: 900; cursor: pointer; }
+      .os-mode.active { background: linear-gradient(135deg, var(--os-cyan), #7b2ff7); color: #fff; box-shadow: 0 8px 22px rgba(37,217,242,.22); }
+      .os-preview-body { padding: clamp(12px, 2vw, 22px); background: radial-gradient(circle at 50% 0%, rgba(37,217,242,.12), transparent 35%), #02040b; }
+      .os-frame-shell { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid rgba(255,255,255,.09); border-radius: 20px; background: #02040b; transition: max-width .24s ease, aspect-ratio .24s ease; box-shadow: inset 0 0 0 1px rgba(255,255,255,.03), 0 22px 70px rgba(0,0,0,.35); }
+      .os-frame-shell.mobile { aspect-ratio: 9 / 16; max-width: min(420px, 100%); margin-inline: auto; }
+      .os-frame-toolbar { position: absolute; z-index: 2; left: 12px; right: 12px; bottom: 12px; display: flex; justify-content: space-between; gap: 10px; pointer-events: none; }
+      .os-frame-label { display: inline-flex; align-items: center; min-height: 30px; padding: 6px 10px; border: 1px solid rgba(255,255,255,.10); border-radius: 999px; background: rgba(0,0,0,.62); color: rgba(245,248,255,.68); font: 700 11px/1 var(--font-mono, ui-monospace, SFMono-Regular, Consolas, monospace); }
+      .os-preview-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: transparent; }
+      .os-url-panel { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: clamp(16px, 2vw, 22px); border-top: 1px solid var(--os-line); }
+      .os-url { min-width: 0; min-height: 46px; padding: 12px 14px; border: 1px solid var(--os-line); border-radius: 14px; background: rgba(0,0,0,.25); color: var(--os-cyan); font: 700 .86rem/1.4 var(--font-mono, ui-monospace, SFMono-Regular, Consolas, monospace); overflow: hidden; text-overflow: ellipsis; }
+      .os-detail-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .os-detail { padding: 16px; border: 1px solid var(--os-line); border-radius: 18px; background: rgba(255,255,255,.04); }
+      .os-detail span { display: block; color: rgba(245,248,255,.48); font-size: .72rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+      .os-detail strong { display: block; margin-top: 6px; color: #fff; font-size: .98rem; line-height: 1.35; }
+      .os-guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+      .os-guide-card { position: relative; overflow: hidden; padding: 18px; border: 1px solid var(--os-line); border-radius: 20px; background: rgba(255,255,255,.04); }
+      .os-guide-card::before { content: attr(data-step); display: grid; place-items: center; width: 32px; height: 32px; margin-bottom: 14px; border-radius: 10px; background: rgba(37,217,242,.14); color: var(--os-cyan); font-weight: 950; }
+      .os-guide-card strong { display: block; color: #fff; margin-bottom: 8px; }
+      .os-guide-card span { color: rgba(245,248,255,.62); font-size: .9rem; line-height: 1.65; }
+      @media (max-width: 1180px) { .os-layout { grid-template-columns: 1fr; } .os-sidebar { position: relative; top: 0; max-height: none; } .os-list { grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: none; } }
+      @media (max-width: 860px) { .os-hero-grid, .os-preview-head, .os-url-panel { grid-template-columns: 1fr; } .os-hero-actions, .os-actions { justify-content: flex-start; min-width: 0; } .os-metrics, .os-detail-grid, .os-guide { grid-template-columns: 1fr; } .os-list { grid-template-columns: 1fr; } .os-selected-title { align-items: flex-start; } .os-selected-title h2 { white-space: normal; } }
+      @media (max-width: 560px) { .overlay-studio { gap: 16px; } .os-hero, .os-card { border-radius: 18px; } .os-hero { padding: 20px; } .os-title { font-size: 2.15rem; } .os-metrics { gap: 8px; } .os-metric { padding: 12px; } .os-preview-head, .os-preview-body, .os-url-panel { padding: 14px; } .os-selected-title { display: grid; grid-template-columns: 48px minmax(0, 1fr); } .os-selected-icon { width: 48px; height: 48px; border-radius: 14px; } .os-actions > .btn, .os-url-panel > .btn { width: 100%; } .os-mode-toggle { width: 100%; } .os-mode { flex: 1; } }
     </style>
 
-    <div class="ux-page-head">
-      <div>
-        <div class="ux-kicker">OBS Studio</div>
-        <h1 class="view-title">Overlays</h1>
-        <p class="view-subtitle">Selecciona una escena, prueba el preview y copia una URL limpia para OBS. El modo demo solo se usa dentro de la vista previa.</p>
-      </div>
-      <div class="ux-page-actions">
-        <a class="btn btn-secondary" href="/app/integrations" data-router-link>Game Lab</a>
-        <a class="btn btn-secondary" href="/app/actions" data-router-link>Acciones</a>
-      </div>
-    </div>
-
-    <div class="ov-shell">
-      <aside class="ov-sidebar" aria-label="Catalogo de overlays">
-        <input id="overlaySearch" class="ov-search" type="search" placeholder="Buscar overlay">
-        <div class="ov-tabs" id="overlayTabs">${categories.map((category) => `<button class="ov-tab ${category === activeCategory ? 'active' : ''}" data-category="${escapeAttr(category)}">${escapeHtml(category)}</button>`).join('')}</div>
-        <div class="ov-list" id="overlayList"></div>
-      </aside>
-
-      <section class="ov-stage">
-        <div class="ov-panel">
-          <div class="ov-preview-head">
-            <div class="ov-preview-title">
-              <h2 id="previewName"></h2>
-              <p id="previewDesc"></p>
+    <section class="overlay-studio" aria-label="Overlay Studio">
+      <header class="os-hero">
+        <div class="os-hero-grid">
+          <div>
+            <div class="os-kicker">Overlay Studio</div>
+            <h1 class="os-title">Escenas listas para OBS</h1>
+            <p class="os-subtitle">Catalogo organizado por uso real: elige la escena, cambia entre formato horizontal o vertical, prueba el preview y copia una URL limpia para Browser Source.</p>
+            <div class="os-metrics" aria-label="Resumen de overlays">
+              <div class="os-metric"><strong>${OVERLAYS.length}</strong><span>Overlays</span></div>
+              <div class="os-metric"><strong>${categories.length - 1}</strong><span>Categorias</span></div>
+              <div class="os-metric"><strong>2</strong><span>Formatos OBS</span></div>
             </div>
-            <div class="ov-preview-actions">
-              <div class="ov-mode-toggle">
-                <button class="ov-mode-btn active" data-mode="pc">🖥 PC</button>
-                <button class="ov-mode-btn" data-mode="mobile">📱 Móvil</button>
+          </div>
+          <div class="os-hero-actions">
+            <button class="btn btn-primary" id="openFeaturedOverlay">Abrir destacado</button>
+            <a class="btn btn-secondary" href="/app/actions" data-router-link>Configurar acciones</a>
+          </div>
+        </div>
+      </header>
+
+      <div class="os-layout">
+        <aside class="os-card os-sidebar" aria-label="Catalogo de overlays">
+          <div class="os-search-wrap">
+            <input id="overlaySearch" class="os-search" type="search" placeholder="Buscar por nombre, uso o categoria" autocomplete="off">
+            <span class="os-search-icon">BUSCAR</span>
+          </div>
+          <nav class="os-tabs" id="overlayTabs" aria-label="Categorias de overlays">
+            ${categories.map((category) => `<button class="os-tab ${category === activeCategory ? 'active' : ''}" type="button" data-category="${escapeAttr(category)}">${escapeHtml(category)} <span>${categoryCount(category)}</span></button>`).join('')}
+          </nav>
+          <div class="os-list-head"><span>Catalogo</span><span id="overlayCount"></span></div>
+          <div class="os-list" id="overlayList"></div>
+        </aside>
+
+        <main class="os-main">
+          <section class="os-card os-preview-card" aria-label="Preview del overlay seleccionado">
+            <div class="os-preview-head">
+              <div>
+                <div class="os-selected-kicker" id="selectedBadges"></div>
+                <div class="os-selected-title">
+                  <div class="os-selected-icon" id="selectedIcon"></div>
+                  <div>
+                    <h2 id="previewName"></h2>
+                    <p id="previewDesc"></p>
+                  </div>
+                </div>
               </div>
-              <button class="btn btn-secondary" id="reloadPreview">Recargar</button>
-              <button class="btn btn-primary" id="openOverlay">Abrir</button>
+              <div class="os-actions">
+                <div class="os-mode-toggle" role="group" aria-label="Formato de preview">
+                  ${Object.entries(VIEW_MODES).map(([key, mode]) => `<button class="os-mode ${key === activeMode ? 'active' : ''}" type="button" data-mode="${key}">${mode.label} <span>${mode.short}</span></button>`).join('')}
+                </div>
+                <button class="btn btn-secondary" id="reloadPreview" type="button">Recargar</button>
+                <button class="btn btn-primary" id="openOverlay" type="button">Abrir</button>
+              </div>
             </div>
-          </div>
-          <div class="ov-frame-wrap" id="previewBg">
-            <span class="ov-label" id="previewLabel">1920 × 1080 · PC</span>
-            <iframe id="previewFrame" class="ov-frame" allowtransparency="true" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
-          </div>
-          <div class="ov-url-row">
-            <input id="overlayUrl" class="ov-url" readonly>
-            <button class="btn btn-primary" id="copyOverlay">Copiar URL</button>
-          </div>
-        </div>
 
-        <div class="ov-help">
-          <div class="ov-help-item"><strong>Resolucion</strong><span>Usa 1920 x 1080 para PC y 1080 x 1920 para movil. Cambia entre modos con el toggle.</span></div>
-          <div class="ov-help-item"><strong>Transparencia</strong><span>Activa fondo transparente en Browser Source cuando el overlay lo soporte.</span></div>
-          <div class="ov-help-item"><strong>Demo</strong><span>Hype Arena se previsualiza con datos falsos, pero la URL copiada queda lista para tu canal.</span></div>
-        </div>
-      </section>
-    </div>
+            <div class="os-preview-body">
+              <div class="os-frame-shell" id="previewShell">
+                <iframe id="previewFrame" class="os-preview-frame" title="Preview de overlay" allow="autoplay" allowtransparency="true"></iframe>
+                <div class="os-frame-toolbar">
+                  <span class="os-frame-label" id="previewLabel"></span>
+                  <span class="os-frame-label" id="previewModeLabel"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="os-url-panel">
+              <input id="overlayUrl" class="os-url" readonly aria-label="URL para OBS Browser Source">
+              <button class="btn btn-primary" id="copyOverlay" type="button">Copiar URL OBS</button>
+            </div>
+          </section>
+
+          <section class="os-detail-grid" aria-label="Detalles del overlay seleccionado">
+            <div class="os-detail"><span>Uso recomendado</span><strong id="detailScene"></strong></div>
+            <div class="os-detail"><span>Estilo</span><strong id="detailTone"></strong></div>
+            <div class="os-detail"><span>Formato</span><strong id="detailFormat"></strong></div>
+          </section>
+
+          <section class="os-guide" aria-label="Guia rapida OBS">
+            <div class="os-guide-card" data-step="1"><strong>Agrega Browser Source</strong><span>En OBS usa la URL copiada. Mant?n ancho y alto segun el formato elegido.</span></div>
+            <div class="os-guide-card" data-step="2"><strong>Ordena por capas</strong><span>HUD y alertas arriba; escenas completas como Hype Arena pueden ir como fuente principal.</span></div>
+            <div class="os-guide-card" data-step="3"><strong>Prueba con demo</strong><span>El preview puede usar datos falsos. La URL copiada queda limpia para tu stream real.</span></div>
+          </section>
+        </main>
+      </div>
+    </section>
   `;
 
-  const listEl = document.getElementById('overlayList');
-  const searchEl = document.getElementById('overlaySearch');
-  const frameEl = document.getElementById('previewFrame');
-  const urlEl = document.getElementById('overlayUrl');
-  const nameEl = document.getElementById('previewName');
-  const descEl = document.getElementById('previewDesc');
-  const bgEl = document.getElementById('previewBg');
-  const labelEl = document.getElementById('previewLabel');
-  const modeBtns = document.querySelectorAll('.ov-mode-btn');
+  const refs = {
+    list: target.querySelector('#overlayList'),
+    search: target.querySelector('#overlaySearch'),
+    tabs: target.querySelector('#overlayTabs'),
+    count: target.querySelector('#overlayCount'),
+    frame: target.querySelector('#previewFrame'),
+    shell: target.querySelector('#previewShell'),
+    url: target.querySelector('#overlayUrl'),
+    name: target.querySelector('#previewName'),
+    desc: target.querySelector('#previewDesc'),
+    icon: target.querySelector('#selectedIcon'),
+    badges: target.querySelector('#selectedBadges'),
+    label: target.querySelector('#previewLabel'),
+    modeLabel: target.querySelector('#previewModeLabel'),
+    detailScene: target.querySelector('#detailScene'),
+    detailTone: target.querySelector('#detailTone'),
+    detailFormat: target.querySelector('#detailFormat')
+  };
+
+  const listen = (node, type, handler) => node?.addEventListener(type, handler, signal ? { signal } : undefined);
+
+  function categoryCount(category) {
+    return category === 'Todos' ? OVERLAYS.length : OVERLAYS.filter((overlay) => overlay.category === category).length;
+  }
+
+  function currentMode() {
+    return VIEW_MODES[activeMode] || VIEW_MODES.desktop;
+  }
 
   function getUrl(overlay, options = {}) {
     const url = new URL(overlay.file, window.location.origin);
     if (userId) url.searchParams.set('userId', userId);
     if (options.preview && overlay.previewDemo) url.searchParams.set('demo', '1');
-    if (mobileMode) url.searchParams.set('mode', 'mobile');
+    if (currentMode().param) url.searchParams.set('mode', currentMode().param);
     return url.toString();
   }
 
-  function setMobileMode(mobile) {
-    mobileMode = mobile;
-    modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === (mobile ? 'mobile' : 'pc')));
-    bgEl.classList.toggle('mobile', mobile);
-    labelEl.textContent = mobile ? '1080 × 1920 · Móvil' : '1920 × 1080 · PC';
-    selectOverlay(selected);
-  }
-
   function filteredOverlays() {
-    const term = searchEl.value.trim().toLowerCase();
+    const term = refs.search.value.trim().toLowerCase();
     return OVERLAYS.filter((overlay) => {
-      const inCategory = activeCategory === 'Todos' || overlay.category === activeCategory;
-      const inSearch = !term || `${overlay.name} ${overlay.desc} ${overlay.category}`.toLowerCase().includes(term);
-      return inCategory && inSearch;
+      const matchesCategory = activeCategory === 'Todos' || overlay.category === activeCategory;
+      const haystack = `${overlay.name} ${overlay.desc} ${overlay.category} ${overlay.scene} ${overlay.tone} ${(overlay.badges || []).join(' ')}`.toLowerCase();
+      return matchesCategory && (!term || haystack.includes(term));
     });
   }
 
-  function renderList() {
-    const items = filteredOverlays();
-    listEl.innerHTML = items.length ? items.map((overlay) => `
-      <button class="ov-item ${overlay.id === selected.id ? 'active' : ''}" data-id="${escapeAttr(overlay.id)}">
-        <span class="ov-icon">${escapeHtml(overlay.icon)}</span>
-        <span style="min-width:0"><span class="ov-name">${escapeHtml(overlay.name)}</span><span class="ov-desc">${escapeHtml(overlay.desc)}</span></span>
-        <span class="ov-pill">${escapeHtml(overlay.category)}</span>
+  function renderList(items = filteredOverlays()) {
+    refs.count.textContent = `${items.length} visibles`;
+    refs.list.innerHTML = items.length ? items.map((overlay) => `
+      <button class="os-item ${overlay.id === selected.id ? 'active' : ''}" type="button" data-id="${escapeAttr(overlay.id)}" aria-label="Seleccionar ${escapeAttr(overlay.name)}">
+        <span class="os-item-icon">${escapeHtml(overlay.icon)}</span>
+        <span style="min-width:0">
+          <span class="os-item-name">${escapeHtml(overlay.name)}</span>
+          <span class="os-item-meta"><span>${escapeHtml(overlay.category)}</span><span class="os-dot"></span><span>${escapeHtml(overlay.scene)}</span></span>
+        </span>
       </button>
-    `).join('') : '<div class="card ux-muted">No hay overlays para este filtro.</div>';
+    `).join('') : '<div class="os-empty">No hay overlays con este filtro.</div>';
   }
 
-  function selectOverlay(overlay) {
+  function renderTabs() {
+    target.querySelectorAll('.os-tab').forEach((tab) => {
+      tab.classList.toggle('active', tab.dataset.category === activeCategory);
+    });
+  }
+
+  function updatePreview() {
+    const mode = currentMode();
+    refs.name.textContent = selected.name;
+    refs.desc.textContent = selected.desc;
+    refs.icon.textContent = selected.icon;
+    refs.detailScene.textContent = selected.scene;
+    refs.detailTone.textContent = selected.tone;
+    refs.detailFormat.textContent = selected.format;
+    refs.label.textContent = mode.obs;
+    refs.modeLabel.textContent = selected.previewDemo ? 'Preview demo' : 'Preview real';
+    refs.shell.style.background = selected.bg || '#02040b';
+    refs.shell.classList.toggle('mobile', activeMode === 'mobile');
+    refs.badges.innerHTML = [selected.category, ...(selected.badges || [])].map((badge, index) => `<span class="os-chip ${index === 1 ? 'hot' : ''}">${escapeHtml(badge)}</span>`).join('');
+    refs.url.value = getUrl(selected, { preview: false });
+    const previewUrl = getUrl(selected, { preview: true });
+    refs.frame.src = 'about:blank';
+    requestAnimationFrame(() => { refs.frame.src = previewUrl; });
+  }
+
+  function refreshCatalog({ keepSelection = true } = {}) {
+    const items = filteredOverlays();
+    if (!keepSelection || (items.length && !items.some((overlay) => overlay.id === selected.id))) {
+      selected = items[0] || OVERLAYS[0];
+    }
+    renderTabs();
+    renderList(items);
+    updatePreview();
+  }
+
+  function selectOverlay(id) {
+    const overlay = OVERLAYS.find((item) => item.id === id);
+    if (!overlay) return;
     selected = overlay;
-    nameEl.textContent = overlay.name;
-    descEl.textContent = overlay.desc;
-    bgEl.style.background = overlay.bg || '#02030a';
-    urlEl.value = getUrl(overlay);
-    frameEl.removeAttribute('src');
-    frameEl.srcdoc = renderPreviewDocument(overlay, mobileMode);
-    renderList();
+    renderList(filteredOverlays());
+    updatePreview();
   }
 
-  document.getElementById('overlayTabs').addEventListener('click', (event) => {
+  async function copyOverlayUrl() {
+    const button = target.querySelector('#copyOverlay');
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(refs.url.value);
+      button.textContent = 'URL copiada';
+    } catch {
+      refs.url.select();
+      document.execCommand('copy');
+      button.textContent = 'URL copiada';
+    }
+    setTimeout(() => { button.textContent = original; }, 1400);
+  }
+
+  listen(refs.tabs, 'click', (event) => {
     const button = event.target.closest('[data-category]');
     if (!button) return;
     activeCategory = button.dataset.category;
-    document.querySelectorAll('.ov-tab').forEach((tab) => tab.classList.toggle('active', tab === button));
-    const first = filteredOverlays()[0] || OVERLAYS[0];
-    selectOverlay(first);
+    refreshCatalog({ keepSelection: false });
   });
 
-  listEl.addEventListener('click', (event) => {
+  listen(refs.list, 'click', (event) => {
     const button = event.target.closest('[data-id]');
-    if (!button) return;
-    const overlay = OVERLAYS.find((item) => item.id === button.dataset.id);
-    if (overlay) selectOverlay(overlay);
+    if (button) selectOverlay(button.dataset.id);
   });
 
-  searchEl.addEventListener('input', () => {
-    renderList();
+  listen(refs.search, 'input', () => refreshCatalog());
+
+  target.querySelectorAll('.os-mode').forEach((button) => {
+    listen(button, 'click', () => {
+      activeMode = button.dataset.mode;
+      target.querySelectorAll('.os-mode').forEach((modeButton) => modeButton.classList.toggle('active', modeButton === button));
+      updatePreview();
+    });
   });
 
-  modeBtns.forEach(btn => btn.addEventListener('click', () => {
-    setMobileMode(btn.dataset.mode === 'mobile');
-  }));
+  listen(target.querySelector('#reloadPreview'), 'click', () => updatePreview());
+  listen(target.querySelector('#openOverlay'), 'click', () => window.open(getUrl(selected, { preview: false }), '_blank', 'noopener'));
+  listen(target.querySelector('#openFeaturedOverlay'), 'click', () => window.open(getUrl(OVERLAYS.find((overlay) => overlay.featured) || selected, { preview: false }), '_blank', 'noopener'));
+  listen(target.querySelector('#copyOverlay'), 'click', copyOverlayUrl);
 
-  document.getElementById('reloadPreview').addEventListener('click', () => {
-    frameEl.srcdoc = renderPreviewDocument(selected, mobileMode);
-  });
-
-  document.getElementById('openOverlay').addEventListener('click', () => {
-    window.open(getUrl(selected), '_blank', 'noopener');
-  });
-
-  document.getElementById('copyOverlay').addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(urlEl.value);
-      const button = document.getElementById('copyOverlay');
-      button.textContent = 'Copiado';
-      setTimeout(() => { button.textContent = 'Copiar URL'; }, 1600);
-    } catch {
-      urlEl.select();
-      document.execCommand('copy');
-    }
-  });
-
-  selectOverlay(selected);
+  refreshCatalog();
 }
 
-function renderPreviewDocument(overlay, mobileMode) {
-  const badges = (overlay.badges || [overlay.category]).map((badge) => `<span>${escapeHtml(badge)}</span>`).join('');
-  const title = escapeHtml(overlay.name);
-  const desc = escapeHtml(overlay.desc);
-  const icon = escapeHtml(overlay.icon);
-  const bg = escapeAttr(overlay.bg || '#070914');
-  const isMobile = mobileMode;
-  const mobileStyles = isMobile ? `.scene{grid-template-columns:1fr;width:82%;padding:24px;min-height:30vh}.mark{width:72px;height:72px;font-size:20px;margin:0 auto}h1{font-size:30px}p{font-size:15px}body::before{content:'📱 MODO MÓVIL · 1080×1920';position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:4px 10px;border-radius:6px;background:rgba(0,0,0,.5);color:rgba(255,255,255,.5);font:10px monospace;letter-spacing:1px}` : '';
-  const desktopStyles = !isMobile ? `.scene{width:min(78%,980px);min-height:44%;display:grid;grid-template-columns:110px minmax(0,1fr);gap:26px;align-items:center;padding:34px}` : `.scene{width:min(78%,980px);min-height:44%;display:grid;gap:26px;align-items:center;padding:34px}`;
-  return `<!doctype html><html><head><meta charset="utf-8"><style>
-    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:${bg};color:#f7f9ff;font-family:Inter,Segoe UI,Arial,sans-serif;}
-    body{display:grid;place-items:center;background:radial-gradient(circle at 20% 15%,rgba(37,217,242,.18),transparent 34%),radial-gradient(circle at 82% 20%,rgba(255,61,113,.18),transparent 30%),${bg};}
-    ${desktopStyles}
-    .mark{width:110px;height:110px;display:grid;place-items:center;border-radius:22px;background:linear-gradient(135deg,rgba(37,217,242,.25),rgba(255,61,113,.24));color:#25d9f2;font-size:30px;font-weight:900;letter-spacing:.04em;}
-    h1{margin:0 0 10px;font-size:42px;line-height:1;letter-spacing:0;font-weight:900;text-align:${isMobile ? 'center' : 'left'};}
-    p{max-width:680px;margin:0;color:rgba(247,249,255,.7);font-size:18px;line-height:1.5;text-align:${isMobile ? 'center' : 'left'};}
-    .badges{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;justify-content:${isMobile ? 'center' : 'flex-start'}}.badges span{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);font-size:12px;font-weight:800;text-transform:uppercase;color:rgba(247,249,255,.78)}
-    .meter{height:10px;margin-top:24px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden}.meter i{display:block;width:72%;height:100%;background:linear-gradient(90deg,#25d9f2,#f2bd4d,#ff3d71)}
-    ${mobileStyles}
-  </style></head><body><main class="scene"><div class="mark">${icon}</div><section><h1>${title}</h1><p>${desc}</p><div class="badges">${badges}</div><div class="meter"><i></i></div></section></main></body></html>`;
-}
 function getCurrentUserId() {
   try {
-    return JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}').id || '';
+    const raw = localStorage.getItem('user') || sessionStorage.getItem('user') || '{}';
+    const user = JSON.parse(raw);
+    return user.id || user.userId || '';
   } catch {
     return '';
   }

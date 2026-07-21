@@ -255,16 +255,13 @@ app.get('/vendor/gsap/gsap.min.js', (_req, res) => {
 // Assets generales (imágenes, fuentes)
 app.use('/assets', express.static(path.join(PUBLIC_DIR, 'assets'), { maxAge: '1y' }));
 // Archivos específicos del frontend (gifts.json, favicon)
-app.use(express.static(PUBLIC_DIR, { maxAge: '1h' }));
-
-// ==================== APP SHELL ====================
-
-// Sirve assets estáticos del shell (JS, CSS, imágenes)
 app.use('/app', express.static(APP_DIR, {
   index: false,
   fallthrough: true,
   maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0
 }));
+// Catch-all para el resto de archivos del frontend (overlays, etc.)
+app.use(express.static(PUBLIC_DIR, { maxAge: '1h' }));
 
 // Root redirige a /app
 app.get('/', (req, res) => {

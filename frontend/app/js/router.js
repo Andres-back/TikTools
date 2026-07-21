@@ -79,7 +79,7 @@ export async function navigate(path, { replace = false } = {}) {
   currentRoute = route;
 
   if (!replace) history.pushState({ path }, '', path);
-  document.title = route.title || 'TikToolStream';
+  document.title = route.title || 'TikTools | TikTok LIVE Tools';
 
   const target = document.getElementById('app-view');
   if (!target) return;

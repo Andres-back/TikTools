@@ -1,6 +1,7 @@
 /**
- * Dashboard View - TikToolStream
- * Premium live auction control: TikTok, timer, leaderboard, manual coins, live chat
+ * Dashboard View - TikTools
+ * TikTok LIVE dashboard with connection, timer, leaderboard & live chat
+ * TikFinity-inspired design
  */
 
 import { countUp, formatNum, magneticButton } from '/app/js/core/visual-helpers.js';
@@ -23,70 +24,81 @@ export async function mount({ target, api, user, toast, signal }) {
   target.innerHTML = `
     <style>
       .dash-grid { display:grid; grid-template-columns: 300px 1fr 340px; gap:var(--space-lg); }
-      .dash-card { background:linear-gradient(160deg, rgba(20,25,45,0.95), rgba(15,20,40,0.95)); border:1px solid rgba(255,255,255,0.08); border-radius:18px; padding:var(--space-lg); box-shadow:0 10px 40px rgba(0,0,0,0.3); position:relative; overflow:hidden; }
-      .dash-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(0,217,255,0.4), transparent); }
-      .dash-card-title { font-size:var(--text-xs); color:var(--text-muted); text-transform:uppercase; letter-spacing:1.5px; font-weight:600; margin-bottom:var(--space-md); display:flex; align-items:center; gap:8px; }
-      .stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-sm); margin-top:var(--space-md); }
-      .stat-card { background:linear-gradient(135deg, rgba(0,217,255,0.08), rgba(123,47,247,0.05)); border:1px solid rgba(0,217,255,0.15); border-radius:14px; padding:var(--space-md); text-align:center; position:relative; overflow:hidden; transition:all 0.3s; }
-      .stat-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,217,255,0.2); }
-      .stat-card .stat-icon { font-size:1.5rem; margin-bottom:4px; }
-      .stat-card .stat-num { font-size:1.6rem; font-weight:800; background:linear-gradient(135deg, #00d9ff, #7b2ff7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-family:var(--font-display); }
-      .stat-card .stat-label { font-size:var(--text-xs); color:var(--text-muted); margin-top:2px; }
-      .timer-display { font-family:var(--font-display); font-size:clamp(2.5rem, 8vw, 5rem); font-weight:800; text-align:center; background:linear-gradient(135deg, #ffffff 0%, #00d9ff 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; letter-spacing:-2px; text-shadow:0 0 40px rgba(0,217,255,0.3); }
-      .timer-display.warn { background:linear-gradient(135deg, #ffffff, #ffd700); -webkit-background-clip:text; background-clip:text; }
-      .timer-display.danger { background:linear-gradient(135deg, #ff1744, #ff6b6b); -webkit-background-clip:text; background-clip:text; animation:pulseDanger 0.5s ease-in-out infinite; }
-      @keyframes pulseDanger { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.85; transform:scale(1.02);} }
-      .timer-phase { text-align:center; font-size:var(--text-xs); text-transform:uppercase; letter-spacing:3px; color:var(--text-muted); margin-top:8px; font-weight:600; }
+      .dash-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--border-radius-lg); padding:var(--space-lg); box-shadow:var(--shadow-sm); position:relative; overflow:hidden; transition:border-color var(--transition-fast); }
+      .dash-card:hover { border-color:var(--border-hover); }
+      .dash-card-title { font-size:var(--text-xs); color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:600; margin-bottom:var(--space-md); display:flex; align-items:center; gap:8px; }
+      .dash-card-title i { color:var(--color-primary); font-size:14px; }
+
+      .stats-row { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-sm); margin-top:var(--space-md); }
+      .stats-mini { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:var(--space-md); text-align:center; transition:all var(--transition-fast); }
+      .stats-mini:hover { border-color:var(--border-hover); transform:translateY(-1px); }
+      .stats-mini .num { font-family:var(--font-display); font-size:var(--text-xl); font-weight:800; color:var(--text-primary); line-height:1.2; }
+      .stats-mini .lbl { font-size:var(--text-xs); color:var(--text-muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
+      .stats-mini i { font-size:18px; margin-bottom:6px; display:block; }
+      .stats-mini i.cyan { color:var(--color-primary); }
+      .stats-mini i.gold { color:var(--color-warning); }
+      .stats-mini i.green { color:var(--color-success); }
+      .stats-mini i.purple { color:#a78bfa; }
+
+      .timer-display { font-family:var(--font-display); font-size:clamp(2.5rem, 8vw, 5rem); font-weight:800; text-align:center; background:linear-gradient(135deg, #f1f5f9 0%, var(--color-primary) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; letter-spacing:-2px; }
+      .timer-display.warn { background:linear-gradient(135deg, #f1f5f9, var(--color-warning)); -webkit-background-clip:text; background-clip:text; }
+      .timer-display.danger { background:linear-gradient(135deg, var(--color-danger), #f87171); -webkit-background-clip:text; background-clip:text; animation:pulseDanger 0.5s ease-in-out infinite; }
+      @keyframes pulseDanger { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.85;transform:scale(1.02);} }
+      .timer-phase { text-align:center; font-size:var(--text-xs); text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); margin-top:6px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; }
       .timer-phase.live { color:var(--color-success); }
       .timer-phase.warn { color:var(--color-warning); }
       .timer-phase.danger { color:var(--color-danger); animation:pulseDanger 0.5s ease-in-out infinite; }
       .timer-phase.done { color:var(--color-warning); }
-      .timer-bar-wrap { height:8px; background:rgba(255,255,255,0.06); border-radius:6px; overflow:hidden; margin-top:var(--space-md); }
-      .timer-bar { height:100%; background:linear-gradient(90deg, #00d9ff, #7b2ff7); border-radius:6px; transition:width 0.4s linear; box-shadow:0 0 12px rgba(0,217,255,0.5); }
-      .timer-bar.warn { background:linear-gradient(90deg, #ffd700, #ff6b00); }
-      .timer-bar.danger { background:linear-gradient(90deg, #ff1744, #ff6b6b); }
-      .timer-winner { text-align:center; margin-top:var(--space-md); padding:var(--space-md); background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,107,0,0.05)); border:2px solid #ffd700; border-radius:14px; font-weight:700; color:#ffd700; animation:winnerGlow 2s ease-in-out infinite; display:none; }
-      @keyframes winnerGlow { 0%,100%{box-shadow:0 0 20px rgba(255,215,0,0.3);} 50%{box-shadow:0 0 40px rgba(255,215,0,0.6);} }
+      .timer-bar-wrap { height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden; margin-top:var(--space-md); }
+      .timer-bar { height:100%; background:var(--color-primary-gradient); border-radius:3px; transition:width 0.4s linear; }
+      .timer-bar.warn { background:linear-gradient(90deg, var(--color-warning), #f97316); }
+      .timer-bar.danger { background:linear-gradient(90deg, var(--color-danger), #f87171); }
+      .timer-winner { text-align:center; margin-top:var(--space-md); padding:var(--space-md); background:linear-gradient(135deg, rgba(251,191,36,0.12), rgba(249,115,22,0.05)); border:1px solid rgba(251,191,36,0.3); border-radius:var(--border-radius-md); font-weight:700; color:var(--color-warning); display:none; }
+      
       .lb-list { max-height:60vh; overflow-y:auto; padding-right:4px; }
-      .lb-list::-webkit-scrollbar { width:5px; }
-      .lb-list::-webkit-scrollbar-thumb { background:rgba(0,217,255,0.3); border-radius:3px; }
-      .lb-row { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; margin-bottom:4px; transition:all 0.2s; border:1px solid transparent; }
-      .lb-row:hover { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08); }
-      .lb-row.gold { background:linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,107,0,0.05)); border-color:rgba(255,215,0,0.3); }
-      .lb-row.silver { background:linear-gradient(135deg, rgba(192,192,192,0.1), rgba(192,192,192,0.03)); border-color:rgba(192,192,192,0.25); }
-      .lb-row.bronze { background:linear-gradient(135deg, rgba(205,127,50,0.1), rgba(205,127,50,0.03)); border-color:rgba(205,127,50,0.25); }
-      .lb-rank { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.85rem; font-family:var(--font-display); background:rgba(255,255,255,0.06); color:var(--text-secondary); flex-shrink:0; }
-      .lb-row.gold .lb-rank { background:linear-gradient(135deg, #ffd700, #ff6b00); color:#1a1a2e; }
+      .lb-list::-webkit-scrollbar { width:4px; }
+      .lb-list::-webkit-scrollbar-thumb { background:rgba(0,212,255,0.25); border-radius:2px; }
+      .lb-row { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:var(--border-radius-md); margin-bottom:3px; transition:all 0.2s; border:1px solid transparent; }
+      .lb-row:hover { background:var(--bg-surface); border-color:var(--border-color); }
+      .lb-row.gold { background:linear-gradient(135deg, rgba(251,191,36,0.1), rgba(249,115,22,0.04)); border-color:rgba(251,191,36,0.2); }
+      .lb-row.silver { background:linear-gradient(135deg, rgba(192,192,192,0.08), rgba(192,192,192,0.02)); border-color:rgba(192,192,192,0.15); }
+      .lb-row.bronze { background:linear-gradient(135deg, rgba(205,127,50,0.08), rgba(205,127,50,0.02)); border-color:rgba(205,127,50,0.15); }
+      .lb-rank { width:26px; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; font-family:var(--font-display); background:var(--bg-surface); color:var(--text-secondary); flex-shrink:0; }
+      .lb-row.gold .lb-rank { background:linear-gradient(135deg, #fbbf24, #f97316); color:#1a1a2e; }
       .lb-row.silver .lb-rank { background:linear-gradient(135deg, #c0c0c0, #808080); color:#1a1a2e; }
       .lb-row.bronze .lb-rank { background:linear-gradient(135deg, #cd7f32, #8b4513); color:#fff; }
-      .lb-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, #00d9ff, #7b2ff7); display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:0.9rem; flex-shrink:0; overflow:hidden; border:2px solid rgba(255,255,255,0.15); }
+      .lb-avatar { width:34px; height:34px; border-radius:50%; background:var(--color-primary-gradient); display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:0.85rem; flex-shrink:0; overflow:hidden; border:2px solid rgba(255,255,255,0.1); }
       .lb-avatar img { width:100%; height:100%; object-fit:cover; }
-      .lb-name { flex:1; min-width:0; font-weight:600; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-      .lb-coins { font-family:var(--font-display); font-weight:700; color:#ffd700; font-size:0.95rem; display:flex; align-items:center; gap:3px; }
-      .lb-crown { position:absolute; top:-4px; right:-4px; font-size:0.8rem; }
+      .lb-name { flex:1; min-width:0; font-weight:500; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--text-primary); }
+      .lb-coins { font-family:var(--font-display); font-weight:700; color:var(--color-warning); font-size:0.9rem; display:flex; align-items:center; gap:3px; }
+      .lb-row.gold .lb-coins { background:linear-gradient(135deg, #fbbf24, #f97316); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+      .lb-crown { position:absolute; top:-4px; right:-4px; font-size:0.9rem; }
       .connect-status { display:flex; align-items:center; gap:6px; font-size:var(--text-xs); margin-top:8px; justify-content:center; }
-      .status-dot { width:8px; height:8px; border-radius:50%; background:var(--text-muted); }
+      .status-dot { width:8px; height:8px; border-radius:50%; background:var(--text-muted); flex-shrink:0; }
       .status-dot.connecting { background:var(--color-warning); animation:blink 1s ease-in-out infinite; }
-      .status-dot.connected { background:var(--color-success); box-shadow:0 0 8px var(--color-success); }
+      .status-dot.connected { background:var(--color-success); box-shadow:0 0 8px rgba(34,214,94,0.5); }
       @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+      
       .chat-stream { height:60vh; overflow-y:auto; padding:var(--space-sm); display:flex; flex-direction:column; gap:6px; }
       .chat-stream::-webkit-scrollbar { width:4px; }
-      .chat-stream::-webkit-scrollbar-thumb { background:rgba(0,217,255,0.3); border-radius:2px; }
-      .chat-msg { padding:8px 10px; background:rgba(255,255,255,0.04); border-radius:10px; border-left:3px solid var(--color-primary); font-size:0.85rem; }
-      .chat-msg.gift { border-color:#ffd700; background:linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,107,0,0.03)); }
+      .chat-stream::-webkit-scrollbar-thumb { background:rgba(0,212,255,0.25); border-radius:2px; }
+      .chat-msg { display:flex; align-items:flex-start; gap:8px; padding:8px 10px; border-radius:var(--border-radius-md); background:var(--bg-surface); border-left:3px solid var(--color-primary); font-size:0.85rem; margin-bottom:4px; animation: chatIn 0.3s var(--ease-smooth, cubic-bezier(0.16,1,0.3,1)) backwards; }
+      .chat-msg.gift { border-color:var(--color-warning); background:linear-gradient(135deg, rgba(251,191,36,0.06), rgba(249,115,22,0.02)); }
       .chat-msg.follow { border-color:var(--color-success); }
-      .chat-msg .chat-user { font-weight:700; color:var(--color-primary); font-size:0.8rem; }
-      .chat-msg .chat-text { color:var(--text-secondary); margin-top:2px; word-break:break-word; }
-      .chat-msg .chat-amount { color:#ffd700; font-weight:700; margin-left:4px; }
-      .chat-msg { display:flex; align-items:flex-start; gap:8px; padding:8px 10px; border-radius:10px; background:rgba(255,255,255,0.04); border-left:3px solid var(--color-primary); font-size:0.85rem; margin-bottom:4px; animation: chatIn 0.3s var(--ease-smooth) backwards; }
-      .chat-msg.gift { border-color:#ffd700; background:linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,107,0,0.03)); }
-      .chat-msg.follow { border-color:var(--color-success); }
-      .chat-msg .chat-gift-img { width:36px; height:36px; border-radius:6px; object-fit:contain; flex-shrink:0; background:rgba(0,0,0,0.3); }
+      .chat-msg .chat-gift-img { width:34px; height:34px; border-radius:6px; object-fit:contain; flex-shrink:0; background:rgba(0,0,0,0.3); }
       .chat-msg .chat-body { flex:1; min-width:0; }
+      .chat-msg .chat-user { font-weight:600; color:var(--color-primary); font-size:0.8rem; }
+      .chat-msg .chat-text { color:var(--text-secondary); margin-top:2px; word-break:break-word; }
+      .chat-msg .chat-amount { color:var(--color-warning); font-weight:700; margin-left:4px; }
       @keyframes chatIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
       .empty-chat { text-align:center; color:var(--text-muted); padding:var(--space-xl); font-size:0.85rem; }
+
+      .lb-stagger { animation: lbSlideIn 0.5s var(--ease-smooth, cubic-bezier(0.16,1,0.3,1)) backwards; }
+      @keyframes lbSlideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+      .lb-coins { transition:transform 0.4s var(--ease-spring, cubic-bezier(0.34,1.56,0.64,1)); display:inline-flex; align-items:center; gap:3px; }
+      .lb-coins.bump { animation: coinsBump 0.6s var(--ease-spring, cubic-bezier(0.34,1.56,0.64,1)); }
+      @keyframes coinsBump { 0%{transform:scale(1);} 40%{transform:scale(1.35);color:var(--color-warning);text-shadow:0 0 20px rgba(251,191,36,0.5);} 100%{transform:scale(1);} }
       
-      /* Responsive breakpoints */
       @media (max-width: 1280px) { 
         .dash-grid { grid-template-columns: 1fr 1fr; }
         .dash-grid > div:first-child { grid-column: 1 / -1; }
@@ -94,90 +106,75 @@ export async function mount({ target, api, user, toast, signal }) {
       @media (max-width: 900px) { 
         .dash-grid { grid-template-columns: 1fr; }
         .dash-card { padding:var(--space-md); }
-        .stat-grid { grid-template-columns: 1fr; }
         .chat-stream { height:40vh; }
         .lb-list { max-height:40vh; }
       }
       @media (max-width: 480px) {
         .dash-card { padding:var(--space-sm); }
-        .stat-card { padding:var(--space-sm); }
-        .stat-card .stat-num { font-size:1.3rem; }
+        .stats-row { grid-template-columns:1fr; }
       }
-
-      /* Stagger animation for leaderboard rows */
-      .lb-stagger { animation: lbSlideIn 0.5s var(--ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
-      @keyframes lbSlideIn {
-        from { opacity: 0; transform: translateX(-20px); }
-        to   { opacity: 1; transform: translateX(0); }
-      }
-      .lb-coins { transition: transform 0.4s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)); display:inline-block; }
-      .lb-coins.bump { animation: coinsBump 0.6s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)); }
-      @keyframes coinsBump {
-        0%   { transform: scale(1); }
-        40%  { transform: scale(1.4); color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.6); }
-        100% { transform: scale(1); }
-      }
-      .lb-row.gold .lb-coins { background: linear-gradient(135deg, #ffd700, #ff6b00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     </style>
 
     <div class="dash-grid">
-      <!-- COL LEFT: ConexiÃ³n + Controles + Stats -->
+      <!-- COL LEFT: Connection + Controls + Manual + Stats -->
       <div style="display:flex;flex-direction:column;gap:var(--space-md)">
+
         <div class="dash-card">
-          <div class="dash-card-title">ðŸ”Œ ConexiÃ³n TikTok</div>
+          <div class="dash-card-title"><i class="fa-solid fa-wifi"></i> Conexión TikTok</div>
           <div style="position:relative;margin-bottom:8px">
-            <input type="text" id="tiktokUser" class="input-field" placeholder="@usuario" style="width:100%;padding:10px 14px 10px 36px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:10px;color:#fff;font-size:0.9rem">
-            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)">@</span>
+            <input type="text" id="tiktokUser" class="input-field" placeholder="@usuario" style="width:100%;padding:10px 14px 10px 36px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.9rem">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)"><i class="fa-solid fa-at" style="font-size:14px"></i></span>
           </div>
-          <button class="btn ${ws && ws.readyState === WebSocket.OPEN ? 'btn-danger' : 'btn-primary'}" id="btnConnect" style="width:100%;font-weight:600">
+          <button class="btn ${ws && ws.readyState === WebSocket.OPEN ? 'btn-danger' : 'btn-primary'}" id="btnConnect" style="width:100%">
+            <i class="fa-solid ${ws && ws.readyState === WebSocket.OPEN ? 'fa-link-slash' : 'fa-link'}"></i>
             ${ws && ws.readyState === WebSocket.OPEN ? 'Desconectar' : 'Conectar'}
           </button>
           <div id="connectionStatus" class="connect-status"><span class="status-dot"></span><span>Desconectado</span></div>
         </div>
 
         <div class="dash-card">
-          <div class="dash-card-title">ðŸŽ¬ Controles</div>
+          <div class="dash-card-title"><i class="fa-solid fa-gamepad"></i> Controles</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn btn-primary" id="btnStart" style="font-size:0.85rem;padding:10px;font-weight:600">â–¶ Iniciar</button>
-            <button class="btn btn-secondary" id="btnReset" style="font-size:0.85rem;padding:10px;font-weight:600">â†º Reset</button>
+            <button class="btn btn-primary" id="btnStart" style="font-size:0.85rem;padding:10px"><i class="fa-solid fa-play"></i> Iniciar</button>
+            <button class="btn btn-secondary" id="btnReset" style="font-size:0.85rem;padding:10px"><i class="fa-solid fa-rotate-left"></i> Reset</button>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-            <input type="number" id="timerMinutes" class="input-field" placeholder="Min" min="1" value="2" style="padding:8px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:8px;color:#fff;font-size:0.85rem">
-            <input type="number" id="timerDelay" class="input-field" placeholder="Delay (s)" min="0" value="20" style="padding:8px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:8px;color:#fff;font-size:0.85rem">
+            <input type="number" id="timerMinutes" class="input-field" placeholder="Min" min="1" value="2" style="padding:8px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.85rem">
+            <input type="number" id="timerDelay" class="input-field" placeholder="Delay (s)" min="0" value="20" style="padding:8px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.85rem">
           </div>
         </div>
 
         <div class="dash-card">
-          <div class="dash-card-title">ðŸ’Ž Suma Manual</div>
+          <div class="dash-card-title"><i class="fa-solid fa-coins"></i> Suma Manual</div>
           <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px">
-            <input type="text" id="manualUser" class="input-field" placeholder="@usuario" style="padding:8px 12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:8px;color:#fff;font-size:0.85rem">
-            <input type="number" id="manualCoins" class="input-field" placeholder="Monedas" min="1" style="padding:8px 12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:8px;color:#fff;font-size:0.85rem">
+            <input type="text" id="manualUser" class="input-field" placeholder="@usuario" style="padding:8px 12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.85rem">
+            <input type="number" id="manualCoins" class="input-field" placeholder="Monedas" min="1" style="padding:8px 12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:0.85rem">
           </div>
-          <button class="btn btn-success" id="btnManual" style="width:100%;font-size:0.85rem;font-weight:600">+ Agregar Monedas</button>
+          <button class="btn btn-success" id="btnManual" style="width:100%;font-size:0.85rem"><i class="fa-solid fa-plus"></i> Agregar Monedas</button>
         </div>
 
-        <div class="stat-grid">
-          <div class="stat-card"><div class="stat-icon">💳</div><div class="stat-num" id="statCoins">0</div><div class="stat-label">Monedas</div></div>
-          <div class="stat-card"><div class="stat-icon">🎁</div><div class="stat-num" id="statGifts">0</div><div class="stat-label">Regalos</div></div>
-          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-num" id="statDonors">0</div><div class="stat-label">Donantes</div></div>
-          <div class="stat-card"><div class="stat-icon">💎</div><div class="stat-num" id="statPlan">-</div><div class="stat-label">Plan</div></div>
+        <div class="stats-row">
+          <div class="stats-mini"><i class="fa-solid fa-coins cyan"></i><div class="num" id="statCoins">0</div><div class="lbl">Monedas</div></div>
+          <div class="stats-mini"><i class="fa-solid fa-gift gold"></i><div class="num" id="statGifts">0</div><div class="lbl">Regalos</div></div>
+          <div class="stats-mini"><i class="fa-solid fa-users green"></i><div class="num" id="statDonors">0</div><div class="lbl">Donantes</div></div>
+          <div class="stats-mini"><i class="fa-solid fa-crown purple"></i><div class="num" id="statPlan">-</div><div class="lbl">Plan</div></div>
         </div>
       </div>
 
-      <!-- COL CENTER: Timer + Chat Live -->
+      <!-- COL CENTER: Timer + Live Chat -->
       <div style="display:flex;flex-direction:column;gap:var(--space-md)">
         <div class="dash-card" style="text-align:center;padding:var(--space-xl)">
-          <div class="dash-card-title" style="justify-content:center">â± Timer de Subasta</div>
+          <div class="dash-card-title" style="justify-content:center"><i class="fa-regular fa-clock"></i> Timer de Subasta</div>
           <div id="timerDisplay" class="timer-display">02:00</div>
-          <div id="timerPhase" class="timer-phase">INACTIVO</div>
+          <div id="timerPhase" class="timer-phase"><i class="fa-regular fa-circle"></i> INACTIVO</div>
           <div class="timer-bar-wrap"><div id="timerBar" class="timer-bar" style="width:0%"></div></div>
-          <div id="winnerDisplay" class="timer-winner"><span id="winnerName"></span></div>
+          <div id="winnerDisplay" class="timer-winner"><i class="fa-solid fa-trophy" style="margin-right:6px"></i><span id="winnerName"></span></div>
         </div>
 
         <div class="dash-card" style="flex:1;display:flex;flex-direction:column">
-          <div class="dash-card-title">ðŸ’¬ Chat del Live</div>
+          <div class="dash-card-title"><i class="fa-solid fa-comment-dots"></i> Chat del Live</div>
           <div id="liveChatStream" class="chat-stream">
-            <div class="empty-chat">Conecta TikTok para ver el chat en vivo</div>
+            <div class="empty-chat"><i class="fa-solid fa-plug" style="display:block;font-size:28px;margin-bottom:8px;opacity:0.3"></i>Conecta TikTok para ver el chat en vivo</div>
           </div>
         </div>
       </div>
@@ -185,45 +182,15 @@ export async function mount({ target, api, user, toast, signal }) {
       <!-- COL RIGHT: Leaderboard -->
       <div>
         <div class="dash-card">
-          <div class="dash-card-title">Top Donadores</div>
+          <div class="dash-card-title"><i class="fa-solid fa-ranking-star"></i> Top Donadores</div>
           <div id="leaderboardList" class="lb-list">
-            <div class="empty-chat">Esperando donaciones...</div>
+            <div class="empty-chat"><i class="fa-regular fa-face-smile" style="display:block;font-size:28px;margin-bottom:8px;opacity:0.3"></i>Esperando donaciones...</div>
           </div>
         </div>
       </div>
     </div>
   `;
 
-  normalizeDashboardLabels();
-
-  function normalizeDashboardLabels() {
-    const titles = ['Conexion TikTok', 'Controles', 'Suma Manual', 'Timer de Subasta', 'Chat del Live', 'Top Donadores'];
-    document.querySelectorAll('.dash-card-title').forEach((el, index) => {
-      if (titles[index]) el.textContent = titles[index];
-    });
-
-    const stats = [
-      ['$', 'Monedas'],
-      ['G', 'Regalos'],
-      ['U', 'Donantes'],
-      ['P', 'Plan']
-    ];
-    document.querySelectorAll('.stat-card').forEach((card, index) => {
-      const icon = card.querySelector('.stat-icon');
-      const label = card.querySelector('.stat-label');
-      if (stats[index]) {
-        if (icon) icon.textContent = stats[index][0];
-        if (label) label.textContent = stats[index][1];
-      }
-    });
-
-    const startButton = document.getElementById('btnStart');
-    const resetButton = document.getElementById('btnReset');
-    const manualButton = document.getElementById('btnManual');
-    if (startButton) startButton.textContent = 'Iniciar';
-    if (resetButton) resetButton.textContent = 'Reset';
-    if (manualButton) manualButton.textContent = 'Agregar monedas';
-  }
   // ============ TIKTOK CONNECTION ============
   const connectBtn = document.getElementById('btnConnect');
   const statusEl = document.getElementById('connectionStatus');
@@ -244,7 +211,7 @@ export async function mount({ target, api, user, toast, signal }) {
     if (!username) { setStatus('Ingresa un usuario', ''); return; }
     const accessToken = getAccessToken();
     if (!accessToken) {
-      setStatus('Sesion expirada. Inicia sesion de nuevo.', '');
+      setStatus('Sesión expirada. Inicia sesión de nuevo.', '');
       return;
     }
 
@@ -254,13 +221,13 @@ export async function mount({ target, api, user, toast, signal }) {
     } catch (e) { setStatus('Error al conectar', ''); return; }
 
     setStatus('Conectando...', 'connecting');
-    connectBtn.textContent = 'Conectando...';
+    connectBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Conectando...';
     connectBtn.disabled = true;
 
     ws.onopen = () => {
       ws.send(JSON.stringify({ type: 'connect', uniqueId: username, channelId: userId, accessToken }));
-      connectBtn.textContent = 'Desconectar';
-      connectBtn.classList.remove('btn-primary'); connectBtn.classList.add('btn-danger');
+      connectBtn.innerHTML = '<i class="fa-solid fa-link-slash"></i> Desconectar';
+      connectBtn.className = 'btn btn-danger';
       connectBtn.disabled = false;
       setStatus(`Conectado a @${username}`, 'connected');
       toast?.showToast?.({ type: 'success', message: `Conectado a @${username}` });
@@ -274,8 +241,8 @@ export async function mount({ target, api, user, toast, signal }) {
     };
 
     ws.onclose = () => {
-      connectBtn.textContent = 'Conectar';
-      connectBtn.classList.add('btn-primary'); connectBtn.classList.remove('btn-danger');
+      connectBtn.innerHTML = '<i class="fa-solid fa-link"></i> Conectar';
+      connectBtn.className = 'btn btn-primary';
       connectBtn.disabled = false;
       if (statusEl.textContent.includes('Conectado')) {
         setStatus('Desconectado', '');
@@ -283,7 +250,7 @@ export async function mount({ target, api, user, toast, signal }) {
       ws = null;
     };
 
-    ws.onerror = () => { setStatus('Error de conexiÃ³n', ''); };
+    ws.onerror = () => { setStatus('Error de conexión', ''); };
   }
 
   function disconnectWS() {
@@ -320,17 +287,17 @@ export async function mount({ target, api, user, toast, signal }) {
       pushChat({
         type: 'gift',
         user: nick,
-        text: `enviÃ³ ${giftName}`,
+        text: `envió ${giftName}`,
         amount: coins,
         giftId,
         avatar: data.profilePictureUrl
       });
     } else if (type === 'follow') {
-      pushChat({ type: 'follow', user: data.nickname || data.uniqueId, text: 'empezÃ³ a seguirte ðŸ’š' });
+      pushChat({ type: 'follow', user: data.nickname || data.uniqueId, text: 'empezó a seguirte' });
     } else if (type === 'share') {
-      pushChat({ type: 'follow', user: data.nickname || data.uniqueId, text: 'compartiÃ³ el live ðŸ”„' });
+      pushChat({ type: 'follow', user: data.nickname || data.uniqueId, text: 'compartió el live' });
     } else if (type === 'like') {
-      pushChat({ type: '', user: data.nickname || data.uniqueId, text: `le dio like â¤ï¸ (${data.likeCount || 1})` });
+      pushChat({ type: '', user: data.nickname || data.uniqueId, text: `le dio like (${data.likeCount || 1})` });
     } else if (type === 'chat' || type === 'comment') {
       pushChat({ type: '', user: data.nickname || data.uniqueId, text: data.comment || data.message || '' });
     } else if (type === 'connected') {
@@ -369,9 +336,9 @@ export async function mount({ target, api, user, toast, signal }) {
     const minutes = Math.max(1, parseInt(timerMinutes.value) || 2);
     const total = minutes * 60;
     timerState = { remaining: total, phase: 'running', total };
-    timerPhase.textContent = 'â–¶ EN VIVO';
+    timerPhase.innerHTML = '<i class="fa-solid fa-circle" style="color:var(--color-success);font-size:8px"></i> EN VIVO';
     applyTimerClass('live');
-    connectBtn.textContent = 'â¸ Pausar';
+    connectBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
     winnerDisplay.style.display = 'none';
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(tick, 1000);
@@ -382,14 +349,14 @@ export async function mount({ target, api, user, toast, signal }) {
     if (timerState.phase === 'running') {
       clearInterval(timerInterval);
       timerState.phase = 'paused';
-      timerPhase.textContent = 'â¸ PAUSADO';
+      timerPhase.innerHTML = '<i class="fa-solid fa-pause"></i> PAUSADO';
       applyTimerClass('');
-      connectBtn.textContent = 'â–¶ Reanudar';
+      connectBtn.innerHTML = '<i class="fa-solid fa-play"></i> Reanudar';
     } else if (timerState.phase === 'paused') {
       timerState.phase = 'running';
-      timerPhase.textContent = 'â–¶ EN VIVO';
+      timerPhase.innerHTML = '<i class="fa-solid fa-circle" style="color:var(--color-success);font-size:8px"></i> EN VIVO';
       applyTimerClass('live');
-      connectBtn.textContent = 'â¸ Pausar';
+      connectBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
       timerInterval = setInterval(tick, 1000);
     }
   }
@@ -398,10 +365,10 @@ export async function mount({ target, api, user, toast, signal }) {
     clearInterval(timerInterval);
     timerState = { remaining: 0, phase: 'idle', total: 0 };
     timerDisplay.textContent = fmt(timerMinutes.value * 60);
-    timerPhase.textContent = 'INACTIVO';
+    timerPhase.innerHTML = '<i class="fa-regular fa-circle"></i> INACTIVO';
     timerBar.style.width = '0%';
     applyTimerClass('');
-    connectBtn.textContent = 'â–¶ Iniciar';
+    connectBtn.innerHTML = '<i class="fa-solid fa-play"></i> Iniciar';
     winnerDisplay.style.display = 'none';
     broadcast('timer_reset', {});
   }
@@ -421,12 +388,12 @@ export async function mount({ target, api, user, toast, signal }) {
     if (timerState.remaining <= 0) {
       clearInterval(timerInterval);
       timerState.phase = 'finished';
-      timerPhase.textContent = 'ðŸ FINALIZADO';
+      timerPhase.innerHTML = '<i class="fa-solid fa-trophy"></i> FINALIZADO';
       applyTimerClass('done');
-      connectBtn.textContent = 'â–¶ Iniciar';
+      connectBtn.innerHTML = '<i class="fa-solid fa-play"></i> Iniciar';
       if (leaderboard.length > 0) {
         const w = [...leaderboard].sort((a, b) => b.coins - a.coins)[0];
-        winnerName.textContent = `@${w.nick || w.uid} - ${w.coins.toLocaleString()} ðŸ’Ž`;
+        winnerName.textContent = `@${w.nick || w.uid} - ${w.coins.toLocaleString()}`;
         winnerDisplay.style.display = 'block';
         broadcast('winner', { winner: w.nick || w.uid, coins: w.coins });
       }
@@ -445,7 +412,7 @@ export async function mount({ target, api, user, toast, signal }) {
     const user = document.getElementById('manualUser').value.trim();
     const coins = parseInt(document.getElementById('manualCoins').value);
     if (!user) { toast?.showToast?.({ type: 'warning', message: 'Usuario requerido' }); return; }
-    if (!coins || coins < 1) { toast?.showToast?.({ type: 'warning', message: 'Monedas invÃ¡lidas' }); return; }
+    if (!coins || coins < 1) { toast?.showToast?.({ type: 'warning', message: 'Monedas inválidas' }); return; }
 
     const existing = leaderboard.find(d => d.uid === user);
     if (existing) existing.coins += coins;
@@ -455,7 +422,7 @@ export async function mount({ target, api, user, toast, signal }) {
     updateStats();
     document.getElementById('manualCoins').value = '';
     document.getElementById('manualUser').value = '';
-    toast?.showToast?.({ type: 'success', message: `+${coins} ðŸ’Ž para @${user}` });
+    toast?.showToast?.({ type: 'success', message: `+${coins} para @${user}` });
     pushChat({ type: 'gift', user, text: 'suma manual', amount: coins });
   }, { signal });
 
@@ -466,7 +433,7 @@ export async function mount({ target, api, user, toast, signal }) {
     if (!list) return;
     const sorted = [...leaderboard].sort((a, b) => b.coins - a.coins);
     if (sorted.length === 0) {
-      list.innerHTML = '<div class="empty-chat">Esperando donaciones...</div>';
+      list.innerHTML = '<div class="empty-chat"><i class="fa-regular fa-face-smile" style="display:block;font-size:28px;margin-bottom:8px;opacity:0.3"></i>Esperando donaciones...</div>';
       return;
     }
     const rankClass = ['gold', 'silver', 'bronze'];
@@ -478,19 +445,18 @@ export async function mount({ target, api, user, toast, signal }) {
         ? `<img src="${escapeAttr(d.avatar)}" onerror="this.style.display='none';this.parentNode.textContent='${initial}'">`
         : initial;
       const fromCoins = previousCoins.get(d.uid) || 0;
+      const medal = i === 0 ? '<i class="fa-solid fa-crown" style="color:#fbbf24;position:absolute;top:-4px;right:-4px;font-size:14px"></i>' : '';
       return `<div class="lb-row ${rc} lb-stagger" data-coins="${d.coins}" data-from="${fromCoins}" style="position:relative">
-        ${i === 0 ? '<span class="lb-crown">ðŸ‘‘</span>' : ''}
+        ${medal}
         <div class="lb-rank">${i + 1}</div>
         <div class="lb-avatar">${avatar}</div>
         <div class="lb-name">@${escapeHtml(d.nick || d.uid)}</div>
-        <div class="lb-coins" data-count>ðŸ’Ž ${formatNum(d.coins)}</div>
+        <div class="lb-coins" data-count>${formatNum(d.coins)}</div>
       </div>`;
     }).join('');
 
-    /* stagger cascade animation */
     staggerChildren(list, 'lb-stagger', 50);
 
-    /* countUp only the first row + bump animation if changed */
     const firstRow = list.querySelector('.lb-row');
     if (firstRow) {
       const target = parseInt(firstRow.dataset.coins, 10) || 0;
@@ -498,21 +464,17 @@ export async function mount({ target, api, user, toast, signal }) {
       const coinEl = firstRow.querySelector('[data-count]');
       if (coinEl && target !== from) {
         if (from > 0) {
-          const startText = `ðŸ’Ž ${formatNum(from)}`;
-          const endText = `ðŸ’Ž ${formatNum(target)}`;
-          coinEl.textContent = startText;
-          countUpAnimate(coinEl, startText, endText, 1000);
+          coinEl.textContent = formatNum(from);
+          countUpAnimate(coinEl, formatNum(from), formatNum(target), 1000);
         }
-        /* trigger bump on coin change */
         setTimeout(() => {
           coinEl.classList.remove('bump');
-          void coinEl.offsetWidth; /* reflow */
+          void coinEl.offsetWidth;
           coinEl.classList.add('bump');
         }, from > 0 ? 100 : 0);
       }
     }
 
-    /* save snapshot */
     lastLeaderboardSnapshot.length = 0;
     sorted.slice(0, 50).forEach(d => lastLeaderboardSnapshot.push({ ...d }));
 
@@ -522,13 +484,12 @@ export async function mount({ target, api, user, toast, signal }) {
   function countUpAnimate(el, startText, endText, duration) {
     const startVal = parseInt(startText.replace(/[^\d]/g, ''), 10) || 0;
     const endVal = parseInt(endText.replace(/[^\d]/g, ''), 10) || 0;
-    const prefix = endText.replace(/[\d,]/g, '').trim();
     const start = performance.now();
     function frame(now) {
       const k = Math.min(1, (now - start) / duration);
       const ease = 1 - Math.pow(1 - k, 3);
       const v = Math.round(startVal + (endVal - startVal) * ease);
-      el.textContent = `${prefix} ${formatNum(v)}`;
+      el.textContent = formatNum(v);
       if (k < 1) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -575,7 +536,7 @@ export async function mount({ target, api, user, toast, signal }) {
     const stream = document.getElementById('liveChatStream');
     if (!stream) return;
     if (liveChat.length === 0) {
-      stream.innerHTML = '<div class="empty-chat">Conecta TikTok para ver el chat en vivo</div>';
+      stream.innerHTML = '<div class="empty-chat"><i class="fa-solid fa-plug" style="display:block;font-size:28px;margin-bottom:8px;opacity:0.3"></i>Conecta TikTok para ver el chat en vivo</div>';
       return;
     }
     stream.innerHTML = liveChat.slice(-30).reverse().map(m => {
@@ -585,7 +546,7 @@ export async function mount({ target, api, user, toast, signal }) {
         body += `<img class="chat-gift-img" src="${escapeAttr(giftSrc)}" onerror="this.style.display='none'" alt="">`;
       }
       body += `<div class="chat-body"><span class="chat-user">@${escapeHtml(m.user || 'anon')}</span>`;
-      if (m.amount) body += ` <span class="chat-amount">+${m.amount.toLocaleString()} ðŸ’Ž</span>`;
+      if (m.amount) body += ` <span class="chat-amount">+${m.amount.toLocaleString()}</span>`;
       body += `<div class="chat-text">${escapeHtml(m.text || '')}</div></div>`;
       return `<div class="chat-msg ${m.type || ''}">${body}</div>`;
     }).join('');
@@ -604,6 +565,10 @@ export async function mount({ target, api, user, toast, signal }) {
   // ============ HELPERS ============
   function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
+  function staggerChildren(parent, cls, delay) {
+    const children = parent.querySelectorAll('.' + cls);
+    children.forEach((el, i) => { el.style.animationDelay = `${i * delay}ms`; });
+  }
 
   // ============ LOAD GIFTS CATALOG ============
   try {
@@ -620,13 +585,13 @@ export async function mount({ target, api, user, toast, signal }) {
   try {
     const plan = await api.get('/payments/plan-status', { signal });
     planInfo = plan;
-    document.getElementById('statPlan').textContent = plan?.isActive ? '✅' : '❌';
+    document.getElementById('statPlan').textContent = plan?.isActive ? 'Pro' : 'Free';
   } catch {}
 
   // Init timer display
   timerDisplay.textContent = fmt(parseInt(timerMinutes.value) * 60);
 
-  // attach magnetic hover to primary buttons (after DOM is in place)
+  // attach magnetic hover to primary buttons
   document.querySelectorAll('.dash-card .btn-primary, .dash-card .btn-success, .dash-card .btn-danger').forEach(b => magneticButton(b));
 
   return () => {
@@ -634,5 +599,3 @@ export async function mount({ target, api, user, toast, signal }) {
     if (ws) try { ws.close(); } catch {}
   };
 }
-
-

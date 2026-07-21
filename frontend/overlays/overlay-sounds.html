@@ -371,7 +371,14 @@
           const msg = JSON.parse(ev.data);
           if (msg.type === 'gift' && soundAlerts.length > 0) {
             const giftId = msg.data?.giftId;
-            const matching = soundAlerts.filter(a => a.enabled !== false && a.trigger_type === 'gift' && (!a.trigger_id || a.trigger_id === giftId || a.trigger_id === 'any'));
+            const giftValue = (Number(msg.data?.diamondCount) || 0) * (Number(msg.data?.repeatCount) || 1);
+            const matching = soundAlerts.filter(a => {
+              const minGiftValue = Number(a.min_gift_value || a.minGiftValue || 1);
+              return a.enabled !== false
+                && a.trigger_type === 'gift'
+                && giftValue >= minGiftValue
+                && (!a.trigger_id || a.trigger_id === giftId || a.trigger_id === 'any');
+            });
             if (matching.length > 0) {
               matching.forEach(a => playSound(a.sound_file, a.volume));
               showAlert({

@@ -26,6 +26,12 @@ const upload = multer({
   }
 });
 
+function isAllowedStoredSoundPath(soundFile) {
+  if (!soundFile || typeof soundFile !== 'string') return false;
+  if (soundFile.includes('..') || soundFile.includes('\\')) return false;
+  return /^\/(?:assets|uploads)\/sounds\/[a-zA-Z0-9/_ .-]+\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(soundFile);
+}
+
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const r = await db.query(`SELECT * FROM sound_alerts WHERE user_id = $1 ORDER BY created_at DESC`, [req.user.userId]);
@@ -41,6 +47,9 @@ router.post('/', authenticateToken, upload.single('sound'), async (req, res) => 
     let finalSoundPath;
     if (soundFile) {
       // Using library sound
+      if (!isAllowedStoredSoundPath(soundFile)) {
+        return res.status(400).json({ error: 'Ruta de sonido no v?lida' });
+      }
       finalSoundPath = soundFile;
     } else if (req.file) {
       // Using uploaded file
@@ -71,11 +80,14 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const rows = r.rows || r;
     await db.query(`DELETE FROM sound_alerts WHERE id = $1 AND user_id = $2`, [req.params.id, req.user.userId]);
     if (rows.length > 0) {
-      const relativePath = rows[0].sound_file || '';
-      const resolvedPath = path.resolve(process.cwd(), relativePath);
-      const uploadsDir = path.resolve(process.cwd(), 'uploads');
-      if (resolvedPath.startsWith(uploadsDir) && fs.existsSync(resolvedPath)) {
-        fs.unlinkSync(resolvedPath);
+      const storedPath = rows[0].sound_file || '';
+      if (storedPath.startsWith('/uploads/sounds/')) {
+        const relativePath = storedPath.replace(/^\/+/, '');
+        const resolvedPath = path.resolve(process.cwd(), relativePath);
+        const uploadsDir = path.resolve(process.cwd(), 'uploads', 'sounds');
+        if (resolvedPath.startsWith(uploadsDir) && fs.existsSync(resolvedPath)) {
+          fs.unlinkSync(resolvedPath);
+        }
       }
     }
     res.json({ message: 'Alerta eliminada' });
@@ -92,7 +104,7 @@ router.put('/:id/toggle', authenticateToken, async (req, res) => {
 
 router.get('/public/:userId', async (req, res) => {
   try {
-    const r = await db.query(`SELECT id, trigger_type, trigger_id, sound_file, volume FROM sound_alerts WHERE user_id = $1 AND enabled = true`, [req.params.userId]);
+    const r = await db.query(`SELECT id, trigger_type, trigger_id, sound_file, volume, min_gift_value FROM sound_alerts WHERE user_id = $1 AND enabled = true`, [req.params.userId]);
     res.json(r.rows || r);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
