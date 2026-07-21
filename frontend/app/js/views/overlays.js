@@ -110,19 +110,6 @@ const OVERLAYS = [
     bg: '#0c0715',
     badges: ['Usuarios']
   },
-  {
-    id: 'leaderboard',
-    name: 'Leaderboard',
-    file: '/overlays/overlay-generic.html',
-    desc: 'Ranking de donadores o actividad para reforzar competencia.',
-    icon: 'LB',
-    category: 'Ranking',
-    scene: 'Panel / full',
-    tone: 'Competitivo',
-    format: 'Ranking',
-    bg: '#071015',
-    badges: ['Top']
-  }
 ];
 
 const CATEGORY_ORDER = ['Todos', 'Interactivo', 'Alertas', 'Comunidad', 'HUD', 'Objetivos', 'Subasta', 'Juego', 'Ranking'];
