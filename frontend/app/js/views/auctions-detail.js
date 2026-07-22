@@ -172,15 +172,25 @@ export async function mount({ target, api, params, navigate, signal }) {
         </div>
 
         <div class="ac-message-edit">
-          <input type="text" id="edtMessage" class="input-field" placeholder="Mensaje del timer (ej: Subasta en vivo!)" value="${escapeHtml(auction.notes || '')}">
+          <input type="text" id="edtMessage" class="input-field" placeholder="Mensaje del timer" value="${escapeHtml(auction.notes || '')}">
           <button class="btn btn-sm btn-secondary" id="btnSaveMsg">💾</button>
         </div>
 
-        <!-- Manual add coins -->
         <div class="ac-manual">
           <input type="text" id="manualUser" placeholder="@usuario">
           <input type="number" id="manualCoins" placeholder="💎" min="1" value="100">
           <button class="btn btn-sm btn-primary" id="btnManualAdd">+ Agregar</button>
+        </div>
+
+        <!-- Overlay URL -->
+        <div class="ac-overlay-url" style="margin-top:var(--space-lg);padding:var(--space-md);background:var(--bg-surface);border:1px solid var(--border-color);border-radius:var(--border-radius-md)">
+          <div style="font-size:var(--text-xs);color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:var(--space-sm)">
+            <i class="fa-solid fa-layer-group" style="color:var(--color-primary)"></i> Overlay OBS
+          </div>
+          <div style="display:flex;gap:var(--space-sm)">
+            <input type="text" id="acOverlayUrl" class="input-field" style="flex:1;font-family:var(--font-mono);font-size:var(--text-xs);padding:8px 10px" readonly value="${window.location.origin}/overlays/overlay-timer.html?auctionId=${id}&userId=${auction.user_id || ''}">
+            <button class="btn btn-primary btn-sm" id="btnCopyOverlay">📋 Copiar</button>
+          </div>
         </div>
       </div>
 
@@ -233,6 +243,10 @@ export async function mount({ target, api, params, navigate, signal }) {
     document.getElementById('btnTimerReset')?.addEventListener('click', resetTimer, { signal });
     document.getElementById('btnSaveMsg')?.addEventListener('click', saveMessage, { signal });
     document.getElementById('btnManualAdd')?.addEventListener('click', manualAdd, { signal });
+    document.getElementById('btnCopyOverlay')?.addEventListener('click', () => {
+      const url = document.getElementById('acOverlayUrl');
+      if (url) { url.select(); navigator.clipboard?.writeText(url.value); showToast({ type: 'success', message: 'URL copiada' }); }
+    }, { signal });
     document.getElementById('btnFinish')?.addEventListener('click', finishAuction, { signal });
     document.getElementById('btnDelete')?.addEventListener('click', deleteAuction, { signal });
 
