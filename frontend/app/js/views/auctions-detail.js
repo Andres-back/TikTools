@@ -1,205 +1,411 @@
 /**
  * Auction Detail View — TikToolStream
- * Premium detail with top donors, gift breakdown and stats
+ * Panel de control con timer, leaderboard en vivo y control manual
  */
-
-import { countUp, formatNum, magneticButton } from '/app/js/core/visual-helpers.js';
 
 export async function mount({ target, api, params, navigate, signal }) {
   const { showToast } = await import('/app/js/core/toast.js');
   const id = params.id;
+  let auction = null;
+  let donors = [];
+  let timerInterval = null;
+  let timerState = { remaining: 0, phase: 'idle', initialTime: 120 };
+  let isLiveConnected = false; // se conecta cuando hay stream activo
+
   target.innerHTML = `<div class="loading-state"><div class="spinner-sm"></div><p>Cargando subasta...</p></div>`;
 
   function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
-  function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleString(); }
+  function fmt(s) { s = Math.max(0, parseInt(s) || 0); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }
+  function formatNum(n) { if (!n || isNaN(n)) return '0'; if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M'; if (n >= 1000) return (n / 1000).toFixed(1) + 'K'; return Number(n).toLocaleString(); }
 
-  function bindNav() {
-    target.querySelectorAll('[data-nav]').forEach(el => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigate(el.dataset.nav);
-      }, { signal });
+  function loadAuction() {
+    api.get(`/auctions/${id}`, { signal }).then(data => {
+      auction = data.auction;
+      donors = data.donors || [];
+      if (!auction) {
+        target.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>Subasta no encontrada</p><button class="btn btn-primary" onclick="location.href='/app/auctions'">Volver</button></div>`;
+        return;
+      }
+      timerState.initialTime = parseInt(auction.initial_time) || 120;
+      if (auction.status === 'active') {
+        timerState.phase = 'running';
+        timerState.remaining = parseInt(auction.remaining_time) || timerState.initialTime;
+        startTimerLoop();
+      } else if (auction.status === 'paused') {
+        timerState.phase = 'paused';
+        timerState.remaining = parseInt(auction.remaining_time) || timerState.initialTime;
+      } else {
+        timerState.phase = 'idle';
+        timerState.remaining = timerState.initialTime;
+      }
+      render();
+    }).catch(err => {
+      if (err.name === 'AbortError') return;
+      target.innerHTML = `<div class="error-state"><p>Error al cargar</p><button class="btn btn-primary" onclick="location.reload()">Reintentar</button></div>`;
     });
   }
 
-  try {
-    const data = await api.get(`/auctions/${id}`, { signal });
-    const a = data.auction;
-    const donors = data.donors || [];
-    const gifts = data.gifts || [];
-
-    if (!a) {
-      target.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>Subasta no encontrada</p><button class="btn btn-primary" data-nav="/app/auctions">Volver</button></div>`;
-      bindNav();
-      return;
-    }
-
-    // Top gifts aggregation
-    const giftMap = {};
-    gifts.forEach(g => {
-      const k = g.gift_name || g.gift_id || 'Regalo';
-      if (!giftMap[k]) giftMap[k] = { name: k, count: 0, coins: 0, image: g.image };
-      giftMap[k].count += g.repeat_count || 1;
-      giftMap[k].coins += g.total_coins || 0;
-    });
-    const topGifts = Object.values(giftMap).sort((a, b) => b.coins - a.coins).slice(0, 5);
-    const maxGiftCoins = topGifts[0]?.coins || 1;
+  function render() {
+    const statusBadge = auction.status === 'active' ? 'badge-success' : auction.status === 'finished' ? 'badge-info' : 'badge-warning';
+    const statusText = auction.status === 'active' ? '🟢 Activa' : auction.status === 'finished' ? '🏁 Finalizada' : '⏸ Pausada';
 
     target.innerHTML = `
-      <style>
-        .ad-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-lg); flex-wrap:wrap; gap:var(--space-md); }
-        .ad-stats { display:grid; grid-template-columns:repeat(4, 1fr); gap:var(--space-sm); margin-bottom:var(--space-lg); }
-        .ad-stats .stat { background:linear-gradient(135deg, rgba(0,217,255,0.08), rgba(123,47,247,0.04)); border:1px solid rgba(0,217,255,0.15); border-radius:14px; padding:var(--space-md); text-align:center; }
-        .ad-stats .stat .ic { font-size:1.4rem; margin-bottom:4px; }
-        .ad-stats .stat .nu { font-size:1.5rem; font-weight:800; background:linear-gradient(135deg, #00d9ff, #7b2ff7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .ad-stats .stat .lb { font-size:var(--text-xs); color:var(--text-muted); }
-        .ad-grid { display:grid; grid-template-columns: 1.2fr 1fr; gap:var(--space-lg); }
-        .ad-section { background:linear-gradient(160deg, rgba(20,25,45,0.95), rgba(15,20,40,0.95)); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:var(--space-md); }
-        .ad-section h3 { font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: var(--space-md); font-weight: 600; }
-        .donor-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.03); margin-bottom:6px; border:1px solid transparent; transition:all 0.2s; }
-        .donor-row:hover { background:rgba(0,217,255,0.06); border-color:rgba(0,217,255,0.15); }
-        .donor-row.gold { background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,107,0,0.04)); border-color:rgba(255,215,0,0.3); }
-        .donor-row.silver { background:linear-gradient(135deg, rgba(192,192,192,0.1), rgba(192,192,192,0.03)); border-color:rgba(192,192,192,0.25); }
-        .donor-row.bronze { background:linear-gradient(135deg, rgba(205,127,50,0.1), rgba(205,127,50,0.03)); border-color:rgba(205,127,50,0.25); }
-        .dr-rank { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.85rem; background:rgba(255,255,255,0.06); }
-        .donor-row.gold .dr-rank { background:linear-gradient(135deg, #ffd700, #ff6b00); color:#1a1a2e; }
-        .donor-row.silver .dr-rank { background:linear-gradient(135deg, #c0c0c0, #808080); color:#1a1a2e; }
-        .donor-row.bronze .dr-rank { background:linear-gradient(135deg, #cd7f32, #8b4513); color:#fff; }
-        .dr-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, #00d9ff, #7b2ff7); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:0.9rem; overflow:hidden; border:2px solid rgba(255,255,255,0.15); flex-shrink:0; }
-        .dr-avatar img { width:100%; height:100%; object-fit:cover; }
-        .dr-name { flex:1; min-width:0; font-weight:600; font-size:0.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .dr-coins { font-weight:700; color:#ffd700; font-size:0.95rem; }
-        .gift-row { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; background:rgba(255,255,255,0.03); margin-bottom:6px; }
-        .gift-img { width:36px; height:36px; border-radius:8px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:1.3rem; overflow:hidden; flex-shrink:0; }
-        .gift-img img { width:100%; height:100%; object-fit:contain; }
-        .gift-name { flex:1; min-width:0; font-size:0.85rem; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .gift-bar-wrap { flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; }
-        .gift-bar { height:100%; background:linear-gradient(90deg, #00d9ff, #7b2ff7); border-radius:3px; }
-        .gift-coins { font-size:var(--text-xs); color:#ffd700; font-weight:700; min-width:60px; text-align:right; }
-        .ad-meta { background:linear-gradient(160deg, rgba(20,25,45,0.95), rgba(15,20,40,0.95)); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:var(--space-md); margin-bottom:var(--space-lg); display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:var(--space-sm); }
-        .meta-item { font-size:var(--text-sm); }
-        .meta-label { color:var(--text-muted); font-size:var(--text-xs); margin-bottom:2px; }
-        .meta-value { font-weight:600; }
-        /* winner card with animated gradient border */
-        .winner-crown { position:relative; padding:var(--space-md); background:linear-gradient(160deg, rgba(20,25,45,0.95), rgba(15,20,40,0.95)); border-radius:16px; margin-bottom:var(--space-lg); overflow:hidden; }
-        .winner-crown::before { content:''; position:absolute; inset:-2px; background:linear-gradient(45deg, #ffd700, #ff6b00, #00f5ff, #ffd700); background-size:400% 400%; border-radius:18px; z-index:-1; animation: borderRotate 4s linear infinite; }
-        .winner-crown-inner { background:linear-gradient(160deg, rgba(20,25,45,0.98), rgba(15,20,40,0.98)); border-radius:14px; padding:var(--space-md); text-align:center; position:relative; }
-        .winner-crown-inner h2 { font-size:1.4rem; background:linear-gradient(135deg, #ffd700, #ff6b00); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; margin-bottom:4px; }
-        .winner-crown-inner .crown { font-size:2rem; }
-        @keyframes borderRotate { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
-        /* stagger for donor list */
-        .donor-row { animation: donorSlide 0.5s var(--ease-smooth) backwards; }
-        @keyframes donorSlide { from { opacity:0; transform:translateX(-15px); } to { opacity:1; transform:translateX(0); } }
-        @media (max-width: 900px) { .ad-grid { grid-template-columns: 1fr; } .ad-stats { grid-template-columns:repeat(2, 1fr); } }
-      </style>
+    <style>
+      .ac-shell { display:grid; grid-template-columns: 1fr 1fr; gap:var(--space-xl); }
+      .ac-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--border-radius-lg); padding:var(--space-xl); }
+      .ac-card-title { font-size:var(--text-xs); color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:600; margin-bottom:var(--space-lg); display:flex; align-items:center; gap:8px; }
+      .ac-card-title i { color:var(--color-primary); }
+      
+      /* Timer */
+      .ac-timer { text-align:center; }
+      .ac-timer-display { font-family:var(--font-display); font-size:clamp(3rem, 8vw, 5.5rem); font-weight:900; background:linear-gradient(135deg, #f1f5f9, var(--color-primary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; letter-spacing:-2px; transition:all 0.3s; }
+      .ac-timer-display.warn { background:linear-gradient(135deg, #f1f5f9, var(--color-warning)); -webkit-background-clip:text; background-clip:text; }
+      .ac-timer-display.danger { background:linear-gradient(135deg, var(--color-danger), #f87171); -webkit-background-clip:text; background-clip:text; animation:pulseDanger 0.7s ease-in-out infinite; }
+      @keyframes pulseDanger { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.85;transform:scale(1.02);} }
+      .ac-timer-phase { font-size:var(--text-xs); text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); margin-top:8px; font-weight:600; }
+      .ac-timer-phase.live { color:var(--color-success); }
+      .ac-timer-phase.danger { color:var(--color-danger); animation:pulseDanger 0.5s ease-in-out infinite; }
+      .ac-timer-bar { height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden; margin-top:var(--space-md); }
+      .ac-timer-bar-inner { height:100%; background:var(--color-primary-gradient); border-radius:3px; transition:width 0.3s linear; }
+      .ac-timer-bar-inner.warn { background:linear-gradient(90deg, var(--color-warning), #f97316); }
+      .ac-timer-bar-inner.danger { background:linear-gradient(90deg, var(--color-danger), #f87171); }
 
-      <div class="ad-head">
-        <div>
-          <button class="btn btn-ghost btn-sm" data-nav="/app/auctions" style="margin-bottom:6px">← Volver</button>
-          <h1 class="view-title" style="margin-bottom:4px">${escapeHtml(a.title || 'Subasta')}</h1>
-          <p style="color:var(--text-muted);font-size:var(--text-sm)">@${escapeHtml(a.tiktok_username || '—')}</p>
-        </div>
-        <div style="display:flex;gap:var(--space-sm);flex-wrap:wrap">
-          <span class="badge ${a.status === 'active' ? 'badge-success' : a.status === 'finished' ? 'badge-info' : 'badge-warning'}" style="font-size:var(--text-sm);padding:6px 14px;align-self:center">${a.status || '—'}</span>
-          ${a.status === 'active' ? '<button class="btn btn-warning" id="btnFinish">🏁 Finalizar</button>' : ''}
-          <button class="btn btn-danger btn-ghost" id="btnDelete">🗑️ Eliminar</button>
-        </div>
+      /* Editable fields */
+      .ac-edit-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--space-md); margin-top:var(--space-lg); }
+      .ac-edit-field label { font-size:var(--text-xs); color:var(--text-muted); display:block; margin-bottom:4px; font-weight:600; }
+      .ac-edit-field .input-field { padding:8px 10px; font-size:0.85rem; text-align:center; }
+
+      /* Controls */
+      .ac-controls { display:flex; gap:var(--space-sm); margin-top:var(--space-lg); }
+      .ac-controls .btn { flex:1; }
+
+      /* Leaderboard */
+      .ac-lb { display:flex; flex-direction:column; gap:var(--space-md); }
+      .ac-lb-stats { display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--space-sm); }
+      .ac-lb-stat { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:var(--space-md); text-align:center; }
+      .ac-lb-stat .nu { font-family:var(--font-display); font-size:var(--text-xl); font-weight:800; color:var(--text-primary); }
+      .ac-lb-stat .lb { font-size:var(--text-xs); color:var(--text-muted); margin-top:2px; }
+
+      /* Donor rows */
+      .ac-donors { max-height:50vh; overflow-y:auto; }
+      .ac-donor { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; background:var(--bg-surface); margin-bottom:4px; border:1px solid var(--border-color); transition:all 0.2s; }
+      .ac-donor:hover { border-color:var(--border-hover); }
+      .ac-donor.gold { background:linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,107,0,0.04)); border-color:rgba(255,215,0,0.2); }
+      .ac-donor.silver { background:linear-gradient(135deg, rgba(192,192,192,0.08), rgba(192,192,192,0.02)); border-color:rgba(192,192,192,0.15); }
+      .ac-donor.bronze { background:linear-gradient(135deg, rgba(205,127,50,0.08), rgba(205,127,50,0.02)); border-color:rgba(205,127,50,0.15); }
+      .ac-rank { width:26px; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; background:var(--bg-card); color:var(--text-secondary); flex-shrink:0; }
+      .ac-donor.gold .ac-rank { background:linear-gradient(135deg, #fbbf24, #f97316); color:#1a1a2e; }
+      .ac-donor.silver .ac-rank { background:linear-gradient(135deg, #c0c0c0, #808080); color:#1a1a2e; }
+      .ac-donor.bronze .ac-rank { background:linear-gradient(135deg, #cd7f32, #8b4513); color:#fff; }
+      .ac-avatar { width:34px; height:34px; border-radius:50%; background:var(--color-primary-gradient); display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:0.85rem; flex-shrink:0; overflow:hidden; border:2px solid rgba(255,255,255,0.1); }
+      .ac-avatar img { width:100%; height:100%; object-fit:cover; }
+      .ac-name { flex:1; font-weight:500; font-size:0.85rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .ac-coins { font-family:var(--font-display); font-weight:700; color:var(--color-warning); font-size:0.9rem; }
+      .ac-crown { color:#fbbf24; font-size:1rem; }
+
+      /* Winner */
+      .ac-winner { margin-top:var(--space-md); padding:var(--space-md); background:linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,107,0,0.04)); border:1px solid rgba(255,215,0,0.3); border-radius:var(--border-radius-md); text-align:center; }
+      .ac-winner h3 { font-size:1.1rem; background:linear-gradient(135deg, #ffd700, #ff6b00); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; }
+      .ac-winner .name { font-size:1.3rem; font-weight:800; color:#fff; margin-top:4px; }
+      
+      /* Manual add */
+      .ac-manual { display:flex; gap:var(--space-sm); margin-top:var(--space-md); }
+      .ac-manual input { padding:8px 12px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:var(--border-radius-sm); color:var(--text-primary); font-size:0.85rem; }
+      .ac-manual input[type="text"] { flex:2; }
+      .ac-manual input[type="number"] { flex:1; max-width:100px; }
+      .ac-manual button { flex:0; }
+
+      .ac-message-edit { display:flex; gap:var(--space-sm); margin-top:var(--space-md); align-items:center; }
+      .ac-message-edit input { flex:1; padding:8px 12px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:var(--border-radius-sm); color:var(--text-primary); font-size:0.85rem; }
+
+      .ac-meta { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-sm); margin-top:var(--space-md); padding-top:var(--space-md); border-top:1px solid var(--border-color); }
+      .ac-meta-item { font-size:var(--text-xs); color:var(--text-muted); }
+      .ac-meta-item strong { color:var(--text-secondary); display:block; margin-top:2px; }
+
+      @media (max-width: 1000px) { .ac-shell { grid-template-columns:1fr; } }
+    </style>
+
+    <div class="ac-head" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-xl);flex-wrap:wrap;gap:var(--space-md)">
+      <div>
+        <a href="/app/auctions" data-router-link style="color:var(--text-muted);font-size:var(--text-sm);text-decoration:none">← Volver a Subastas</a>
+        <h1 class="view-title" style="margin-bottom:4px;margin-top:4px">${escapeHtml(auction.title || 'Subasta')}</h1>
+        <p style="color:var(--text-muted);font-size:var(--text-sm)">@${escapeHtml(auction.tiktok_username || '—')} · <span class="badge ${statusBadge}" style="padding:3px 10px">${statusText}</span></p>
       </div>
-
-      <div class="ad-stats">
-        <div class="stat"><div class="ic">💎</div><div class="nu" data-count="coins" data-value="${a.total_coins_collected || 0}">0</div><div class="lb">Monedas</div></div>
-        <div class="stat"><div class="ic">🎁</div><div class="nu" data-count="gifts" data-value="${a.total_gifts_received || 0}">0</div><div class="lb">Regalos</div></div>
-        <div class="stat"><div class="ic">👥</div><div class="nu" data-count="donors" data-value="${a.unique_donors || 0}">0</div><div class="lb">Donantes</div></div>
-        <div class="stat"><div class="ic">🏆</div><div class="nu" style="font-size:1.1rem">${a.winner_username ? '@' + escapeHtml(a.winner_username) : '—'}</div><div class="lb">Ganador</div></div>
+      <div style="display:flex;gap:var(--space-sm);flex-wrap:wrap">
+        ${auction.status !== 'finished' ? `<button class="btn btn-danger btn-sm" id="btnDelete">🗑️ Eliminar</button>` : ''}
+        ${auction.status === 'active' ? `<button class="btn btn-warning" id="btnFinish">🏁 Finalizar</button>` : ''}
       </div>
+    </div>
 
-      ${a.winner_username ? `
-        <div class="winner-crown">
-          <div class="winner-crown-inner">
-            <div class="crown">👑</div>
-            <h2>🏆 ${escapeHtml(a.title || 'Subasta')} — Ganador</h2>
-            <div style="font-size:1.6rem;font-weight:800;color:#fff;margin-top:6px">@${escapeHtml(a.winner_username)}</div>
-            <div style="color:#ffd700;font-weight:700;margin-top:4px">${formatNum(a.winner_coins || 0)} 💎</div>
+    <div class="ac-shell">
+      <!-- LEFT: Timer + Controls -->
+      <div class="ac-card ac-timer">
+        <div class="ac-card-title"><i class="fa-regular fa-clock"></i> Control de Tiempo</div>
+        
+        <div class="ac-timer-display" id="timerDisplay">${fmt(timerState.remaining)}</div>
+        <div class="ac-timer-phase" id="timerPhase">${timerState.phase === 'idle' ? '⏸ INACTIVO' : timerState.phase === 'running' ? '🟢 EN VIVO' : timerState.phase === 'paused' ? '⏸ PAUSADO' : '🏁 FINALIZADO'}</div>
+        <div class="ac-timer-bar"><div class="ac-timer-bar-inner" id="timerBar" style="width:${timerState.initialTime > 0 ? (timerState.remaining / timerState.initialTime) * 100 : 0}%"></div></div>
+
+        <div class="ac-edit-grid">
+          <div class="ac-edit-field">
+            <label>Tiempo inicial (s)</label>
+            <input type="number" id="edtInitialTime" class="input-field" value="${timerState.initialTime}" min="10" max="600">
+          </div>
+          <div class="ac-edit-field">
+            <label>Delay (s)</label>
+            <input type="number" id="edtDelay" class="input-field" value="${auction.delay_time || 20}" min="0" max="120">
+          </div>
+          <div class="ac-edit-field">
+            <label>Extensión (s)</label>
+            <input type="number" id="edtExtension" class="input-field" value="${auction.extension_time || 10}" min="0" max="60">
           </div>
         </div>
-      ` : ''}
 
-      <div class="ad-meta">
-        <div class="meta-item"><div class="meta-label">Inicio</div><div class="meta-value">${fmtDate(a.started_at)}</div></div>
-        <div class="meta-item"><div class="meta-label">Fin</div><div class="meta-value">${fmtDate(a.finished_at)}</div></div>
-        <div class="meta-item"><div class="meta-label">Tiempo inicial</div><div class="meta-value">${a.initial_time || 120}s</div></div>
-        <div class="meta-item"><div class="meta-label">Delay entre regalos</div><div class="meta-value">${a.delay_time || 20}s</div></div>
-      </div>
-
-      <div class="ad-grid">
-        <div class="ad-section">
-          <h3>🏆 Top Donantes (${donors.length})</h3>
-          ${donors.length === 0 ? '<div style="color:var(--text-muted);padding:var(--space-md);text-align:center">Sin donantes</div>' :
-            `<div>${donors.slice(0, 20).map((d, i) => {
-              const rk = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-              const initial = (d.tiktok_nickname || d.tiktok_unique_id || '?').charAt(0).toUpperCase();
-              return `<div class="donor-row ${rk}" style="animation-delay:${i * 50}ms">
-                <div class="dr-rank">${i + 1}</div>
-                <div class="dr-avatar">${d.profile_picture_url ? `<img src="${escapeAttr(d.profile_picture_url)}" onerror="this.style.display='none';this.parentNode.textContent='${initial}'">` : initial}</div>
-                <div class="dr-name">@${escapeHtml(d.tiktok_nickname || d.tiktok_unique_id || '—')}</div>
-                <div class="dr-coins">💎 ${(d.total_coins || 0).toLocaleString()}</div>
-                ${d.is_winner ? '<span style="font-size:1.2rem">👑</span>' : ''}
-              </div>`;
-            }).join('')}</div>`}
+        <div class="ac-controls">
+          ${auction.status !== 'finished' ? `
+            <button class="btn ${timerState.phase === 'running' ? 'btn-warning' : 'btn-primary'}" id="btnTimerToggle">
+              ${timerState.phase === 'running' ? '⏸ Pausar' : timerState.phase === 'paused' ? '▶ Reanudar' : '▶ Iniciar'}
+            </button>
+            <button class="btn btn-secondary" id="btnTimerReset">🔄 Reset</button>
+          ` : ''}
         </div>
 
-        <div class="ad-section">
-          <h3>🎁 Top Regalos (${topGifts.length})</h3>
-          ${topGifts.length === 0 ? '<div style="color:var(--text-muted);padding:var(--space-md);text-align:center">Sin regalos</div>' :
-            `<div>${topGifts.map(g => {
-              const pct = (g.coins / maxGiftCoins) * 100;
-              return `<div class="gift-row">
-                <div class="gift-img">${g.image ? `<img src="${escapeAttr(g.image)}" onerror="this.style.display='none';this.parentNode.textContent='🎁'">` : '🎁'}</div>
-                <div class="gift-name">${escapeHtml(g.name)}</div>
-                <div class="gift-bar-wrap"><div class="gift-bar" style="width:${pct}%"></div></div>
-                <div class="gift-coins">${g.coins.toLocaleString()}</div>
-              </div>`;
-            }).join('')}</div>`}
+        <div class="ac-message-edit">
+          <input type="text" id="edtMessage" class="input-field" placeholder="Mensaje del timer (ej: Subasta en vivo!)" value="${escapeHtml(auction.notes || '')}">
+          <button class="btn btn-sm btn-secondary" id="btnSaveMsg">💾</button>
+        </div>
+
+        <!-- Manual add coins -->
+        <div class="ac-manual">
+          <input type="text" id="manualUser" placeholder="@usuario">
+          <input type="number" id="manualCoins" placeholder="💎" min="1" value="100">
+          <button class="btn btn-sm btn-primary" id="btnManualAdd">+ Agregar</button>
         </div>
       </div>
+
+      <!-- RIGHT: Leaderboard -->
+      <div class="ac-card ac-lb">
+        <div class="ac-card-title"><i class="fa-solid fa-trophy"></i> Top Donantes</div>
+
+        <div class="ac-lb-stats">
+          <div class="ac-lb-stat"><div class="nu" id="lbDonors">${donors.length}</div><div class="lb">Donantes</div></div>
+          <div class="ac-lb-stat"><div class="nu" id="lbTotalCoins">${formatNum(donors.reduce((s,d) => s + (d.total_coins || 0), 0))}</div><div class="lb">Monedas</div></div>
+          <div class="ac-lb-stat"><div class="nu" id="lbTopCoin" style="color:var(--color-warning)">${donors.length > 0 ? formatNum(donors[0].total_coins || 0) : '—'}</div><div class="lb">Mayor</div></div>
+        </div>
+
+        <div class="ac-donors" id="donorList">
+          ${donors.length === 0 
+            ? '<div style="text-align:center;padding:var(--space-lg);color:var(--text-muted)">Esperando donaciones...</div>'
+            : donors.map((d, i) => {
+                const rank = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                const initial = (d.tiktok_nickname || d.tiktok_unique_id || '?').charAt(0).toUpperCase();
+                return `<div class="ac-donor ${rank}">
+                  <div class="ac-rank">${i + 1}</div>
+                  <div class="ac-avatar">${d.profile_picture_url 
+                    ? `<img src="${escapeAttr(d.profile_picture_url)}" onerror="this.style.display='none';this.parentNode.textContent='${initial}'">`
+                    : initial}</div>
+                  <div class="ac-name">@${escapeHtml(d.tiktok_nickname || d.tiktok_unique_id || '—')}</div>
+                  <div class="ac-coins">💎 ${formatNum(d.total_coins || 0)}</div>
+                  ${d.is_winner ? '<span class="ac-crown">👑</span>' : ''}
+                </div>`;
+              }).join('')
+          }
+        </div>
+
+        ${auction.winner_username ? `
+        <div class="ac-winner">
+          <h3>🏆 Ganador</h3>
+          <div class="name">@${escapeHtml(auction.winner_username)}</div>
+          <div style="color:#ffd700;font-weight:700;margin-top:4px">${formatNum(auction.winner_coins || 0)} 💎</div>
+        </div>` : ''}
+
+        <div class="ac-meta">
+          <div class="ac-meta-item">Inicio <strong>${auction.started_at ? new Date(auction.started_at).toLocaleString() : '—'}</strong></div>
+          <div class="ac-meta-item">Fin <strong>${auction.finished_at ? new Date(auction.finished_at).toLocaleString() : '—'}</strong></div>
+        </div>
+      </div>
+    </div>
     `;
 
-    document.getElementById('btnFinish')?.addEventListener('click', async () => {
-      if (!confirm('¿Finalizar esta subasta?')) return;
-      try {
-        await api.post(`/auctions/${id}/finish`, {}, { signal });
-        showToast({ type: 'success', message: 'Subasta finalizada' });
-        navigate(`/app/auctions/${id}`);
-      } catch (err) { showToast({ type: 'error', message: err.message || 'Error' }); }
-    }, { signal });
+    // Bind events
+    document.getElementById('btnTimerToggle')?.addEventListener('click', toggleTimer, { signal });
+    document.getElementById('btnTimerReset')?.addEventListener('click', resetTimer, { signal });
+    document.getElementById('btnSaveMsg')?.addEventListener('click', saveMessage, { signal });
+    document.getElementById('btnManualAdd')?.addEventListener('click', manualAdd, { signal });
+    document.getElementById('btnFinish')?.addEventListener('click', finishAuction, { signal });
+    document.getElementById('btnDelete')?.addEventListener('click', deleteAuction, { signal });
 
-    document.getElementById('btnDelete')?.addEventListener('click', async () => {
-      if (!confirm('¿Eliminar esta subasta permanentemente?')) return;
-      try {
-        await api.del(`/auctions/${id}`, { signal });
-        showToast({ type: 'success', message: 'Subasta eliminada' });
-        navigate('/app/auctions');
-      } catch (err) { showToast({ type: 'error', message: err.message || 'Error' }); }
-    }, { signal });
-
-    /* countUp stats */
-    document.querySelectorAll('[data-count]').forEach(el => {
-      const target = parseInt(el.dataset.value, 10) || 0;
-      countUp(el, 0, target, 1400);
+    // Auto-save when editing time/delay/extension
+    ['edtInitialTime', 'edtDelay', 'edtExtension'].forEach(id => {
+      document.getElementById(id)?.addEventListener('change', saveSettings, { signal });
     });
-
-    /* magnetic buttons */
-    document.querySelectorAll('.ad-head .btn').forEach(b => magneticButton(b));
-
-    /* bind data-nav clicks (replaces inline onclick) */
-    bindNav();
-
-  } catch (err) {
-    if (err.name === 'AbortError') return;
-    target.innerHTML = `<div class="error-state"><p>Error al cargar la subasta</p><button class="btn btn-primary" data-nav="/app/auctions">Volver</button></div>`;
-    bindNav();
   }
 
-  return () => { target.innerHTML = ''; };
+  function tick() {
+    if (timerState.phase !== 'running') return;
+    timerState.remaining = Math.max(0, timerState.remaining - 1);
+    updateTimerDisplay();
+    if (timerState.remaining <= 0) {
+      clearInterval(timerInterval);
+      timerState.phase = 'finished';
+      updateTimerDisplay();
+    }
+  }
+
+  function updateTimerDisplay() {
+    const display = document.getElementById('timerDisplay');
+    const phase = document.getElementById('timerPhase');
+    const bar = document.getElementById('timerBar');
+    if (!display) return;
+
+    display.textContent = fmt(timerState.remaining);
+    display.className = 'ac-timer-display';
+    if (timerState.remaining <= 10) display.classList.add('danger');
+    else if (timerState.remaining <= 30) display.classList.add('warn');
+
+    if (phase) {
+      phase.className = 'ac-timer-phase';
+      if (timerState.phase === 'idle') { phase.innerHTML = '⏸ INACTIVO'; phase.className = 'ac-timer-phase'; }
+      else if (timerState.phase === 'running') { phase.innerHTML = '🟢 EN VIVO'; phase.className = 'ac-timer-phase live'; }
+      else if (timerState.phase === 'paused') { phase.innerHTML = '⏸ PAUSADO'; phase.className = 'ac-timer-phase'; }
+      else if (timerState.phase === 'finished') { phase.innerHTML = '🏁 FINALIZADO'; phase.className = 'ac-timer-phase'; }
+    }
+
+    if (bar) {
+      const pct = timerState.initialTime > 0 ? (timerState.remaining / timerState.initialTime) * 100 : 0;
+      bar.style.width = `${Math.max(0, pct)}%`;
+      bar.className = 'ac-timer-bar-inner';
+      if (timerState.remaining <= 10) bar.classList.add('danger');
+      else if (timerState.remaining <= 30) bar.classList.add('warn');
+    }
+
+    updateBtnText();
+  }
+
+  function updateBtnText() {
+    const btn = document.getElementById('btnTimerToggle');
+    if (!btn) return;
+    if (timerState.phase === 'running') { btn.innerHTML = '⏸ Pausar'; btn.className = 'btn btn-warning'; }
+    else if (timerState.phase === 'paused') { btn.innerHTML = '▶ Reanudar'; btn.className = 'btn btn-primary'; }
+    else { btn.innerHTML = '▶ Iniciar'; btn.className = 'btn btn-primary'; }
+  }
+
+  function startTimerLoop() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(tick, 1000);
+  }
+
+  async function toggleTimer() {
+    try {
+      if (timerState.phase === 'idle' || timerState.phase === 'finished') {
+        // Start
+        const initialTime = parseInt(document.getElementById('edtInitialTime').value) || 120;
+        timerState.initialTime = initialTime;
+        timerState.remaining = initialTime;
+        timerState.phase = 'running';
+        await api.put(`/auctions/${id}`, { status: 'active', initial_time: initialTime }, { signal });
+        startTimerLoop();
+        showToast({ type: 'success', message: 'Subasta iniciada' });
+      } else if (timerState.phase === 'running') {
+        // Pause
+        clearInterval(timerInterval);
+        timerState.phase = 'paused';
+        await api.put(`/auctions/${id}`, { status: 'paused', remaining_time: timerState.remaining }, { signal });
+        showToast({ type: 'info', message: 'Subasta pausada' });
+      } else if (timerState.phase === 'paused') {
+        // Resume
+        timerState.phase = 'running';
+        await api.put(`/auctions/${id}`, { status: 'active' }, { signal });
+        startTimerLoop();
+        showToast({ type: 'success', message: 'Subasta reanudada' });
+      }
+      updateTimerDisplay();
+    } catch (err) {
+      showToast({ type: 'error', message: err.message || 'Error' });
+    }
+  }
+
+  async function resetTimer() {
+    if (!confirm('¿Resetear el timer?')) return;
+    clearInterval(timerInterval);
+    const initialTime = parseInt(document.getElementById('edtInitialTime').value) || 120;
+    timerState.initialTime = initialTime;
+    timerState.remaining = initialTime;
+    timerState.phase = 'idle';
+    try {
+      await api.put(`/auctions/${id}`, { status: 'paused', remaining_time: initialTime, initial_time: initialTime }, { signal });
+      showToast({ type: 'info', message: 'Timer reseteado' });
+    } catch {}
+    updateTimerDisplay();
+  }
+
+  async function saveSettings() {
+    const initialTime = parseInt(document.getElementById('edtInitialTime').value);
+    const delayTime = parseInt(document.getElementById('edtDelay').value);
+    const extensionTime = parseInt(document.getElementById('edtExtension').value);
+    try {
+      await api.put(`/auctions/${id}`, {
+        initial_time: initialTime,
+        delay_time: delayTime,
+        extension_time: extensionTime
+      }, { signal });
+    } catch {}
+  }
+
+  async function saveMessage() {
+    const notes = document.getElementById('edtMessage').value.trim();
+    try {
+      await api.put(`/auctions/${id}`, { notes }, { signal });
+      showToast({ type: 'success', message: 'Mensaje guardado' });
+    } catch (err) {
+      showToast({ type: 'error', message: err.message || 'Error' });
+    }
+  }
+
+  async function manualAdd() {
+    const user = document.getElementById('manualUser').value.trim();
+    const coins = parseInt(document.getElementById('manualCoins').value);
+    if (!user) { showToast({ type: 'warning', message: 'Usuario requerido' }); return; }
+    if (!coins || coins < 1) { showToast({ type: 'warning', message: 'Monedas inválidas' }); return; }
+    try {
+      await api.post(`/auctions/${id}/gifts`, {
+        tiktokUniqueId: user,
+        tiktokNickname: user,
+        giftName: 'Manual',
+        diamondCount: coins,
+        repeatCount: 1
+      }, { signal });
+      showToast({ type: 'success', message: `+${coins} 💎 para @${user}` });
+      document.getElementById('manualCoins').value = '';
+      document.getElementById('manualUser').value = '';
+      loadAuction();
+    } catch (err) {
+      showToast({ type: 'error', message: err.message || 'Error' });
+    }
+  }
+
+  async function finishAuction() {
+    if (!confirm('¿Finalizar esta subasta?')) return;
+    try {
+      await api.post(`/auctions/${id}/finish`, {}, { signal });
+      showToast({ type: 'success', message: 'Subasta finalizada' });
+      loadAuction();
+    } catch (err) { showToast({ type: 'error', message: err.message || 'Error' }); }
+  }
+
+  async function deleteAuction() {
+    if (!confirm('¿Eliminar esta subasta permanentemente?')) return;
+    try {
+      await api.del(`/auctions/${id}`, { signal });
+      showToast({ type: 'success', message: 'Subasta eliminada' });
+      navigate('/app/auctions');
+    } catch (err) { showToast({ type: 'error', message: err.message || 'Error' }); }
+  }
+
+  loadAuction();
+
+  return () => {
+    if (timerInterval) clearInterval(timerInterval);
+  };
 }
