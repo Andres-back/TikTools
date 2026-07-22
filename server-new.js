@@ -179,7 +179,6 @@ app.use('/api/news', newsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/overlays', overlaysRoutes);
 app.use('/api/roulette', rouletteRoutes);
-app.use('/api/goals', goalsRoutes(wss));
 app.use('/api/sounds', soundRoutes);
 app.use('/api/timers', timerRoutes);
 app.use('/api/actions', actionRoutes);
