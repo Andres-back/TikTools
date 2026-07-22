@@ -84,6 +84,7 @@ export async function mount({ target, api, signal }) {
                 <option value="follow">👤 Nuevo seguidor</option>
                 <option value="share">🔄 Share</option>
                 <option value="like">❤️ Like</option>
+                <option value="goal_completed">🎯 Meta completada</option>
                 <option value="connect">🔗 Conexión al live</option>
                 <option value="disconnect">🔌 Desconexión</option>
               </select>
@@ -95,6 +96,15 @@ export async function mount({ target, api, signal }) {
                 <datalist id="axGiftList"></datalist>
                 <img id="axGiftPreview" class="ax-gift-preview">
               </div>
+            </div>
+            <div class="ax-field" id="axGoalGroup" style="display:none">
+              <label>Tipo de meta</label>
+              <select id="axGoalType" class="input-field">
+                <option value="likes">❤️ Likes</option>
+                <option value="followers">👥 Seguidores</option>
+                <option value="shares">🔄 Shares</option>
+                <option value="coins">💎 Monedas</option>
+              </select>
             </div>
           </div>
 
@@ -211,6 +221,7 @@ export async function mount({ target, api, signal }) {
 
   document.getElementById('axTrigger')?.addEventListener('change', function() {
     document.getElementById('axGiftGroup').style.display = this.value === 'gift_specific' ? 'block' : 'none';
+    document.getElementById('axGoalGroup').style.display = this.value === 'goal_completed' ? 'block' : 'none';
   }, { signal });
 
   // ============ STEPS MANAGER ============
@@ -498,10 +509,13 @@ export async function mount({ target, api, signal }) {
   document.getElementById('axSave')?.addEventListener('click', async () => {
     const name = document.getElementById('axName').value.trim();
     const rawTrigger = document.getElementById('axTrigger').value;
-    const triggerType = rawTrigger === 'gift_specific' ? 'gift' : rawTrigger;
-    const triggerId = rawTrigger === 'gift_specific'
-      ? (document.getElementById('axGiftName').value?.trim() || 'any')
-      : (rawTrigger === 'gift' ? 'any' : null);
+    const isGoal = rawTrigger === 'goal_completed';
+    const triggerType = isGoal ? 'goal_completed' : (rawTrigger === 'gift_specific' ? 'gift' : rawTrigger);
+    const triggerId = isGoal
+      ? document.getElementById('axGoalType').value
+      : (rawTrigger === 'gift_specific'
+        ? (document.getElementById('axGiftName').value?.trim() || 'any')
+        : (rawTrigger === 'gift' ? 'any' : null));
     const cooldown = parseInt(document.getElementById('axCooldown').value) || 0;
     const steps = getStepsData();
 

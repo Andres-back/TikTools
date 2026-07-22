@@ -1,6 +1,8 @@
 const express = require('express');
-const router = express.Router();
-const db = require('../../../database/db');
+
+module.exports = function createGoalRoutes(wss) {
+  const router = express.Router();
+  const db = require('../../../database/db');
 const { authenticateToken } = require('../../shared/middlewares/auth');
 
 router.get('/', authenticateToken, async (req, res) => {
@@ -97,6 +99,8 @@ router.post('/:id/progress', authenticateToken, async (req, res) => {
       goal.target = newTarget;
       goal.current = 0;
       goal.message = `🎉 Meta superada! Nuevo objetivo: ${newTarget.toLocaleString()}`;
+      // Broadcast goal completed event
+      broadcastGoalEvent(goal, true);
     } else if (goal.current >= goal.target) {
       await db.query(
         `UPDATE goals SET active = false, finished_at = CURRENT_TIMESTAMP WHERE id = $1`,
@@ -104,6 +108,8 @@ router.post('/:id/progress', authenticateToken, async (req, res) => {
       );
       goal.active = false;
       goal.finished_at = new Date().toISOString();
+      // Broadcast goal completed event
+      broadcastGoalEvent(goal, false);
     }
     res.json(goal);
   } catch (error) {
@@ -143,4 +149,28 @@ router.get('/public/:userId', async (req, res) => {
   }
 });
 
-module.exports = router;
+  return router;
+
+  function broadcastGoalEvent(goal, isAutoIncrement) {
+    if (!wss) return;
+    const event = {
+      type: 'goal_completed',
+      data: {
+        goalId: goal.id,
+        goalType: goal.type,
+        goalTitle: goal.title,
+        goalTarget: goal.target,
+        goalCurrent: goal.current,
+        userId: goal.user_id,
+        autoIncrement: isAutoIncrement,
+        timestamp: new Date().toISOString()
+      }
+    };
+    const msg = JSON.stringify(event);
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(msg);
+      }
+    });
+  }
+};

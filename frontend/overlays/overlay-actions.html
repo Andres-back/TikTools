@@ -192,6 +192,7 @@
     follow:      { accent: '#00ff88', accent2: '#00d9ff', glow: 'rgba(0,255,136,0.4)' },
     share:       { accent: '#00f5ff', accent2: '#8b5cf6', glow: 'rgba(0,245,255,0.4)' },
     like:        { accent: '#ff006e', accent2: '#ff6b6b', glow: 'rgba(255,107,107,0.4)' },
+    goal_completed: { accent: '#ffd700', accent2: '#ff6b00', glow: 'rgba(255,215,0,0.4)' },
     connect:     { accent: '#00f5ff', accent2: '#7b2ff7', glow: 'rgba(123,47,247,0.4)' },
     disconnect:  { accent: '#ff6b6b', accent2: '#ff1744', glow: 'rgba(255,23,68,0.4)' },
     default:     { accent: '#ffd700', accent2: '#ff6b00', glow: 'rgba(255,215,0,0.4)' }
@@ -390,6 +391,10 @@
     if (event.type === 'follow' && action.trigger_type === 'follow') return true;
     if (event.type === 'share' && action.trigger_type === 'share') return true;
     if (event.type === 'like' && action.trigger_type === 'like') return true;
+    if (event.type === 'goal_completed' && action.trigger_type === 'goal_completed') {
+      const goalType = String(event.data?.goalType ?? '');
+      return !action.trigger_id || action.trigger_id === goalType || action.trigger_id === 'any';
+    }
     return false;
   }
 

@@ -179,7 +179,7 @@ app.use('/api/news', newsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/overlays', overlaysRoutes);
 app.use('/api/roulette', rouletteRoutes);
-app.use('/api/goals', goalsRoutes);
+app.use('/api/goals', goalsRoutes(wss));
 app.use('/api/sounds', soundRoutes);
 app.use('/api/timers', timerRoutes);
 app.use('/api/actions', actionRoutes);
@@ -187,7 +187,6 @@ app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/integrations', createIntegrationRouter({ db: database, engine: integrationEngine }));
 app.use('/api/songrequests', songRequestsRoutes);
 app.use('/api/settings', settingsRoutes);
-
 // Health check
 app.get('/api/health', async (req, res) => {
   try {
@@ -787,16 +786,18 @@ function broadcastToChannel(channelId, data) {
   listenersByChannelId.get(channelId)?.forEach((socket) => send(socket, data));
 }
 
-
 function send(socket, data) {
   if (socket.readyState === WebSocket.OPEN) {
     try {
       socket.send(JSON.stringify(data));
     } catch (err) {
-      // Silent
+      // ignore
     }
   }
 }
+
+// Goals routes (needs wss, set up after wss is created)
+app.use('/api/goals', goalsRoutes(wss));
 
 // ==================== STARTUP ====================
 
