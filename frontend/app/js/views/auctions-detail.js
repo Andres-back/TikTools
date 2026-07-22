@@ -188,7 +188,7 @@ export async function mount({ target, api, params, navigate, signal }) {
             <i class="fa-solid fa-layer-group" style="color:var(--color-primary)"></i> Overlay OBS
           </div>
           <div style="display:flex;gap:var(--space-sm)">
-            <input type="text" id="acOverlayUrl" class="input-field" style="flex:1;font-family:var(--font-mono);font-size:var(--text-xs);padding:8px 10px" readonly value="${window.location.origin}/overlays/overlay-timer.html?auctionId=${id}&userId=${auction.user_id || ''}">
+            <input type="text" id="acOverlayUrl" class="input-field" style="flex:1;font-family:var(--font-mono);font-size:var(--text-xs);padding:8px 10px" readonly value="${window.location.origin}/overlays/overlay-auction.html?auctionId=${id}&userId=${auction.user_id || ''}">
             <button class="btn btn-primary btn-sm" id="btnCopyOverlay">📋 Copiar</button>
           </div>
         </div>

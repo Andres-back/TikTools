@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subasta Overlay - TikToolStream</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Rajdhani:wght@500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Poppins',sans-serif; background:transparent; color:#fff; overflow:hidden; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  
+  .so-shell { display:flex; flex-direction:column; align-items:center; gap:1.5rem; padding:1rem; width:100%; max-width:700px; }
+  
+  /* Timer */
+  .so-timer { text-align:center; width:100%; }
+  .so-timer-label { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:4px; }
+  .so-timer-display { font-family:'Rajdhani','Montserrat',sans-serif; font-size:clamp(3.5rem,12vw,7rem); font-weight:900; background:linear-gradient(135deg,#f1f5f9,#00d9ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; letter-spacing:-3px; }
+  .so-timer-display.warn { background:linear-gradient(135deg,#f1f5f9,#ffd700); -webkit-background-clip:text; background-clip:text; }
+  .so-timer-display.danger { background:linear-gradient(135deg,#ff1744,#ff6b6b); -webkit-background-clip:text; background-clip:text; animation:pulseDanger 0.5s ease-in-out infinite; }
+  @keyframes pulseDanger { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.85;transform:scale(1.02);} }
+  .so-timer-phase { font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.35); margin-top:6px; font-weight:600; }
+  .so-timer-phase.live { color:#22d65e; }
+  .so-timer-phase.danger { color:#ff1744; animation:pulseDanger 0.5s ease-in-out infinite; }
+  .so-timer-bar { width:100%; height:4px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; margin-top:10px; }
+  .so-timer-bar-inner { height:100%; background:linear-gradient(90deg,#00d9ff,#7b2ff7); border-radius:2px; transition:width 0.3s linear; }
+  .so-timer-bar-inner.warn { background:linear-gradient(90deg,#ffd700,#f97316); }
+  .so-timer-bar-inner.danger { background:linear-gradient(90deg,#ff1744,#ff6b6b); }
+  
+  /* Leaderboard */
+  .so-lb { width:100%; background:rgba(0,0,0,0.3); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:1rem; }
+  .so-lb-title { font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:rgba(255,215,0,0.6); margin-bottom:8px; text-align:center; }
+  .so-lb-row { display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; margin-bottom:2px; background:rgba(255,255,255,0.03); }
+  .so-lb-row.gold { background:linear-gradient(135deg,rgba(255,215,0,0.12),rgba(255,107,0,0.04)); border:1px solid rgba(255,215,0,0.15); }
+  .so-lb-row.silver { background:linear-gradient(135deg,rgba(192,192,192,0.08),rgba(192,192,192,0.02)); border:1px solid rgba(192,192,192,0.1); }
+  .so-lb-row.bronze { background:linear-gradient(135deg,rgba(205,127,50,0.08),rgba(205,127,50,0.02)); border:1px solid rgba(205,127,50,0.1); }
+  .so-rank { width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.7rem;background:rgba(255,255,255,0.06);flex-shrink:0; }
+  .so-lb-row.gold .so-rank { background:linear-gradient(135deg,#fbbf24,#f97316); color:#1a1a2e; }
+  .so-lb-row.silver .so-rank { background:linear-gradient(135deg,#c0c0c0,#808080); color:#1a1a2e; }
+  .so-lb-row.bronze .so-rank { background:linear-gradient(135deg,#cd7f32,#8b4513); color:#fff; }
+  .so-avatar { width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d9ff,#7b2ff7);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:0.7rem;flex-shrink:0;overflow:hidden;border:1px solid rgba(255,255,255,0.1); }
+  .so-avatar img { width:100%;height:100%;object-fit:cover; }
+  .so-name { flex:1;font-size:0.75rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .so-coins { font-family:'Rajdhani',sans-serif; font-weight:700; color:#ffd700; font-size:0.85rem; }
+  .so-crown { color:#fbbf24; font-size:0.85rem; margin-left:2px; }
+  .so-empty { text-align:center; color:rgba(255,255,255,0.2); font-size:0.75rem; padding:0.5rem; }
+
+  @media (max-width:480px) {
+    .so-shell { gap:1rem; }
+    .so-lb { padding:0.75rem; }
+    .so-lb-row { padding:4px 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="so-shell">
+  <div class="so-timer">
+    <div class="so-timer-label" id="soLabel">Subasta</div>
+    <div class="so-timer-display" id="soTimer">00:00</div>
+    <div class="so-timer-phase" id="soPhase">⏸ INACTIVO</div>
+    <div class="so-timer-bar"><div class="so-timer-bar-inner" id="soTimerBar" style="width:0%"></div></div>
+  </div>
+  <div class="so-lb">
+    <div class="so-lb-title">🏆 TOP DONANTES</div>
+    <div id="soLB"><div class="so-empty">Esperando donaciones...</div></div>
+  </div>
+</div>
+<script src="/assets/js/overlay-runtime.js"></script>
+<script>
+  (() => {
+    'use strict';
+    const T = window.TikToolOverlay;
+    if (!T) return;
+
+    const params = T.getParams();
+    const auctionId = params.get('auctionId');
+    const userId = params.get('userId') || T.channelIdFromUrl();
+
+    if (!auctionId && !userId) {
+      document.getElementById('soTimer').textContent = '⚙️ Config';
+      return;
+    }
+
+    const API = window.location.origin;
+    const timerDisplay = document.getElementById('soTimer');
+    const timerPhase = document.getElementById('soPhase');
+    const timerBar = document.getElementById('soTimerBar');
+    const soLabel = document.getElementById('soLabel');
+    const lbContainer = document.getElementById('soLB');
+
+    let pollTimer = null;
+    let remaining = 0;
+    let phase = 'idle';
+    let initialTime = 120;
+    let tickInterval = null;
+
+    function fmt(s) { s = Math.max(0, parseInt(s) || 0); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+    function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function formatNum(n) { if (!n || isNaN(n)) return '0'; if (n >= 1000000) return (n/1000000).toFixed(1)+'M'; if (n >= 1000) return (n/1000).toFixed(1)+'K'; return Number(n).toLocaleString(); }
+
+    function updateTimer() {
+      timerDisplay.textContent = fmt(remaining);
+      timerDisplay.className = 'so-timer-display';
+      if (remaining <= 10) timerDisplay.classList.add('danger');
+      else if (remaining <= 30) timerDisplay.classList.add('warn');
+
+      timerPhase.className = 'so-timer-phase';
+      if (phase === 'idle') { timerPhase.textContent = '⏸ INACTIVO'; }
+      else if (phase === 'running') { timerPhase.textContent = '🟢 EN VIVO'; timerPhase.classList.add('live'); }
+      else if (phase === 'paused') { timerPhase.textContent = '⏸ PAUSADO'; }
+      else if (phase === 'finished') { timerPhase.textContent = '🏁 FINALIZADO'; }
+
+      const pct = initialTime > 0 ? (remaining / initialTime) * 100 : 0;
+      timerBar.style.width = Math.max(0, pct) + '%';
+      timerBar.className = 'so-timer-bar-inner';
+      if (remaining <= 10) timerBar.classList.add('danger');
+      else if (remaining <= 30) timerBar.classList.add('warn');
+    }
+
+    function fetchAuction() {
+      if (!auctionId) return;
+      const token = localStorage.getItem('accessToken');
+      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+      fetch(API + '/api/auctions/' + auctionId, { headers })
+        .then(r => r.json())
+        .then(data => {
+          const a = data.auction || data;
+          if (!a) return;
+          soLabel.textContent = a.title || 'Subasta';
+          initialTime = parseInt(a.initial_time) || 120;
+          remaining = parseInt(a.remaining_time) || initialTime;
+          if (a.status === 'active') {
+            phase = 'running';
+            startTick();
+          } else if (a.status === 'paused') {
+            phase = 'paused';
+            stopTick();
+          } else {
+            phase = 'idle';
+            stopTick();
+          }
+          updateTimer();
+          renderLB(data.donors || []);
+        })
+        .catch(() => {});
+    }
+
+    function fetchDonors() {
+      if (!auctionId) return;
+      const token = localStorage.getItem('accessToken');
+      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+      fetch(API + '/api/auctions/' + auctionId, { headers })
+        .then(r => r.json())
+        .then(data => {
+          renderLB(data.donors || []);
+          const a = data.auction || data;
+          if (a) {
+            const newRemaining = parseInt(a.remaining_time) || parseInt(a.initial_time) || initialTime;
+            const newPhase = a.status === 'active' ? 'running' : a.status === 'paused' ? 'paused' : 'idle';
+            if (newPhase !== phase) {
+              phase = newPhase;
+              if (phase === 'running') startTick();
+              else stopTick();
+            }
+            if (a.status !== 'active') {
+              remaining = newRemaining;
+              updateTimer();
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
+    function renderLB(donors) {
+      if (!donors || donors.length === 0) {
+        lbContainer.innerHTML = '<div class="so-empty">Esperando donaciones...</div>';
+        return;
+      }
+      const sorted = [...donors].sort((a,b) => (b.total_coins||0) - (a.total_coins||0));
+      lbContainer.innerHTML = sorted.slice(0, 10).map((d, i) => {
+        const rank = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+        const initial = (d.tiktok_nickname || d.tiktok_unique_id || '?').charAt(0).toUpperCase();
+        return '<div class="so-lb-row ' + rank + '">'
+          + '<div class="so-rank">' + (i + 1) + '</div>'
+          + '<div class="so-avatar">' + (d.profile_picture_url ? '<img src="' + escapeHtml(d.profile_picture_url) + '" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + initial + '\'">' : initial) + '</div>'
+          + '<div class="so-name">@' + escapeHtml(d.tiktok_nickname || d.tiktok_unique_id || '—') + '</div>'
+          + '<div class="so-coins">💎 ' + formatNum(d.total_coins || 0) + '</div>'
+          + (d.is_winner ? '<span class="so-crown">👑</span>' : '')
+        + '</div>';
+      }).join('');
+    }
+
+    function tick() {
+      if (phase !== 'running') return;
+      remaining = Math.max(0, remaining - 1);
+      updateTimer();
+      if (remaining <= 0) {
+        phase = 'finished';
+        updateTimer();
+        stopTick();
+      }
+    }
+
+    function startTick() {
+      if (tickInterval) clearInterval(tickInterval);
+      tickInterval = setInterval(tick, 1000);
+    }
+
+    function stopTick() {
+      if (tickInterval) { clearInterval(tickInterval); tickInterval = null; }
+    }
+
+    // Poll each 3s for updates
+    function startPoll() {
+      fetchAuction();
+      pollTimer = setInterval(fetchDonors, 3000);
+    }
+
+    // Also listen via LiveChannelClient for real-time events
+    if (userId) {
+      const client = new T.LiveChannelClient({ channelId: userId });
+      client.on('event', (event) => {
+        if (event.type === 'gift' || event.type === 'bid' || event.type === 'donation') {
+          fetchDonors(); // refresh leaderboard
+        }
+        if (event.type === 'timer_update') {
+          const d = event.data || event;
+          if (d.remaining !== undefined) remaining = d.remaining;
+          if (d.phase) phase = d.phase;
+          if (d.initialTime) initialTime = d.initialTime;
+          if (d.label) soLabel.textContent = d.label;
+          if (phase === 'running') startTick();
+          else stopTick();
+          updateTimer();
+        }
+      });
+      client.on('status', (s) => {
+        if (s.state === 'connected') startPoll();
+      });
+      client.start();
+    } else {
+      startPoll();
+    }
+
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+      if (pollTimer) clearInterval(pollTimer);
+      stopTick();
+    });
+  })();
+</script>
+</body>
+</html>
