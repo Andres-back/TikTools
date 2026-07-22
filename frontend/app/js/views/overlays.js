@@ -16,8 +16,7 @@ const OVERLAYS = [
     format: 'Full screen',
     bg: '#050713',
     featured: true,
-    previewDemo: true,
-    badges: ['Nuevo', 'Interactivo', 'Demo']
+    badges: ['Nuevo', 'Interactivo']
   },
   {
     id: 'tts',
@@ -329,7 +328,6 @@ export async function mount({ target, signal } = {}) {
   function getUrl(overlay, options = {}) {
     const url = new URL(overlay.file, window.location.origin);
     if (userId) url.searchParams.set('userId', userId);
-    if (options.preview && overlay.previewDemo) url.searchParams.set('demo', '1');
     if (currentMode().param) url.searchParams.set('mode', currentMode().param);
     return url.toString();
   }
@@ -371,7 +369,7 @@ export async function mount({ target, signal } = {}) {
     refs.detailTone.textContent = selected.tone;
     refs.detailFormat.textContent = selected.format;
     refs.label.textContent = mode.obs;
-    refs.modeLabel.textContent = selected.previewDemo ? 'Preview demo' : 'Preview real';
+    refs.modeLabel.textContent = 'Preview en vivo';
     refs.shell.style.background = selected.bg || '#02040b';
     refs.shell.classList.toggle('mobile', activeMode === 'mobile');
     refs.badges.innerHTML = [selected.category, ...(selected.badges || [])].map((badge, index) => `<span class="os-chip ${index === 1 ? 'hot' : ''}">${escapeHtml(badge)}</span>`).join('');
