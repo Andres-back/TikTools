@@ -59,6 +59,39 @@ async function getGameStatus() {
   }
 }
 
+/**
+ * Sincroniza la configuración (modo apoyo, límite de mobs) con el juego.
+ * Fire-and-forget: si el juego está apagado no falla el guardado local.
+ */
+async function syncGameConfig(config) {
+  let token = null;
+  try {
+    token = parseAccessToken(fs.readFileSync(path.join(GAME_DIR, '.env'), 'utf8'));
+  } catch {
+    token = null;
+  }
+  if (!token) return false;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 1500);
+  try {
+    const response = await fetch(`${GAME_API_URL}/config`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Token': token
+      },
+      body: JSON.stringify({ supportMode: !!config.supportMode, maxMobs: config.maxMobs }),
+      signal: controller.signal
+    });
+    return response.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 function createGameRouter() {
   const router = express.Router();
 
@@ -103,7 +136,10 @@ function createGameRouter() {
       const row = r.rows?.[0] || r?.[0];
       if (!row?.config_json) return res.json(DEFAULT_GAME_CONFIG);
       try {
-        return res.json({ ...DEFAULT_GAME_CONFIG, ...JSON.parse(row.config_json) });
+        const config = { ...DEFAULT_GAME_CONFIG, ...JSON.parse(row.config_json) };
+        // Kaetram pierde su config runtime al reiniciar: re-sincroniza al abrir la vista.
+        syncGameConfig(config).catch(() => {});
+        return res.json(config);
       } catch {
         return res.json(DEFAULT_GAME_CONFIG);
       }
@@ -120,6 +156,8 @@ function createGameRouter() {
          ON CONFLICT(user_id) DO UPDATE SET config_json = $2, updated_at = CURRENT_TIMESTAMP`,
         [req.user.userId, JSON.stringify(config)]
       );
+      // Sincroniza modo apoyo / límite de mobs con el juego (si está encendido).
+      await syncGameConfig(config);
       res.json(config);
     } catch (e) {
       res.status(500).json({ error: e.message });
