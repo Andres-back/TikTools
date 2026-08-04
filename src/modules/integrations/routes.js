@@ -130,6 +130,9 @@ function createIntegrationRouter(options = {}) {
 
   router.get('/runs/history', asyncRoute(async (req, res) => {
     const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 30));
+    // Filtro opcional por tipo de conexión (http | rcon).
+    const kind = req.query.kind && ['http', 'rcon'].includes(String(req.query.kind)) ? String(req.query.kind) : null;
+    const params = kind ? [req.user.userId, limit, kind] : [req.user.userId, limit];
     const result = await db.query(
       `SELECT x.id, x.rule_id, x.connection_id, x.event_type, x.status, x.request_summary,
               x.response_excerpt, x.error_code, x.error_message, x.duration_ms, x.created_at, x.finished_at,
@@ -137,8 +140,8 @@ function createIntegrationRouter(options = {}) {
        FROM integration_runs x
        LEFT JOIN integration_rules r ON r.id = x.rule_id
        JOIN integration_connections c ON c.id = x.connection_id
-       WHERE x.user_id = $1 ORDER BY x.created_at DESC LIMIT $2`,
-      [req.user.userId, limit]
+       WHERE x.user_id = $1${kind ? ' AND c.kind = $3' : ''} ORDER BY x.created_at DESC LIMIT $2`,
+      params
     );
     res.json(result.rows || []);
   }));
