@@ -12,6 +12,7 @@ defineRoutes([
   { path: '/app/chatbot', load: () => import('./views/chatbot.js'), guard: 'auth', title: 'Chatbot | TikToolStream' },
   { path: '/app/songrequests', load: () => import('./views/songrequests.js'), guard: 'auth', title: 'Solicitar Canciones | TikToolStream' },
   { path: '/app/actions', load: () => import('./views/actions.js'), guard: 'auth', title: 'Acciones y Eventos | TikToolStream' },
+  { path: '/app/game', load: () => import('./views/game.js'), guard: 'auth', title: 'Juego | TikToolStream' },
   { path: '/app/auctions', load: () => import('./views/auctions.js'), guard: 'auth', title: 'Subastas | TikToolStream' },
   { path: '/app/auctions/new', load: () => import('./views/auctions-new.js'), guard: 'auth', title: 'Nueva Subasta | TikToolStream' },
   { path: '/app/auctions/:id', load: () => import('./views/auctions-detail.js'), guard: 'auth', title: 'Subasta | TikToolStream' },
