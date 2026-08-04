@@ -131,6 +131,7 @@ export async function mount({ target, api, toast, signal }) {
           <button class="btn btn-secondary" id="gmCopyUrl">Copiar</button>
         </div>
         <p class="gm-hint">Resolución recomendada 1920×1080 a 60 FPS. El juego se ve en transmisión y los regalos del chat disparan los eventos configurados en Acciones.</p>
+        <p class="gm-hint">Los regalos solo activan efectos dentro del juego (oleadas, élites, bosses, curaciones). No otorgan premios, dinero ni recompensas fuera de la transmisión — conforme a las normas de monetización de TikTok LIVE.</p>
       </article>
 
       <article class="card gm-card gm-span">

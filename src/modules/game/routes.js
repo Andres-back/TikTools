@@ -137,6 +137,15 @@ function createGameRouter() {
       if (!row?.config_json) return res.json(DEFAULT_GAME_CONFIG);
       try {
         const config = { ...DEFAULT_GAME_CONFIG, ...JSON.parse(row.config_json) };
+        // El toggle "Donaciones activas" gobierna la conexión HTTP del juego en Acciones:
+        // si existe, su estado enabled es la fuente de verdad para la vista.
+        const conn = await db.query(
+          `SELECT enabled FROM integration_connections
+           WHERE user_id = $1 AND kind = 'http' AND name LIKE 'Kaetram%' LIMIT 1`,
+          [req.user.userId]
+        );
+        const connRow = conn.rows?.[0] || conn?.[0];
+        if (connRow) config.enabled = Boolean(Number(connRow.enabled));
         // Kaetram pierde su config runtime al reiniciar: re-sincroniza al abrir la vista.
         syncGameConfig(config).catch(() => {});
         return res.json(config);
@@ -158,6 +167,13 @@ function createGameRouter() {
       );
       // Sincroniza modo apoyo / límite de mobs con el juego (si está encendido).
       await syncGameConfig(config);
+      // Aplica el toggle "Donaciones activas": habilita/deshabilita la conexión
+      // HTTP del juego en Acciones (el engine solo dispara si conexión y regla están enabled).
+      await db.query(
+        `UPDATE integration_connections SET enabled = $1, updated_at = CURRENT_TIMESTAMP
+         WHERE user_id = $2 AND kind = 'http' AND name LIKE 'Kaetram%'`,
+        [config.enabled ? 1 : 0, req.user.userId]
+      );
       res.json(config);
     } catch (e) {
       res.status(500).json({ error: e.message });
