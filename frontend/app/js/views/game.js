@@ -115,8 +115,8 @@ export async function mount({ target, api, toast, signal }) {
           <label class="gm-field"><label>Enemigos simultáneos</label><input type="number" id="gmMaxMobs" min="1" max="10" inputmode="numeric"></label>
         </div>
         <div class="gm-toggles">
-          <label class="gm-toggle"><button type="button" class="toggle-switch active" id="gmEnabled" role="switch" aria-checked="true"></button><span>Donaciones hacia el juego activas</span></label>
-          <label class="gm-toggle"><button type="button" class="toggle-switch" id="gmSupportMode" role="switch" aria-checked="false"></button><span>Modo apoyo: los regalos curan al streamer en vez de atacarlo</span></label>
+          <div class="gm-toggle"><button type="button" class="toggle-switch active" id="gmEnabled" role="switch" aria-checked="true"></button><span>Donaciones hacia el juego activas</span></div>
+          <div class="gm-toggle"><button type="button" class="toggle-switch" id="gmSupportMode" role="switch" aria-checked="false"></button><span>Modo apoyo: los regalos curan al streamer en vez de atacarlo</span></div>
         </div>
         <div class="gm-actions">
           <button class="btn btn-primary" id="gmSaveBtn">💾 Guardar configuración</button>
@@ -200,7 +200,7 @@ export async function mount({ target, api, toast, signal }) {
 
   async function refreshStatus() {
     try {
-      status = await api.get('/api/game/status', { signal });
+      status = await api.get('/game/status', { signal });
     } catch {
       status = { online: false, info: null };
     }
@@ -209,7 +209,7 @@ export async function mount({ target, api, toast, signal }) {
 
   async function refreshConfig() {
     try {
-      config = await api.get('/api/game/config', { signal });
+      config = await api.get('/game/config', { signal });
     } catch {
       config = null;
     }
@@ -224,7 +224,7 @@ export async function mount({ target, api, toast, signal }) {
 
   async function refreshRuns() {
     try {
-      runs = await api.get('/api/integrations/runs/history?kind=http&limit=15', { signal });
+      runs = await api.get('/integrations/runs/history?kind=http&limit=15', { signal });
     } catch {
       runs = [];
     }
@@ -245,7 +245,7 @@ export async function mount({ target, api, toast, signal }) {
     setBusy($('#gmStartBtn'), '⏳ Iniciando… (~20 s)');
     renderStatus();
     try {
-      const result = await api.post('/api/game/start', {}, { signal });
+      const result = await api.post('/game/start', {}, { signal });
       showToast(result.ok ? 'success' : 'warning', result.ok ? 'Juego iniciado' : `No arrancó: ${result.error || 'sin respuesta'}`);
     } catch (e) {
       showToast('error', `Error al iniciar: ${e?.message || 'desconocido'}`);
@@ -263,7 +263,7 @@ export async function mount({ target, api, toast, signal }) {
     setBusy($('#gmStopBtn'), '⏳ Deteniendo…');
     renderStatus();
     try {
-      const result = await api.post('/api/game/stop', {}, { signal });
+      const result = await api.post('/game/stop', {}, { signal });
       showToast('success', result.ok ? 'Juego detenido' : 'Ya estaba apagado');
     } catch (e) {
       showToast('error', `Error al detener: ${e?.message || 'desconocido'}`);
@@ -279,7 +279,7 @@ export async function mount({ target, api, toast, signal }) {
     busy = true;
     setBusy($('#gmTestBtn'), '⏳ Enviando…');
     try {
-      const result = await api.post('/api/game/test', {}, { signal });
+      const result = await api.post('/game/test', {}, { signal });
       if (result.ok) {
         showToast('success', 'Donación de prueba recibida por el juego 🎉');
       } else {
@@ -305,7 +305,7 @@ export async function mount({ target, api, toast, signal }) {
     };
     setBusy($('#gmSaveBtn'), '💾 Guardando…');
     try {
-      config = await api.put('/api/game/config', payload, { signal });
+      config = await api.put('/game/config', payload, { signal });
       showToast('success', 'Configuración guardada');
     } catch (e) {
       showToast('error', `No se pudo guardar: ${e?.message || 'desconocido'}`);
@@ -323,8 +323,13 @@ export async function mount({ target, api, toast, signal }) {
 
   $('#gmRefreshRuns').addEventListener('click', refreshRuns);
 
-  $('#gmEnabled').addEventListener('click', () => setToggle($('#gmEnabled'), !$('#gmEnabled').classList.contains('active')));
-  $('#gmSupportMode').addEventListener('click', () => setToggle($('#gmSupportMode'), !$('#gmSupportMode').classList.contains('active')));
+  // Toda la fila del toggle es clickeable (área grande, mejor UX).
+  // Un solo listener por fila evita el doble toggle del <label> con botón.
+  target.querySelectorAll('.gm-toggle').forEach((row) => {
+    const btn = row.querySelector('.toggle-switch');
+    if (!btn) return;
+    row.addEventListener('click', () => setToggle(btn, !btn.classList.contains('active')));
+  });
 
   // ---------- init ----------
 
