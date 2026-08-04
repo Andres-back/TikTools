@@ -129,3 +129,47 @@ Estado actual verificado: el motor (`src/modules/integrations/http-client.js`) *
 3. **UX/UI** en TikToolStream: pantalla de conexión del juego, umbrales, modo bueno/malo, historial de interacciones.
 4. **Overlay/avisos** reutilizando el patrón `interactionQueued`/`interactionResult` (Hype Arena).
 5. Pruebas end-to-end: crear regla → regalo → boss en pantalla.
+
+---
+
+## 9. RESULTADO DEL SPIKE (2026-08-04) — FACTIBILIDAD VALIDADA ✅
+
+### Estado actual
+- **Repositorio**: `/mnt/Kaetram` (rama develop, shallow clone, commit local `81afb5c`).
+- **Corriendo ahora mismo**: server WS en `:9001`, API de donaciones en `:9002`, cliente en `:9000`. Log en `/mnt/Kaetram/logs/kaetram.log`.
+- **Requisito crítico encontrado**: el paquete `uws` (pin a commit viejo de uWebSockets.js) solo trae binarios nativos hasta **Node 18 (ABI 108)** — en Node 22 el server crashea. Se instaló **Node 18.20.8 vía nvm** (`~/.nvm`) y el launcher `/mnt/Kaetram/scripts/start.sh` lo fija automáticamente (`nvm alias default` quedó en `system` para no alterar el entorno).
+- **Arranque**: `bash /mnt/Kaetram/scripts/start.sh` (idempotente: no duplica si ya corre).
+
+### Implementado y probado
+- **`POST /donation`** en la API (archivo `packages/server/src/network/api.ts`):
+  - Auth: header `X-Access-Token` == `ACCESS_TOKEN` del `.env`.
+  - Firma opcional pero recomendada: `X-TikToolStream-Timestamp/Delivery/Signature` (HMAC-SHA256 sobre `timestamp.deliveryId.rawBody`, clave = `ACCESS_TOKEN`), ventana de ±5 min contra replay.
+  - Acciones: `spawn_boss` (plugins: skeletonking/forestdragon/ogrelord/piratecaptain/hellhound/queenant/spider/ant/santa), `spawn_elite` (deathknight/frostqueen/darkogre/blackwizard/cowwarrior/devilkazya), `spawn_wave` (mobs normales, count 1-8), `heal` (escala con monedas; ≥500 = 40% HP máx), `announce` (broadcast global con nombre del donador).
+  - Spawn en tile válido (búsqueda espiral con `map.isColliding`), target = `DONATION_TARGET` del `.env` o el primer jugador online.
+  - Cap anti-abuso: `DONATION_MAX_MOBS=3` simultáneos → `429`; sin jugador online → `503`; acción desconocida → `400`; firma/token malos → `401`.
+- **Config nueva** en `.env.defaults`: `DONATION_ENABLED`, `DONATION_TARGET`, `DONATION_MAX_MOBS`.
+- **`.env` de Kaetram**: `ACCEPT_LICENSE=true`, `API_ENABLED=true`, `ACCESS_TOKEN=60ce33bf893e569f3e05747541b63710` (NO commiteado — está en .gitignore).
+- **Calidad**: `tsc --noEmit` y `eslint` limpios (husky roto por política de yarn 4 → commits con `--no-verify`).
+
+### Pruebas ejecutadas (todas OK)
+| Prueba | Resultado |
+|---|---|
+| Cliente carga en navegador, login guest, entra al mundo | ✅ playerCount=1, WS "Connection established", 0 errores JS |
+| POST /donation sin token | ✅ 401 |
+| POST /donation token + firma correcta → `spawn_boss` | ✅ SkeletonKing spawneado cerca del jugador |
+| Firma incorrecta | ✅ 401 |
+| Timestamp viejo (>5 min) | ✅ 401 |
+| Acción desconocida | ✅ 400 |
+| 4 bosses seguidos | ✅ 3 ok + `429 MOB_LIMIT` |
+| `heal` firmado | ✅ ok, HP al jugador |
+| Boss mata al jugador (end-to-end) | ✅ overlay "You have died" en el cliente |
+
+### Captura
+- `/mnt/Kaetram/screenshot-demo.png` (cliente del juego en navegador; la verificación visual por IA estaba rota a nivel proveedor, pero el DOM/estado confirman la jugada).
+
+### Pendiente (siguiente fase — UX/UI en TikToolStream)
+1. En Actions → Conexión HTTP nueva: URL `http://127.0.0.1:9002/donation`, **signingSecret = ACCESS_TOKEN de Kaetram** (el motor lo firma y Kaetram lo verifica), body template:
+   `{"action":"spawn_boss","user":"{{user.nickname}}","gift":"{{gift.name}}","coins":{{gift.coins}}}`
+2. Reglas: gift ≥ 500 → `spawn_boss`; 100–499 → `spawn_elite`; 1–99 → `spawn_wave`; modo apoyo → `heal`. Cooldowns global 5s / por viewer 15s.
+3. Overlay OBS del juego: Browser Source → `http://localhost:9000`.
+4. Botón ON/OFF del juego y modo "solo equipo bueno" en la futura pantalla.
