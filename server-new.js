@@ -54,6 +54,7 @@ const { IntegrationEngine } = require('./src/modules/integrations/engine');
 const { createIntegrationRouter } = require('./src/modules/integrations/routes');
 const { ensureGameSchema } = require('./src/modules/game/schema');
 const { createGameRouter } = require('./src/modules/game/routes');
+const { createMinecraftRouter } = require('./src/modules/minecraft/routes');
 
 // App shell directory
 const APP_DIR = path.join(__dirname, 'frontend', 'app');
@@ -187,6 +188,7 @@ app.use('/api/actions', actionRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/integrations', createIntegrationRouter({ db: database, engine: integrationEngine }));
 app.use('/api/game', createGameRouter());
+app.use('/api/minecraft', createMinecraftRouter());
 app.use('/api/songrequests', songRequestsRoutes);
 app.use('/api/settings', settingsRoutes);
 // Health check
