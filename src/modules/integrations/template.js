@@ -125,7 +125,8 @@ function matchesConditions(conditions = {}, event = {}) {
 
 function sanitizeRconSubstitution(value) {
   return String(value ?? '')
-    .replace(/[\u0000-\u001f\u007f;\\"'`]/g, ' ')
+    .replace(/[\u0000-\u001f\u007f;\\'`]/g, ' ')
+    .replace(/"/g, '\\"')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 160);

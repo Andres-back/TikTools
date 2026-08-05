@@ -96,12 +96,15 @@ test('evalua condiciones de regalos, comandos y roles sin ejecutar texto del usu
   assert.equal(matchesConditions({ moderatorOnly: true }, event), false);
 });
 
-test('neutraliza inyeccion de comandos al sustituir datos en RCON', () => {
+test('neutraliza inyeccion de comandos y escapa comillas al sustituir datos en RCON', () => {
   const malicious = 'Alex; op attacker\nstop\r\n"quoted" `whoami` \\ path';
   const sanitized = sanitizeRconSubstitution(malicious);
 
-  assert.doesNotMatch(sanitized, /[;\n\r"'`\\]/);
-  assert.equal(sanitized, 'Alex op attacker stop quoted whoami path');
+  // Separadores, controles, comillas simples, backticks y backslashes: eliminados.
+  assert.doesNotMatch(sanitized, /[;\n\r'`]/);
+  // Las comillas dobles se ESCAPAN (no se borran) para permitir JSON de title/tellraw
+  // sin permitir inyección: el resultado es \" literal, nunca comillas sueltas.
+  assert.equal(sanitized, 'Alex op attacker stop \\"quoted\\" whoami path');
 
   const context = buildTemplateContext({ type: 'chat', data: { nickname: malicious } }, 'canal');
   const command = renderTemplate('say {{user.nickname}}', context, { mode: 'rcon' });
