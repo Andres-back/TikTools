@@ -59,7 +59,10 @@ async function login(cfg) {
   });
   const token = response.json?.data?.token;
   if (!token || response.status !== 200) {
-    throw craftyError('CRAFTY_AUTH_FAILED', 'No se pudo autenticar contra Crafty (revisa CRAFTY_USER/CRAFTY_PASSWORD)');
+    if (response.json?.error === 'TOO_MANY_ATTEMPTS') {
+      throw craftyError('CRAFTY_RATE_LIMITED', 'Crafty bloqueó el login temporalmente (cooldown ~5 min por IP). Espera y reintenta.');
+    }
+    throw craftyError('CRAFTY_AUTH_FAILED', 'No se pudo autenticar contra Crafty (revisa CRAFTY_USER/CRAFTY_PASSWORD en el .env)');
   }
   cachedToken = token;
   // El JWT de Crafty expira; re-login preventivo cada 6 horas.
