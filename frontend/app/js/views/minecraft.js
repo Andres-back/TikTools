@@ -8,6 +8,8 @@ export async function mount({ target, api, toast, signal }) {
   let status = { online: false, version: null, players: { online: null, max: null } };
   let config = null;
   let rules = [];
+  let gameModes = [];
+  let connections = [];
   let statusTimer = null;
   let busy = false;
 
@@ -63,7 +65,30 @@ export async function mount({ target, api, toast, signal }) {
       .mc-table td.mc-cell-main { max-width:320px; overflow:hidden; text-overflow:ellipsis; }
       .mc-empty { padding:var(--space-xl); border:1px dashed var(--border-color); border-radius:12px; color:var(--text-muted); text-align:center; font-size:var(--text-sm); }
       .mc-link-btn { color:var(--color-primary); font-weight:700; text-decoration:none; }
-      @media (max-width:980px) { .mc-grid { grid-template-columns:1fr; } }
+      .mc-games { grid-column:1/-1; padding:clamp(18px,3vw,30px); overflow:hidden; }
+      .mc-games-head { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:20px; }
+      .mc-games-copy { max-width:720px; }
+      .mc-games-copy h2 { margin:0 0 6px; font-size:clamp(1.25rem,2vw,1.7rem); }
+      .mc-games-copy p { margin:0; color:var(--text-secondary); font-size:var(--text-sm); line-height:1.55; }
+      .mc-setup { display:grid; grid-template-columns:minmax(160px,220px) minmax(210px,280px); gap:10px; min-width:min(100%,500px); }
+      .mc-setup label { display:grid; gap:6px; color:var(--text-muted); font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+      .mc-setup input,.mc-setup select { width:100%; padding:10px 12px; border:1px solid var(--border-color); border-radius:10px; background:var(--bg-input); color:var(--text-primary); }
+      .mc-mode-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+      .mc-mode { --mode-accent:#00d4ff; position:relative; overflow:hidden; padding:18px; border:1px solid color-mix(in srgb,var(--mode-accent) 28%,var(--border-color)); border-radius:17px; background:linear-gradient(145deg,color-mix(in srgb,var(--mode-accent) 9%,transparent),rgba(255,255,255,.025)); }
+      .mc-mode::after { content:''; position:absolute; inset:auto -45px -60px auto; width:130px; height:130px; border-radius:50%; background:var(--mode-accent); filter:blur(58px); opacity:.12; pointer-events:none; }
+      .mc-mode-top { position:relative; z-index:1; display:grid; grid-template-columns:46px minmax(0,1fr) auto; align-items:center; gap:12px; }
+      .mc-mode-icon { display:grid; place-items:center; width:46px; height:46px; border-radius:13px; background:color-mix(in srgb,var(--mode-accent) 16%,transparent); font-size:1.45rem; }
+      .mc-mode h3 { margin:0; font-size:1rem; }
+      .mc-mode-status { padding:4px 8px; border-radius:999px; font-size:9px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; background:rgba(0,255,136,.1); color:#59f2ad; }
+      .mc-mode-status.plugin { background:rgba(255,209,102,.11); color:#ffd166; }
+      .mc-mode-desc { position:relative; z-index:1; min-height:44px; margin:13px 0 8px; color:var(--text-secondary); font-size:var(--text-xs); line-height:1.55; }
+      .mc-mode-objective { position:relative; z-index:1; margin:0 0 14px; color:var(--text-muted); font-size:10px; line-height:1.5; }
+      .mc-rule-pills { position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:6px; margin-bottom:15px; }
+      .mc-rule-pill { padding:5px 8px; border:1px solid rgba(255,255,255,.07); border-radius:8px; background:rgba(0,0,0,.14); color:var(--text-secondary); font-size:9px; }
+      .mc-mode-foot { position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+      .mc-mode-foot small { color:var(--text-muted); font-size:9px; }
+      @media (max-width:980px) { .mc-grid { grid-template-columns:1fr; } .mc-mode-grid { grid-template-columns:1fr; } .mc-games-head { align-items:stretch; flex-direction:column; } .mc-setup { min-width:0; } }
+      @media (max-width:560px) { .mc-hero { flex-direction:column; } .mc-setup { grid-template-columns:1fr; } .mc-mode-top { grid-template-columns:42px minmax(0,1fr); } .mc-mode-status { grid-column:1/-1; width:max-content; } .mc-mode-foot { align-items:stretch; flex-direction:column; } .mc-mode-foot .btn { width:100%; } }
     </style>
 
     <section class="mc-hero">
@@ -115,6 +140,21 @@ export async function mount({ target, api, toast, signal }) {
           <li><span>3.</span><span><b>Copias de seguridad:</b> Crafty guarda backups del mundo automáticamente.</span></li>
         </ul>
       </article>
+
+      <section class="card mc-games">
+        <div class="mc-games-head">
+          <div class="mc-games-copy">
+            <p class="mc-kicker">Game Studio</p>
+            <h2>Modos interactivos listos para el LIVE</h2>
+            <p>Elige una experiencia y TikToolStream crea autom&aacute;ticamente el balance de regalos, cooldowns y comandos RCON.</p>
+          </div>
+          <div class="mc-setup">
+            <label>Jugador objetivo<input id="mcPlayerName" maxlength="16" placeholder="TuNickMinecraft" autocomplete="off"></label>
+            <label>Conexi&oacute;n RCON<select id="mcModeConnection"><option value="">Cargando conexiones...</option></select></label>
+          </div>
+        </div>
+        <div class="mc-mode-grid" id="mcModeGrid"><div class="mc-empty">Cargando modos de juego...</div></div>
+      </section>
     </div>
   `;
 
@@ -205,6 +245,48 @@ export async function mount({ target, api, toast, signal }) {
     `;
   }
 
+  function renderModes() {
+    const grid = $('#mcModeGrid');
+    const select = $('#mcModeConnection');
+    const rconConnections = connections.filter((item) => item.kind === 'rcon');
+    select.innerHTML = rconConnections.length
+      ? rconConnections.map((item) => `<option value="${escapeHtml(String(item.id))}">${escapeHtml(item.name)}</option>`).join('')
+      : '<option value="">Crea primero una conexion RCON</option>';
+
+    if (!gameModes.length) {
+      grid.innerHTML = '<div class="mc-empty">No fue posible cargar los modos.</div>';
+      return;
+    }
+    grid.innerHTML = gameModes.map((mode) => `
+      <article class="mc-mode" style="--mode-accent:${escapeHtml(mode.accent || '#00d4ff')}">
+        <div class="mc-mode-top">
+          <span class="mc-mode-icon">${escapeHtml(mode.icon)}</span>
+          <div><h3>${escapeHtml(mode.name)}</h3></div>
+          <span class="mc-mode-status ${mode.status === 'plugin' ? 'plugin' : ''}">${mode.status === 'plugin' ? 'Requiere plugin' : 'Vanilla - listo'}</span>
+        </div>
+        <p class="mc-mode-desc">${escapeHtml(mode.description)}</p>
+        <p class="mc-mode-objective"><b>Objetivo:</b> ${escapeHtml(mode.objective)}</p>
+        <div class="mc-rule-pills">${(mode.rules || []).map((item) => `<span class="mc-rule-pill">${item.maxCoins == null ? `${item.minCoins}+` : `${item.minCoins}-${item.maxCoins}`} coins - ${escapeHtml(item.name)}</span>`).join('')}</div>
+        <div class="mc-mode-foot">
+          <small>${mode.plugin ? `Plugin: ${escapeHtml(mode.plugin)}` : `${mode.rules.length} reglas seguras incluidas`}</small>
+          <button class="btn ${mode.status === 'plugin' ? 'btn-secondary' : 'btn-primary'}" data-install-mode="${escapeHtml(mode.id)}" ${rconConnections.length ? '' : 'disabled'}>Instalar modo</button>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  async function loadGameStudio() {
+    try {
+      [gameModes, connections] = await Promise.all([
+        api.get('/minecraft/game-modes', { signal }),
+        api.get('/integrations', { signal })
+      ]);
+    } catch {
+      gameModes = [];
+      connections = [];
+    }
+    renderModes();
+  }
   // ---------- data ----------
 
   async function refreshStatus() {
@@ -276,12 +358,35 @@ export async function mount({ target, api, toast, signal }) {
     if (url) window.open(url, '_blank', 'noopener');
   });
 
+  $('#mcModeGrid').addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-install-mode]');
+    if (!button) return;
+    const playerName = $('#mcPlayerName').value.trim();
+    const connectionId = $('#mcModeConnection').value;
+    if (!playerName) return showToast('warning', 'Escribe tu nombre exacto de Minecraft');
+    if (!connectionId) return showToast('warning', 'Primero crea una conexion RCON');
+    setBusy(button, 'Instalando...');
+    try {
+      const result = await api.post(`/minecraft/game-modes/${button.dataset.installMode}/install`, { playerName, connectionId }, { signal });
+      const message = result.installed
+        ? `${result.installed} reglas instaladas${result.setupCommand ? ` - Ejecuta /${result.setupCommand} en Minecraft` : ''}`
+        : 'Este modo ya estaba instalado';
+      showToast('success', message);
+      await refreshRules();
+    } catch (error) {
+      showToast('error', error?.message || 'No se pudo instalar el modo');
+    } finally {
+      setBusy(button);
+    }
+  });
   // ---------- init ----------
 
   const craftyFromConfig = config?.craftyUrl || 'https://localhost:8443';
   $('#mcCraftyUrl').value = craftyFromConfig.replace('https://localhost', `https://${window.location.hostname}`);
 
-  await Promise.all([refreshStatus(), refreshConfig(), refreshRules()]);
+  await Promise.all([refreshStatus(), refreshConfig(), refreshRules(), loadGameStudio()]);
+  const resolvedCrafty = config?.craftyUrl || 'https://localhost:8443';
+  $('#mcCraftyUrl').value = resolvedCrafty.replace('https://localhost', `https://${window.location.hostname}`);
   statusTimer = setInterval(refreshStatus, 5000);
 
   return () => {

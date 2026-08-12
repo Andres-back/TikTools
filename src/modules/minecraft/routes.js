@@ -14,6 +14,8 @@ const net = require('node:net');
 const { authenticateToken } = require('../../shared/middlewares/auth');
 const { minecraftEnvConfig, craftyConfigError } = require('./config');
 const { craftyApi } = require('./crafty');
+const { validateRconCommand } = require('../integrations/rcon-client');
+const { GAME_MODES, getGameMode, renderGameModeRules } = require('./game-modes');
 
 const STATUS_TIMEOUT = 1500;
 const START_POLL_MS = 60000;
@@ -57,8 +59,56 @@ async function fetchCraftyPlayers(cfg) {
   }
 }
 
-function createMinecraftRouter() {
+function createMinecraftRouter(options = {}) {
+  const db = options.db;
   const router = express.Router();
+
+  router.get('/game-modes', authenticateToken, (_req, res) => {
+    res.json(GAME_MODES);
+  });
+
+  router.post('/game-modes/:id/install', authenticateToken, async (req, res) => {
+    try {
+      if (!db?.query) return res.status(503).json({ error: 'Base de datos de integraciones no disponible' });
+      const mode = getGameMode(req.params.id);
+      if (!mode) return res.status(404).json({ error: 'Modo de juego no encontrado' });
+
+      const userId = req.user.userId;
+      const connectionResult = await db.query(
+        `SELECT * FROM integration_connections WHERE id = $1 AND user_id = $2`,
+        [req.body.connectionId, userId]
+      );
+      const connection = connectionResult.rows?.[0];
+      if (!connection || connection.kind !== 'rcon') return res.status(404).json({ error: 'Selecciona una conexion RCON valida' });
+
+      const rules = renderGameModeRules(mode, req.body.playerName);
+      const config = parseJson(connection.config_json, {});
+      for (const rule of rules) validateRconCommand(rule.action.commandTemplate, config.allowedCommands);
+
+      const existingResult = await db.query(
+        `SELECT name FROM integration_rules WHERE user_id = $1 AND connection_id = $2`,
+        [userId, connection.id]
+      );
+      const existingNames = new Set((existingResult.rows || []).map((row) => row.name));
+      let installed = 0;
+      let skipped = 0;
+
+      for (const rule of rules) {
+        if (existingNames.has(rule.name)) { skipped += 1; continue; }
+        await db.query(
+          `INSERT INTO integration_rules
+           (user_id, connection_id, name, event_type, conditions_json, action_json, global_cooldown_ms, user_cooldown_ms)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [userId, connection.id, rule.name, rule.eventType, JSON.stringify(rule.conditions), JSON.stringify(rule.action), rule.globalCooldownMs, rule.userCooldownMs]
+        );
+        installed += 1;
+      }
+
+      res.status(installed ? 201 : 200).json({ ok: true, modeId: mode.id, installed, skipped, setupCommand: mode.setupCommand || null });
+    } catch (e) {
+      res.status(400).json({ error: e.message, code: e.code || 'MC_MODE_INSTALL_FAILED' });
+    }
+  });
 
   router.get('/status', authenticateToken, async (_req, res) => {
     try {
@@ -137,3 +187,8 @@ function createMinecraftRouter() {
 }
 
 module.exports = { createMinecraftRouter, isPortOpen, MC_VERSION_HINT };
+
+function parseJson(value, fallback) {
+  if (value && typeof value === 'object') return value;
+  try { return JSON.parse(value || ''); } catch { return fallback; }
+}
