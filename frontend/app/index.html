@@ -3,149 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- TikFinity-inspired branding -->
-<title>TikTools | TikTok LIVE Tools</title>
-<meta name="description" content="TikTools — Herramientas interactivas para TikTok LIVE. Subastas, overlays, sonidos, TTS, chatbot y más.">
-<meta name="theme-color" content="#0e0e1a">
-
+<title>TikToolStream | Control de tu LIVE</title>
+<meta name="description" content="Controla, automatiza y convierte tu TikTok LIVE en una experiencia interactiva.">
+<meta name="theme-color" content="#080b14">
 <link rel="icon" type="image/png" href="/assets/LOGOSINFONDO.png">
-
-<!-- Fonts: Outfit + Exo 2 (TikFinity style) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Exo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-<!-- FontAwesome 6 Free -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Exo+2:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
-
-<!-- GSAP Animation Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous"></script>
-
-<!-- Styles -->
 <link rel="stylesheet" href="/app/css/variables.css">
 <link rel="stylesheet" href="/app/css/layout.css">
 <link rel="stylesheet" href="/app/css/components.css">
 <link rel="stylesheet" href="/app/css/ux-polish.css">
+<link rel="stylesheet" href="/app/css/shell.css">
+<link rel="stylesheet" href="/app/css/dashboard.css">
 <link rel="stylesheet" href="/assets/css/overlays.css">
 </head>
 <body>
-
 <a href="#app-view" class="skip-link">Saltar al contenido</a>
 
-<header class="app-header" role="banner">
-  <div class="header-left">
-    <button class="hamburger" id="sidebarToggle" aria-label="Menú">
-      <i class="fa-solid fa-bars"></i>
-    </button>
-    <div class="header-brand">
-      <img src="/assets/LOGOSINFONDO.png" alt="TikTools" class="header-logo">
-      <span class="header-brand-text">TikTools</span>
-      <span class="header-brand-sub"><i class="fa-regular fa-circle-play" style="margin-right:4px;color:var(--color-primary);font-size:10px"></i>TikTok LIVE Tools</span>
-    </div>
-  </div>
-  <div class="header-right">
-    <span class="ws-indicator" id="wsIndicator" title="Estado WebSocket"></span>
-    <button class="user-menu-btn" id="userMenuBtn">
-      <i class="fa-regular fa-circle-user"></i>
-      <span id="userNameDisplay">Cargando...</span>
-    </button>
-  </div>
-</header>
-
-<aside class="main-sidebar" id="mainSidebar" role="navigation" aria-label="Navegación principal">
-  <div class="sidebar-brand">
-    <img src="/assets/LOGOSINFONDO.png" alt="" class="sidebar-logo">
-    <div>
-      <div class="sidebar-brand-text">TikTools</div>
-      <div class="sidebar-brand-sub">TikTok LIVE Tools</div>
-    </div>
-  </div>
+<aside class="main-sidebar" id="mainSidebar" aria-label="Navegación principal">
+  <a class="sidebar-brand" href="/app/dashboard" data-router-link aria-label="TikToolStream, ir al inicio">
+    <span class="sidebar-logo-wrap"><img src="/assets/LOGOSINFONDO.png" alt="" class="sidebar-logo"></span>
+    <span><strong class="sidebar-brand-text">TikToolStream</strong><small class="sidebar-brand-sub">LIVE CONTROL</small></span>
+  </a>
 
   <nav class="sidebar-nav">
-    <div class="nav-section-title">Live Studio</div>
-    <a href="/app/dashboard" class="nav-item is-primary" data-route="/app/dashboard">
-      <i class="fa-solid fa-gauge-high"></i> Dashboard
+    <p class="nav-section-title">Empezar</p>
+    <a href="/app/dashboard" class="nav-item nav-item-featured" data-route="/app/dashboard">
+      <i class="fa-solid fa-tower-broadcast"></i><span>Centro LIVE</span>
     </a>
-    <a href="/app/hype-arena" class="nav-item is-primary" data-route="/app/hype-arena">
-      <i class="fa-solid fa-fire"></i> Hype Arena
-    </a>
-    <a href="/app/overlays" class="nav-item is-primary" data-route="/app/overlays">
-      <i class="fa-solid fa-layer-group"></i> Overlays
-    </a>
-    <a href="/app/actions" class="nav-item" data-route="/app/actions">
-      <i class="fa-solid fa-bolt"></i> Acciones
-    </a>
-    <a href="/app/game" class="nav-item" data-route="/app/game">
-      <i class="fa-solid fa-gamepad"></i> Juego
-    </a>
-    <a href="/app/minecraft" class="nav-item" data-route="/app/minecraft">
-      <i class="fa-solid fa-cube"></i> Minecraft
+    <a href="/app/chat" class="nav-item" data-route="/app/chat">
+      <i class="fa-regular fa-comments"></i><span>Chat en vivo</span>
     </a>
 
-    <div class="nav-divider"></div>
-    <div class="nav-section-title">Interacción</div>
-    <a href="/app/auctions" class="nav-item" data-route="/app/auctions">
-      <i class="fa-solid fa-gavel"></i> Subastas
+    <p class="nav-section-title">Diseñar el stream</p>
+    <a href="/app/overlays" class="nav-item" data-route="/app/overlays">
+      <i class="fa-solid fa-layer-group"></i><span>Overlays</span>
     </a>
-    <a href="/app/roulette" class="nav-item" data-route="/app/roulette">
-      <i class="fa-solid fa-arrow-rotate-right"></i> Ruleta
-    </a>
-    <a href="/app/timers" class="nav-item" data-route="/app/timers">
-      <i class="fa-solid fa-clock"></i> Timers
+    <a href="/app/sounds" class="nav-item" data-route="/app/sounds">
+      <i class="fa-solid fa-volume-high"></i><span>Alertas de sonido</span>
     </a>
     <a href="/app/goals" class="nav-item" data-route="/app/goals">
-      <i class="fa-solid fa-bullseye"></i> Metas
+      <i class="fa-solid fa-bullseye"></i><span>Metas</span>
     </a>
 
-    <div class="nav-divider"></div>
-    <div class="nav-section-title">Comunidad</div>
-    <a href="/app/chat" class="nav-item" data-route="/app/chat">
-      <i class="fa-solid fa-comment-dots"></i> Chat
+    <p class="nav-section-title">Interactividad</p>
+    <a href="/app/minecraft" class="nav-item nav-item-featured" data-route="/app/minecraft">
+      <i class="fa-solid fa-cube"></i><span>Minecraft</span><em>RCON</em>
+    </a>
+    <a href="/app/game" class="nav-item" data-route="/app/game">
+      <i class="fa-solid fa-gamepad"></i><span>Juego de regalos</span>
+    </a>
+    <a href="/app/hype-arena" class="nav-item" data-route="/app/hype-arena">
+      <i class="fa-solid fa-fire-flame-curved"></i><span>Hype Arena</span>
+    </a>
+
+    <p class="nav-section-title">Automatizar</p>
+    <a href="/app/actions" class="nav-item" data-route="/app/actions">
+      <i class="fa-solid fa-bolt"></i><span>Reglas y eventos</span>
+    </a>
+    <a href="/app/integrations" class="nav-item" data-route="/app/integrations">
+      <i class="fa-solid fa-plug-circle-bolt"></i><span>Conexiones</span>
     </a>
     <a href="/app/chatbot" class="nav-item" data-route="/app/chatbot">
-      <i class="fa-solid fa-robot"></i> Chatbot
-    </a>
-    <a href="/app/songrequests" class="nav-item" data-route="/app/songrequests">
-      <i class="fa-solid fa-music"></i> Canciones
-    </a>
-    <a href="/app/analytics" class="nav-item" data-route="/app/analytics">
-      <i class="fa-solid fa-chart-line"></i> Analytics
+      <i class="fa-solid fa-robot"></i><span>Chatbot</span>
     </a>
 
-    <div class="nav-divider"></div>
-    <div class="nav-section-title">Cuenta</div>
-    <a href="/app/payments" class="nav-item" data-route="/app/payments">
-      <i class="fa-solid fa-crown"></i> Plan
-    </a>
-    <a href="/app/profile" class="nav-item" data-route="/app/profile">
-      <i class="fa-regular fa-user"></i> Perfil
-    </a>
-    <a href="/app/settings" class="nav-item" data-route="/app/settings">
-      <i class="fa-solid fa-sliders"></i> Configuración
-    </a>
+    <details class="nav-more" id="navMore">
+      <summary><i class="fa-solid fa-grid-2"></i><span>Más herramientas</span><i class="fa-solid fa-chevron-down nav-more-arrow"></i></summary>
+      <div class="nav-more-list">
+        <a href="/app/auctions" class="nav-item" data-route="/app/auctions"><i class="fa-solid fa-gavel"></i><span>Subastas</span></a>
+        <a href="/app/roulette" class="nav-item" data-route="/app/roulette"><i class="fa-solid fa-dharmachakra"></i><span>Ruleta</span></a>
+        <a href="/app/timers" class="nav-item" data-route="/app/timers"><i class="fa-regular fa-clock"></i><span>Temporizadores</span></a>
+        <a href="/app/songrequests" class="nav-item" data-route="/app/songrequests"><i class="fa-solid fa-music"></i><span>Canciones</span></a>
+        <a href="/app/analytics" class="nav-item" data-route="/app/analytics"><i class="fa-solid fa-chart-simple"></i><span>Estadísticas</span></a>
+      </div>
+    </details>
   </nav>
 
-  <div class="sidebar-footer">
-    <div id="globalLiveIndicator" style="display:none;padding:4px 12px;margin-bottom:6px;border-radius:8px;background:rgba(34,214,94,0.1);border:1px solid rgba(34,214,94,0.2);font-size:11px;font-weight:600;color:var(--color-success);align-items:center;gap:6px">
-      <span class="status-dot connected" style="width:6px;height:6px;flex-shrink:0"></span>
-      <span id="globalLiveUser" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">En vivo</span>
+  <footer class="sidebar-footer">
+    <div class="sidebar-live" id="globalLiveIndicator" hidden>
+      <span class="status-dot connected"></span><span id="globalLiveUser">LIVE conectado</span>
     </div>
-    <a href="/admin.html" id="adminLink" style="color:var(--text-muted)">Panel Admin</a>
-    <a href="#" id="logoutLink" style="color:var(--color-danger)"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a>
-    <div style="margin-top:8px;opacity:0.6">v2.0.0</div>
-  </div>
+    <div class="sidebar-account-links">
+      <a href="/app/settings" data-router-link title="Configuración"><i class="fa-solid fa-sliders"></i><span>Configurar</span></a>
+      <a href="/app/profile" data-router-link title="Mi perfil"><i class="fa-regular fa-user"></i><span>Perfil</span></a>
+      <a href="/app/payments" data-router-link title="Mi plan"><i class="fa-regular fa-gem"></i><span>Plan</span></a>
+    </div>
+    <a href="/app/admin" class="sidebar-admin" id="adminLink" data-router-link hidden><i class="fa-solid fa-shield-halved"></i> Administración</a>
+    <button class="sidebar-logout" id="logoutLink"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</button>
+  </footer>
 </aside>
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<main class="app-main" id="app-view" tabindex="-1" role="main">
-  <div class="app-loading" id="appLoading">
-    <div class="spinner"></div>
-    <p>Cargando...</p>
+<header class="app-header">
+  <div class="header-left">
+    <button class="hamburger" id="sidebarToggle" aria-label="Abrir menú" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+    <div class="header-context"><small id="pageSectionDisplay">TikToolStream</small><strong id="pageTitleDisplay">Centro LIVE</strong></div>
   </div>
+  <div class="header-right">
+    <button class="command-button" id="commandButton" aria-label="Buscar herramienta"><i class="fa-solid fa-magnifying-glass"></i><span>Ir a…</span><kbd>Ctrl K</kbd></button>
+    <span class="header-live-state" id="headerLiveState"><span class="status-dot"></span><span>Sin conectar</span></span>
+    <button class="user-menu-btn" id="userMenuBtn" aria-label="Abrir perfil"><span class="user-avatar" id="userInitial">U</span><span id="userNameDisplay">Usuario</span></button>
+  </div>
+</header>
+
+<main class="app-main" id="app-view" tabindex="-1">
+  <div class="app-loading" id="appLoading"><div class="spinner"></div><p>Preparando tu estudio…</p></div>
 </main>
+
+<div class="command-palette" id="commandPalette" hidden>
+  <button class="command-backdrop" data-close-command aria-label="Cerrar buscador"></button>
+  <section class="command-dialog" role="dialog" aria-modal="true" aria-labelledby="commandTitle">
+    <div class="command-search"><i class="fa-solid fa-magnifying-glass"></i><input id="commandSearch" autocomplete="off" placeholder="¿Qué quieres configurar?" aria-labelledby="commandTitle"><kbd>Esc</kbd></div>
+    <h2 id="commandTitle" class="sr-only">Buscar una herramienta</h2>
+    <div class="command-results" id="commandResults"></div>
+  </section>
+</div>
 
 <script type="module" src="/app/js/app.js"></script>
 </body>

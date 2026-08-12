@@ -9,9 +9,11 @@ defineRoutes([
   // Tool views
   { path: '/app/dashboard', load: () => import('./views/dashboard.js'), guard: 'auth', title: 'Dashboard | TikToolStream' },
   { path: '/app/goals', load: () => import('./views/goals.js'), guard: 'auth', title: 'Metas | TikToolStream' },
+  { path: '/app/sounds', load: () => import('./views/sounds.js'), guard: 'auth', title: 'Alertas de sonido | TikToolStream' },
   { path: '/app/chatbot', load: () => import('./views/chatbot.js'), guard: 'auth', title: 'Chatbot | TikToolStream' },
   { path: '/app/songrequests', load: () => import('./views/songrequests.js'), guard: 'auth', title: 'Solicitar Canciones | TikToolStream' },
   { path: '/app/actions', load: () => import('./views/actions.js'), guard: 'auth', title: 'Acciones y Eventos | TikToolStream' },
+  { path: '/app/integrations', load: () => import('./views/integrations.js'), guard: 'auth', title: 'Conexiones | TikToolStream' },
   { path: '/app/game', load: () => import('./views/game.js'), guard: 'auth', title: 'Juego | TikToolStream' },
   { path: '/app/minecraft', load: () => import('./views/minecraft.js'), guard: 'auth', title: 'Minecraft | TikToolStream' },
   { path: '/app/auctions', load: () => import('./views/auctions.js'), guard: 'auth', title: 'Subastas | TikToolStream' },

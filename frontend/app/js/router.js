@@ -78,6 +78,9 @@ export async function navigate(path, { replace = false } = {}) {
   currentAbort = new AbortController();
   currentRoute = route;
 
+  const publicRoute = ['/app/login', '/app/register', '/app/verify-email'].includes(pathname);
+  document.body.classList.toggle('auth-route', publicRoute);
+
   if (!replace) history.pushState({ path }, '', path);
   document.title = route.title || 'TikTools | TikTok LIVE Tools';
 
@@ -131,8 +134,23 @@ export async function navigate(path, { replace = false } = {}) {
 
   // Update active nav
   document.querySelectorAll('.nav-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.route === pathname);
+    const active = el.dataset.route === pathname;
+    el.classList.toggle('active', active);
+    if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
   });
+  const activeNav = [...document.querySelectorAll('.nav-item[data-route]')].find((item) => item.dataset.route === pathname);
+  const pageTitle = document.getElementById('pageTitleDisplay');
+  const pageSection = document.getElementById('pageSectionDisplay');
+  if (pageTitle) pageTitle.textContent = activeNav?.querySelector('span')?.textContent || String(route.title || 'TikToolStream').split('|')[0].trim();
+  if (pageSection) {
+    let sectionMarker = activeNav?.previousElementSibling;
+    while (sectionMarker && !sectionMarker.classList?.contains('nav-section-title')) sectionMarker = sectionMarker.previousElementSibling;
+    const sectionTitle = activeNav?.closest('.nav-more')
+      ? 'Más herramientas'
+      : sectionMarker?.textContent || (pathname.startsWith('/app/admin') ? 'Administración' : 'TikToolStream');
+    pageSection.textContent = sectionTitle;
+  }
+  if (activeNav?.closest('.nav-more')) activeNav.closest('.nav-more').open = true;
 
   // Focus management
   target.focus({ preventScroll: true });
