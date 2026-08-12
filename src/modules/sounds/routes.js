@@ -48,7 +48,7 @@ router.post('/', authenticateToken, upload.single('sound'), async (req, res) => 
     if (soundFile) {
       // Using library sound
       if (!isAllowedStoredSoundPath(soundFile)) {
-        return res.status(400).json({ error: 'Ruta de sonido no v?lida' });
+        return res.status(400).json({ error: 'Ruta de sonido no válida' });
       }
       finalSoundPath = soundFile;
     } else if (req.file) {
