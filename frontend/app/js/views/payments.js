@@ -3,28 +3,43 @@
  */
 
 export async function mount({ target, api, navigate, signal }) {
+  let toast;
+  try { const t = await import('/app/js/core/toast.js'); toast = t; } catch {}
+
   target.innerHTML = `
-    <h1 class="view-title">Plan y Pagos</h1>
-    <div id="planStatus"><div class="loading-state"><div class="spinner-sm"></div></div></div>
-    <div id="plansList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--space-lg);margin-top:var(--space-lg)">
-      <div class="card" style="text-align:center;border-color:var(--color-primary)">
-        <div style="font-size:var(--text-3xl);margin-bottom:var(--space-md)">⭐</div>
-        <h3>Premium Mensual</h3>
-        <div style="font-size:var(--text-3xl);font-weight:800;margin:var(--space-md)">$9.99</div>
-        <div style="color:var(--text-muted);font-size:var(--text-sm);margin-bottom:var(--space-lg)">30 días · Subastas ilimitadas</div>
-        <button class="btn btn-primary" style="width:100%" data-plan="premium_monthly">Suscribirse</button>
+    <div class="ux-page-head">
+      <div>
+        <div class="ux-kicker">Suscripción</div>
+        <h1 class="view-title">Plan y Pagos</h1>
+        <p class="view-subtitle">Gestiona tu suscripción Premium y accede a todas las funcionalidades</p>
       </div>
-      <div class="card" style="text-align:center;border-color:var(--color-warning)">
-        <div style="font-size:var(--text-3xl);margin-bottom:var(--space-md)">👑</div>
-        <h3>Premium Anual</h3>
-        <div style="font-size:var(--text-3xl);font-weight:800;margin:var(--space-md)">$79.99</div>
-        <div style="color:var(--text-muted);font-size:var(--text-sm);margin-bottom:var(--space-lg)">365 días · Ahorra 33%</div>
-        <button class="btn btn-primary" style="width:100%" data-plan="premium_yearly">Suscribirse</button>
+      <div class="ux-page-actions">
+        <a href="/app/payments/history" class="btn btn-secondary" data-router-link><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
       </div>
     </div>
-    <div style="margin-top:var(--space-lg)">
-      <h3 style="margin-bottom:var(--space-md)">Historial de Pagos</h3>
-      <a href="/app/payments/history" class="btn btn-secondary" data-router-link>Ver historial completo</a>
+    <div id="planStatus"><div class="loading-state"><div class="spinner-sm"></div></div></div>
+    <div id="plansList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--space-lg);margin-top:var(--space-lg)">
+      <div class="card" style="text-align:center;border-color:var(--color-primary);padding:var(--space-xl);position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--color-primary),transparent)"></div>
+        <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.1));display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-md)">
+          <i class="fa-solid fa-star" style="font-size:24px;color:var(--color-primary)"></i>
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-lg)">Premium Mensual</h3>
+        <div style="font-size:var(--text-3xl);font-weight:800;margin:var(--space-md);background:linear-gradient(135deg, #00d9ff, #7b2ff7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$9.99</div>
+        <div style="color:var(--text-muted);font-size:var(--text-sm);margin-bottom:var(--space-lg)"><i class="fa-regular fa-calendar"></i> 30 días · Subastas ilimitadas</div>
+        <button class="btn btn-primary" style="width:100%;padding:12px" data-plan="premium_monthly"><i class="fa-solid fa-crown"></i> Suscribirse</button>
+      </div>
+      <div class="card" style="text-align:center;border-color:var(--color-warning);padding:var(--space-xl);position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--color-warning),transparent)"></div>
+        <div style="position:absolute;top:8px;right:8px"><span class="badge badge-warning">AHORRA 33%</span></div>
+        <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg, rgba(251,191,36,0.15), rgba(249,115,22,0.1));display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-md)">
+          <i class="fa-solid fa-crown" style="font-size:24px;color:var(--color-warning)"></i>
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-lg)">Premium Anual</h3>
+        <div style="font-size:var(--text-3xl);font-weight:800;margin:var(--space-md);background:linear-gradient(135deg, #ffd700, #ff6b00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$79.99</div>
+        <div style="color:var(--text-muted);font-size:var(--text-sm);margin-bottom:var(--space-lg)"><i class="fa-regular fa-calendar"></i> 365 días · Ahorra 33% · <strong style="color:var(--color-warning)">$6.67/mes</strong></div>
+        <button class="btn btn-primary" style="width:100%;padding:12px;background:linear-gradient(135deg, #ffd700, #ff6b00);border:none" data-plan="premium_yearly"><i class="fa-solid fa-crown"></i> Suscribirse</button>
+      </div>
     </div>
     <div id="paypalContainer" style="display:none;margin-top:var(--space-md)"></div>
   `;
@@ -89,6 +104,11 @@ export async function mount({ target, api, navigate, signal }) {
       }
     }, { signal });
   });
+  // GSAP animate payments
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const plans = document.querySelectorAll('#plansList > .card');
+      if (plans.length) gsap.from(plans, { opacity: 0, y: 24, stagger: 0.1, duration: 0.45, ease: 'power2.out' });
+    });
 }
 
 function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }

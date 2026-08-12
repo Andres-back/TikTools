@@ -4,7 +4,7 @@
  * TikFinity-inspired design
  */
 
-import { countUp, formatNum, magneticButton } from '/app/js/core/visual-helpers.js';
+import { countUp, formatNum, magneticButton, staggerChildren } from '/app/js/core/visual-helpers.js';
 import { getAccessToken } from '/app/js/core/auth.js';
 import * as wsService from '/app/js/core/ws.js';
 
@@ -51,7 +51,7 @@ export async function mount({ target, api, user, toast, signal }) {
       .timer-bar.warn { background:linear-gradient(90deg, var(--color-warning), #f97316); }
       .timer-bar.danger { background:linear-gradient(90deg, var(--color-danger), #f87171); }
       .timer-winner { text-align:center; margin-top:var(--space-md); padding:var(--space-md); background:linear-gradient(135deg, rgba(251,191,36,0.12), rgba(249,115,22,0.05)); border:1px solid rgba(251,191,36,0.3); border-radius:var(--border-radius-md); font-weight:700; color:var(--color-warning); display:none; }
-      
+
       .lb-list { max-height:60vh; overflow-y:auto; padding-right:4px; }
       .lb-list::-webkit-scrollbar { width:4px; }
       .lb-list::-webkit-scrollbar-thumb { background:rgba(0,212,255,0.25); border-radius:2px; }
@@ -75,7 +75,7 @@ export async function mount({ target, api, user, toast, signal }) {
       .status-dot.connecting { background:var(--color-warning); animation:blink 1s ease-in-out infinite; }
       .status-dot.connected { background:var(--color-success); box-shadow:0 0 8px rgba(34,214,94,0.5); }
       @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-      
+
       .chat-stream { height:60vh; overflow-y:auto; padding:var(--space-sm); display:flex; flex-direction:column; gap:6px; }
       .chat-stream::-webkit-scrollbar { width:4px; }
       .chat-stream::-webkit-scrollbar-thumb { background:rgba(0,212,255,0.25); border-radius:2px; }
@@ -95,12 +95,12 @@ export async function mount({ target, api, user, toast, signal }) {
       .lb-coins { transition:transform 0.4s var(--ease-spring, cubic-bezier(0.34,1.56,0.64,1)); display:inline-flex; align-items:center; gap:3px; }
       .lb-coins.bump { animation: coinsBump 0.6s var(--ease-spring, cubic-bezier(0.34,1.56,0.64,1)); }
       @keyframes coinsBump { 0%{transform:scale(1);} 40%{transform:scale(1.35);color:var(--color-warning);text-shadow:0 0 20px rgba(251,191,36,0.5);} 100%{transform:scale(1);} }
-      
-      @media (max-width: 1280px) { 
+
+      @media (max-width: 1280px) {
         .dash-grid { grid-template-columns: 1fr 1fr; }
         .dash-grid > div:first-child { grid-column: 1 / -1; }
       }
-      @media (max-width: 900px) { 
+      @media (max-width: 900px) {
         .dash-grid { grid-template-columns: 1fr; }
         .dash-card { padding:var(--space-md); }
         .chat-stream { height:40vh; }
@@ -449,10 +449,6 @@ export async function mount({ target, api, user, toast, signal }) {
   // ============ HELPERS ============
   function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
-  function staggerChildren(parent, cls, delay) {
-    const children = parent.querySelectorAll('.' + cls);
-    children.forEach((el, i) => { el.style.animationDelay = `${i * delay}ms`; });
-  }
 
   // ============ LOAD GIFTS CATALOG ============
   try {
@@ -474,6 +470,13 @@ export async function mount({ target, api, user, toast, signal }) {
   // attach magnetic hover to primary buttons
   document.querySelectorAll('.dash-card .btn-primary, .dash-card .btn-success, .dash-card .btn-danger').forEach(b => magneticButton(b));
 
+  // GSAP animate dashboard elements
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const stats = document.querySelectorAll('.stats-mini');
+      if (stats.length) gsap.from(stats, { opacity: 0, y: 20, stagger: 0.08, duration: 0.4, ease: 'power2.out' });
+      const lb = document.getElementById('leaderboardList');
+      if (lb) { const rows = lb.querySelectorAll('.lb-row'); if (rows.length) gsap.from(rows, { opacity: 0, x: -15, stagger: 0.03, duration: 0.3, ease: 'power2.out' }); }
+    });
   return () => {
     unsubGift(); unsubFollow(); unsubShare(); unsubLike();
     unsubChat(); unsubComment(); unsubConnected(); unsubDisconnected();

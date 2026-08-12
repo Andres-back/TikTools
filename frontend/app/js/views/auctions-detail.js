@@ -419,6 +419,13 @@ export async function mount({ target, api, params, navigate, signal }) {
 
   loadAuction();
 
+  // GSAP animate auction detail
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('.ac-card');
+      if (cards.length) gsap.from(cards, { opacity: 0, y: 24, stagger: 0.1, duration: 0.45, ease: 'power2.out' });
+      const acHead = document.querySelector('.ac-head');
+      if (acHead) gsap.from(acHead, { opacity: 0, y: -15, duration: 0.3, ease: 'power2.out' });
+    });
   return () => {
     if (timerInterval) clearInterval(timerInterval);
   };

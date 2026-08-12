@@ -301,4 +301,9 @@ export async function mount({ target, auth, api, navigate, signal }) {
   document.getElementById('btnDeleteAccount')?.addEventListener('click', () => {
     showToast({ type: 'warning', message: 'Contacta al administrador para eliminar tu cuenta' });
   }, { signal });
+  // GSAP animate settings
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('.set-card');
+      if (cards.length) gsap.from(cards, { opacity: 0, y: 24, stagger: 0.07, duration: 0.4, ease: 'power2.out' });
+    });
 }

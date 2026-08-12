@@ -103,6 +103,27 @@ export async function navigate(path, { replace = false } = {}) {
       toast: await import('/app/js/core/toast.js')
     };
     currentCleanup = await module.mount(context) || null;
+
+    // GSAP page enter animation
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo(target,
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', clearProps: 'transform' }
+      );
+      // Animate all cards with stagger
+      const cards = target.querySelectorAll('.card, .dash-card, .stat-card, [class*="gsap-stagger"]');
+      if (cards.length > 0) {
+        gsap.set(cards, { opacity: 0, y: 20 });
+        gsap.to(cards, {
+          opacity: 1, y: 0,
+          duration: 0.4,
+          stagger: 0.04,
+          ease: 'power2.out',
+          delay: 0.1,
+          overwrite: 'auto'
+        });
+      }
+    }
   } catch (err) {
     console.error('[Router] Error mounting view:', err);
     target.innerHTML = `<div class="error-state"><p>Error al cargar la vista</p><button class="btn btn-primary" onclick="location.reload()">Reintentar</button></div>`;

@@ -200,4 +200,9 @@ export async function mount({ target, api, user, signal }) {
     }
     btn.disabled = false; btn.textContent = 'Cambiar Contraseña';
   }, { signal });
+  // GSAP animate profile
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('.prof-card');
+      if (cards.length) gsap.from(cards, { opacity: 0, y: 24, stagger: 0.1, duration: 0.45, ease: 'power2.out' });
+    });
 }

@@ -215,7 +215,7 @@ export async function mount({ target, signal } = {}) {
           <div>
             <div class="os-kicker">Overlay Studio</div>
             <h1 class="os-title">Escenas listas para OBS</h1>
-            <p class="os-subtitle">Catalogo organizado por uso real: elige la escena, cambia entre formato horizontal o vertical, prueba el preview y copia una URL limpia para Browser Source.</p>
+            <p class="os-subtitle">Catálogo organizado por uso real: elige la escena, cambia entre formato horizontal o vertical, prueba el preview y copia una URL limpia para Browser Source.</p>
             <div class="os-metrics" aria-label="Resumen de overlays">
               <div class="os-metric"><strong>${OVERLAYS.length}</strong><span>Overlays</span></div>
               <div class="os-metric"><strong>${categories.length - 1}</strong><span>Categorias</span></div>
@@ -230,7 +230,7 @@ export async function mount({ target, signal } = {}) {
       </header>
 
       <div class="os-layout">
-        <aside class="os-card os-sidebar" aria-label="Catalogo de overlays">
+        <aside class="os-card os-sidebar" aria-label="Catálogo de overlays">
           <div class="os-search-wrap">
             <input id="overlaySearch" class="os-search" type="search" placeholder="Buscar por nombre, uso o categoria" autocomplete="off">
             <span class="os-search-icon">BUSCAR</span>
@@ -238,7 +238,7 @@ export async function mount({ target, signal } = {}) {
           <nav class="os-tabs" id="overlayTabs" aria-label="Categorias de overlays">
             ${categories.map((category) => `<button class="os-tab ${category === activeCategory ? 'active' : ''}" type="button" data-category="${escapeAttr(category)}">${escapeHtml(category)} <span>${categoryCount(category)}</span></button>`).join('')}
           </nav>
-          <div class="os-list-head"><span>Catalogo</span><span id="overlayCount"></span></div>
+          <div class="os-list-head"><span>Catálogo</span><span id="overlayCount"></span></div>
           <div class="os-list" id="overlayList"></div>
         </aside>
 
@@ -287,7 +287,7 @@ export async function mount({ target, signal } = {}) {
           </section>
 
           <section class="os-guide" aria-label="Guia rapida OBS">
-            <div class="os-guide-card" data-step="1"><strong>Agrega Browser Source</strong><span>En OBS usa la URL copiada. Mant?n ancho y alto segun el formato elegido.</span></div>
+            <div class="os-guide-card" data-step="1"><strong>Agrega Browser Source</strong><span>En OBS usa la URL copiada. Mantén ancho y alto según el formato elegido.</span></div>
             <div class="os-guide-card" data-step="2"><strong>Ordena por capas</strong><span>HUD y alertas arriba; escenas completas como Hype Arena pueden ir como fuente principal.</span></div>
             <div class="os-guide-card" data-step="3"><strong>Prueba con demo</strong><span>El preview puede usar datos falsos. La URL copiada queda limpia para tu stream real.</span></div>
           </section>
@@ -452,6 +452,17 @@ function getCurrentUserId() {
 }
 
 function escapeHtml(value) {
+  // GSAP animate overlays studio
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const hero = document.querySelector('.os-hero');
+      if (hero) gsap.from(hero, { opacity: 0, y: 20, duration: 0.4, ease: 'power2.out' });
+      const sidebar = document.querySelector('.os-sidebar');
+      if (sidebar) gsap.from(sidebar, { opacity: 0, x: -20, duration: 0.35, ease: 'power2.out', delay: 0.15 });
+      const preview = document.querySelector('.os-preview-card');
+      if (preview) gsap.from(preview, { opacity: 0, y: 20, duration: 0.35, ease: 'power2.out', delay: 0.2 });
+      const details = document.querySelectorAll('.os-detail');
+      if (details.length) gsap.from(details, { opacity: 0, y: 15, stagger: 0.06, duration: 0.3, ease: 'power2.out', delay: 0.3 });
+    });
   return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 }
 

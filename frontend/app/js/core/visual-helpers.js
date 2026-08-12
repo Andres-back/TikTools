@@ -109,3 +109,104 @@ export function screenShake(el, intensity = 1) {
   void target.offsetHeight;
   target.style.animation = `screenShake 0.5s ease-in-out`;
 }
+
+/* ====== GSAP Animation Helpers ====== */
+
+/**
+ * Animate page enter with stagger — cards, stats, list items
+ * @param {HTMLElement} container - parent element
+ * @param {string|string[]} selectors - CSS selector(s) for children to animate
+ * @param {object} opts - { stagger, duration, ease, from, y, x, scale, rotation }
+ */
+export function gsapStaggerIn(container, selectors = '.gsap-stagger > *', opts = {}) {
+  if (typeof gsap === 'undefined') return;
+  const defaults = { stagger: 0.05, duration: 0.5, ease: 'power3.out', y: 24, opacity: 0 };
+  const cfg = { ...defaults, ...opts };
+  const targets = typeof selectors === 'string'
+    ? container.querySelectorAll(selectors)
+    : selectors;
+  if (!targets || targets.length === 0) return;
+  gsap.set(targets, { opacity: 0, y: cfg.y });
+  gsap.to(targets, {
+    opacity: 1, y: 0,
+    duration: cfg.duration,
+    stagger: cfg.stagger,
+    ease: cfg.ease,
+    overwrite: 'auto'
+  });
+}
+
+/**
+ * Animate a single element entrance
+ */
+export function gsapFadeIn(el, opts = {}) {
+  if (typeof gsap === 'undefined' || !el) return;
+  const defaults = { duration: 0.6, ease: 'power2.out', y: 20 };
+  const cfg = { ...defaults, ...opts };
+  gsap.fromTo(el, { opacity: 0, y: cfg.y }, { opacity: 1, y: 0, duration: cfg.duration, ease: cfg.ease });
+}
+
+/**
+ * Number count-up using GSAP
+ */
+export function gsapCountUp(el, from = 0, to, duration = 1.2) {
+  if (typeof gsap === 'undefined' || !el) return;
+  if (from === to) { el.textContent = formatNum(to); return; }
+  const obj = { val: from };
+  gsap.to(obj, {
+    val: to,
+    duration,
+    ease: 'power2.out',
+    onUpdate: () => { el.textContent = formatNum(Math.round(obj.val)); }
+  });
+}
+
+/**
+ * Pulse glow animation
+ */
+export function gsapPulse(el, duration = 1.5) {
+  if (typeof gsap === 'undefined' || !el) return;
+  gsap.to(el, {
+    scale: 1.04,
+    duration: duration / 2,
+    ease: 'power1.inOut',
+    yoyo: true,
+    repeat: -1
+  });
+}
+
+/**
+ * Magnetic hover effect using GSAP
+ */
+export function gsapMagnetic(btn) {
+  if (typeof gsap === 'undefined' || !btn || btn.dataset.gsapMag) return;
+  btn.dataset.gsapMag = '1';
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) * 0.3;
+    const y = (e.clientY - rect.top - rect.height / 2) * 0.3;
+    gsap.to(btn, { x, y, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
+  });
+  btn.addEventListener('mouseleave', () => {
+    gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: 'elastic.out(1, 0.3)' });
+  });
+}
+
+/**
+ * Stagger reveal for cards/lists
+ */
+export function gsapRevealCards(container, opts = {}) {
+  if (typeof gsap === 'undefined' || !container) return;
+  const cards = container.children;
+  if (!cards || cards.length === 0) return;
+  const cfg = { stagger: 0.06, duration: 0.5, ease: 'power3.out', y: 30, scale: 0.95 };
+  Object.assign(cfg, opts);
+  gsap.set(cards, { opacity: 0, y: cfg.y, scale: cfg.scale });
+  gsap.to(cards, {
+    opacity: 1, y: 0, scale: 1,
+    duration: cfg.duration,
+    stagger: cfg.stagger,
+    ease: cfg.ease,
+    overwrite: 'auto'
+  });
+}

@@ -257,4 +257,9 @@ export async function mount({ target, api, signal }) {
   }, { signal });
 
   await loadAll();
+  // GSAP animate song requests
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const stats = document.querySelectorAll('.sr-stats > .stat');
+      if (stats.length) gsap.from(stats, { opacity: 0, y: 20, stagger: 0.08, duration: 0.4, ease: 'power2.out' });
+    });
 }

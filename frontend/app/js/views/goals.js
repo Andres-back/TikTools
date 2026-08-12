@@ -256,13 +256,18 @@ export async function mount({ target, api, signal }) {
         goalsCache = fresh;
         const container = document.getElementById('goalsList');
         if (container) {
-          const html = container.innerHTML;
-          container.innerHTML = html.replace(/<h3[^>]*>Metas[^<]*<\/h3>/, `<h3 style="margin-bottom:var(--space-md)">Metas (${fresh.length})</h3>`);
+          const h3 = container.querySelector('h3');
+          if (h3) h3.textContent = `Metas (${fresh.length})`;
         }
       }
     } catch {}
   }, 5000);
 
+  // GSAP animate goals
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('#goalsList > div > .card');
+      if (cards.length) gsap.from(cards, { opacity: 0, y: 20, stagger: 0.06, duration: 0.4, ease: 'power2.out' });
+    });
   return () => {
     if (livePollInterval) clearInterval(livePollInterval);
   };

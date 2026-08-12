@@ -275,6 +275,14 @@
 }
 .screen-shake { animation: screenShake 0.5s ease-in-out; }
 
+/* GSAP-ready animation classes */
+.gsap-stagger > * { opacity: 0; }
+.gsap-fade-in { opacity: 0; }
+.gsap-slide-up { opacity: 0; transform: translateY(24px); }
+.gsap-slide-right { opacity: 0; transform: translateX(-24px); }
+.gsap-scale-in { opacity: 0; transform: scale(0.85); }
+.gsap-rotate-in { opacity: 0; transform: rotate(-6deg) scale(0.9); }
+
 /* ====== TEXT EFFECTS ====== */
 .gradient-text {
   background: linear-gradient(135deg, #ffffff, var(--neon-cyan));

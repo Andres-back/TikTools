@@ -431,4 +431,9 @@ export async function mount({ target, api, navigate, signal }) {
 
   document.querySelectorAll('.btn').forEach(b => magneticButton(b));
   await loadUsers();
+  // GSAP animate admin users
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const stats = document.querySelectorAll('.au-stats > .stat');
+      if (stats.length) gsap.from(stats, { opacity: 0, y: 20, stagger: 0.08, duration: 0.4, ease: 'power2.out' });
+    });
 }

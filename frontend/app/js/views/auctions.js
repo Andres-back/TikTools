@@ -194,4 +194,9 @@ export async function mount({ target, api, navigate, signal }) {
     document.getElementById('auctionList').innerHTML = `<div class="error-state"><p>Error al cargar subastas</p><button class="btn btn-primary" id="retryAuctions">Reintentar</button></div>`;
     document.getElementById('retryAuctions')?.addEventListener('click', () => location.reload());
   }
+  // GSAP animate auctions
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const stats = document.querySelectorAll('.auctions-stats > .stat');
+      if (stats.length) gsap.from(stats, { opacity: 0, y: 20, stagger: 0.08, duration: 0.4, ease: 'power2.out' });
+    });
 }

@@ -76,4 +76,11 @@ export async function mount({ target, navigate, signal }) {
   document.getElementById('loginPass')?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') doLogin();
   }, { signal });
+  // GSAP animate login
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const card = document.querySelector('.card');
+      if (card) gsap.from(card, { opacity: 0, y: 30, scale: 0.97, duration: 0.5, ease: 'power3.out' });
+      const inputs = document.querySelectorAll('.input-field');
+      if (inputs.length) gsap.from(inputs, { opacity: 0, y: 12, stagger: 0.06, duration: 0.3, ease: 'power2.out', delay: 0.2 });
+    });
 }

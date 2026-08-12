@@ -326,7 +326,6 @@ export async function mount({ target, api, signal }) {
   function copyStepData(from, to) {
     const typeEl = document.getElementById(`axStepType_${from}`);
     const valEl = document.getElementById(`axStepVal_${from}`);
-    const connEl = document.getElementById(`axStepConn_${from}`);
     if (typeEl) {
       const toType = document.getElementById(`axStepType_${to}`);
       if (toType) toType.value = typeEl.value;
@@ -335,10 +334,18 @@ export async function mount({ target, api, signal }) {
       const toVal = document.getElementById(`axStepVal_${to}`);
       if (toVal) toVal.value = valEl.value;
     }
-    if (connEl) {
-      const toConn = document.getElementById(`axStepConn_${to}`);
-      if (toConn) toConn.value = connEl.value;
-    }
+    // Copiar campos RCON
+    ['axRconHost_', 'axRconPort_', 'axRconPass_', 'axRconEngine_', 'axRconAllow_'].forEach(prefix => {
+      const fromEl = document.getElementById(`${prefix}${from}`);
+      const toEl = document.getElementById(`${prefix}${to}`);
+      if (fromEl && toEl) toEl.value = fromEl.value;
+    });
+    // Copiar campos HTTP
+    ['axHttpUrl_', 'axHttpMethod_', 'axHttpTimeout_', 'axHttpBearer_'].forEach(prefix => {
+      const fromEl = document.getElementById(`${prefix}${from}`);
+      const toEl = document.getElementById(`${prefix}${to}`);
+      if (fromEl && toEl) toEl.value = fromEl.value;
+    });
   }
 
   function getStepsData() {
@@ -586,4 +593,9 @@ export async function mount({ target, api, signal }) {
   }
 
   await loadRules();
+  // GSAP animate action steps
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const steps = document.querySelectorAll('.ax-step');
+      if (steps.length) gsap.from(steps, { opacity: 0, x: -20, stagger: 0.06, duration: 0.35, ease: 'power2.out' });
+    });
 }

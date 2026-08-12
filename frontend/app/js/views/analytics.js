@@ -246,4 +246,11 @@ export async function mount({ target, api, signal }) {
 
   document.querySelectorAll('.ana-stat .btn, .ana-stat button').forEach(b => magneticButton(b));
   await loadAnalytics();
+  // GSAP animate analytics
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const stats = document.querySelectorAll('.ana-stat');
+      if (stats.length) gsap.from(stats, { opacity: 0, y: 20, stagger: 0.06, duration: 0.4, ease: 'power2.out' });
+      const charts = document.querySelectorAll('.ana-chart');
+      if (charts.length) gsap.from(charts, { opacity: 0, y: 20, stagger: 0.08, duration: 0.4, ease: 'power2.out', delay: 0.2 });
+    });
 }

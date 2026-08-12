@@ -171,4 +171,9 @@ export async function mount({ target, api, signal }) {
   });
   document.querySelectorAll('.adm-quick a, .btn').forEach(b => magneticButton(b));
   await load();
+  // GSAP animate admin dashboard
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const stats = document.querySelectorAll('.adm-stat');
+      if (stats.length) gsap.from(stats, { opacity: 0, y: 20, stagger: 0.06, duration: 0.4, ease: 'power2.out' });
+    });
 }

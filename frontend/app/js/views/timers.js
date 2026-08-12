@@ -269,6 +269,11 @@ export async function mount({ target, api, signal }) {
   await loadTimers();
   tickInterval = setInterval(tick, 1000);
 
+  // GSAP animate timers
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const statEls = document.querySelectorAll('.timers-stats > .stat');
+      if (statEls.length) gsap.from(statEls, { opacity: 0, y: 20, stagger: 0.08, duration: 0.4, ease: 'power2.out' });
+    });
   return () => {
     if (tickInterval) clearInterval(tickInterval);
   };

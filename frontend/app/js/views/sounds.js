@@ -363,4 +363,9 @@ export async function mount({ target, api, signal }) {
 
   await loadGiftSelect();
   await loadSounds();
+  // GSAP animate sounds
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('.sound-card');
+      if (cards.length) gsap.from(cards, { opacity: 0, x: -15, stagger: 0.05, duration: 0.35, ease: 'power2.out' });
+    });
 }

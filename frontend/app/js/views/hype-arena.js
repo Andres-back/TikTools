@@ -227,4 +227,9 @@ export async function mount({ target, api, signal }) {
   }, { signal });
 
   loadCfg();
+  // GSAP animate hype arena
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const panels = document.querySelectorAll('.ha-panel');
+      if (panels.length) gsap.from(panels, { opacity: 0, y: 24, stagger: 0.1, duration: 0.45, ease: 'power2.out' });
+    });
 }

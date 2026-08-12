@@ -230,4 +230,9 @@ export async function mount({ target, api, signal }) {
   }, { signal });
 
   await loadNews();
+  // GSAP animate admin news
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('.news-card');
+      if (cards.length) gsap.from(cards, { opacity: 0, y: 15, stagger: 0.05, duration: 0.35, ease: 'power2.out' });
+    });
 }

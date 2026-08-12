@@ -252,4 +252,9 @@ export async function mount({ target, api, signal }) {
   }, { signal });
 
   await loadCmds();
+  // GSAP animate chatbot
+    if (typeof gsap !== 'undefined') requestAnimationFrame(() => {
+      const stats = document.querySelectorAll('.cb-stats > .stat');
+      if (stats.length) gsap.from(stats, { opacity: 0, y: 20, stagger: 0.07, duration: 0.4, ease: 'power2.out' });
+    });
 }
