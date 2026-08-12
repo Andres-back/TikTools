@@ -188,7 +188,7 @@ app.use('/api/actions', actionRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/integrations', createIntegrationRouter({ db: database, engine: integrationEngine }));
 app.use('/api/game', createGameRouter());
-app.use('/api/minecraft', createMinecraftRouter({ db: database }));
+app.use('/api/minecraft', createMinecraftRouter({ db: database, engine: integrationEngine }));
 app.use('/api/songrequests', songRequestsRoutes);
 app.use('/api/settings', settingsRoutes);
 // Health check

@@ -87,6 +87,21 @@ export async function mount({ target, api, toast, signal }) {
       .mc-rule-pill { padding:5px 8px; border:1px solid rgba(255,255,255,.07); border-radius:8px; background:rgba(0,0,0,.14); color:var(--text-secondary); font-size:9px; }
       .mc-mode-foot { position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:10px; }
       .mc-mode-foot small { color:var(--text-muted); font-size:9px; }
+      .mc-mode.equipped { box-shadow:0 0 0 1px color-mix(in srgb,var(--mode-accent) 55%,transparent),0 18px 55px rgba(0,0,0,.22); }
+      .mc-mode-status.installed { background:rgba(0,212,255,.1); color:#63ddff; }
+      .mc-mode-status.equipped { background:rgba(0,255,136,.14); color:#59f2ad; }
+      .mc-preset-rules { position:relative; z-index:1; display:grid; gap:7px; margin:14px 0 16px; }
+      .mc-preset-rule { display:grid; grid-template-columns:74px minmax(0,1fr) auto; align-items:center; gap:10px; padding:9px 10px; border:1px solid rgba(255,255,255,.065); border-radius:11px; background:rgba(0,0,0,.14); }
+      .mc-rule-coins { color:var(--mode-accent); font:800 10px/1.2 var(--font-mono); }
+      .mc-rule-copy { min-width:0; }
+      .mc-rule-copy strong { display:block; overflow:hidden; color:var(--text-primary); font-size:11px; text-overflow:ellipsis; white-space:nowrap; }
+      .mc-rule-copy small { display:block; overflow:hidden; margin-top:3px; color:var(--text-muted); font-size:9px; text-overflow:ellipsis; white-space:nowrap; }
+      .mc-test-btn { padding:6px 9px; border:1px solid color-mix(in srgb,var(--mode-accent) 35%,var(--border-color)); border-radius:8px; background:transparent; color:var(--text-primary); cursor:pointer; font-size:9px; font-weight:800; }
+      .mc-test-btn:hover { background:color-mix(in srgb,var(--mode-accent) 13%,transparent); }
+      .mc-test-btn:disabled { cursor:not-allowed; opacity:.42; }
+      .mc-mode-actions { display:flex; justify-content:flex-end; gap:7px; flex-wrap:wrap; }
+      .mc-mode-actions .btn { min-width:104px; }
+      .mc-studio-note { grid-column:1/-1; display:flex; align-items:flex-start; gap:9px; padding:11px 13px; border:1px solid rgba(255,209,102,.18); border-radius:11px; background:rgba(255,209,102,.055); color:var(--text-secondary); font-size:10px; line-height:1.55; }
       @media (max-width:980px) { .mc-grid { grid-template-columns:1fr; } .mc-mode-grid { grid-template-columns:1fr; } .mc-games-head { align-items:stretch; flex-direction:column; } .mc-setup { min-width:0; } }
       @media (max-width:560px) { .mc-hero { flex-direction:column; } .mc-setup { grid-template-columns:1fr; } .mc-mode-top { grid-template-columns:42px minmax(0,1fr); } .mc-mode-status { grid-column:1/-1; width:max-content; } .mc-mode-foot { align-items:stretch; flex-direction:column; } .mc-mode-foot .btn { width:100%; } }
     </style>
@@ -245,47 +260,74 @@ export async function mount({ target, api, toast, signal }) {
     `;
   }
 
+  function rangeLabel(rule) {
+    return rule.minCoins === rule.maxCoins ? `${rule.minCoins} coins` : `${rule.minCoins}-${rule.maxCoins} coins`;
+  }
+
   function renderModes() {
     const grid = $('#mcModeGrid');
-    const select = $('#mcModeConnection');
-    const rconConnections = connections.filter((item) => item.kind === 'rcon');
-    select.innerHTML = rconConnections.length
-      ? rconConnections.map((item) => `<option value="${escapeHtml(String(item.id))}">${escapeHtml(item.name)}</option>`).join('')
-      : '<option value="">Crea primero una conexion RCON</option>';
-
+    const selectedConnection = $('#mcModeConnection').value;
     if (!gameModes.length) {
-      grid.innerHTML = '<div class="mc-empty">No fue posible cargar los modos.</div>';
+      grid.innerHTML = '<div class="mc-empty">No fue posible cargar los presets para esta conexiÃ³n.</div>';
       return;
     }
-    grid.innerHTML = gameModes.map((mode) => `
-      <article class="mc-mode" style="--mode-accent:${escapeHtml(mode.accent || '#00d4ff')}">
-        <div class="mc-mode-top">
-          <span class="mc-mode-icon">${escapeHtml(mode.icon)}</span>
-          <div><h3>${escapeHtml(mode.name)}</h3></div>
-          <span class="mc-mode-status ${mode.status === 'plugin' ? 'plugin' : ''}">${mode.status === 'plugin' ? 'Requiere plugin' : 'Vanilla - listo'}</span>
-        </div>
-        <p class="mc-mode-desc">${escapeHtml(mode.description)}</p>
-        <p class="mc-mode-objective"><b>Objetivo:</b> ${escapeHtml(mode.objective)}</p>
-        <div class="mc-rule-pills">${(mode.rules || []).map((item) => `<span class="mc-rule-pill">${item.maxCoins == null ? `${item.minCoins}+` : `${item.minCoins}-${item.maxCoins}`} coins - ${escapeHtml(item.name)}</span>`).join('')}</div>
-        <div class="mc-mode-foot">
-          <small>${mode.plugin ? `Plugin: ${escapeHtml(mode.plugin)}` : `${mode.rules.length} reglas seguras incluidas`}</small>
-          <button class="btn ${mode.status === 'plugin' ? 'btn-secondary' : 'btn-primary'}" data-install-mode="${escapeHtml(mode.id)}" ${rconConnections.length ? '' : 'disabled'}>Instalar modo</button>
-        </div>
-      </article>
-    `).join('');
+    grid.innerHTML = gameModes.map((mode) => {
+      const statusLabel = mode.equipped ? 'Equipado' : mode.installed ? 'Instalado' : (mode.status === 'plugin' ? 'Requiere plugin' : 'Listo para instalar');
+      const statusClass = mode.equipped ? 'equipped' : mode.installed ? 'installed' : (mode.status === 'plugin' ? 'plugin' : '');
+      const rulesMarkup = (mode.rules || []).map((rule) => `
+        <div class="mc-preset-rule">
+          <span class="mc-rule-coins">${escapeHtml(rangeLabel(rule))}</span>
+          <span class="mc-rule-copy">
+            <strong>${escapeHtml(rule.name)}</strong>
+            <small title="${escapeHtml(rule.installedCommand || rule.commandTemplate || '')}">${escapeHtml((rule.gifts || []).join(' Â· ') || 'Cualquier regalo del rango')}</small>
+          </span>
+          <button class="mc-test-btn" data-test-rule="${escapeHtml(String(rule.ruleId || ''))}" data-risk="${escapeHtml(rule.risk || 'low')}" data-rule-name="${escapeHtml(rule.name)}" data-command="${escapeHtml(rule.installedCommand || rule.commandTemplate || '')}" ${rule.ruleId ? '' : 'disabled'}>â–¶ Probar</button>
+        </div>`).join('');
+      return `
+        <article class="mc-mode ${mode.equipped ? 'equipped' : ''}" style="--mode-accent:${escapeHtml(mode.accent || '#00d4ff')}">
+          <div class="mc-mode-top">
+            <span class="mc-mode-icon">${escapeHtml(mode.icon)}</span>
+            <div><h3>${escapeHtml(mode.name)}</h3></div>
+            <span class="mc-mode-status ${statusClass}">${statusLabel}</span>
+          </div>
+          <p class="mc-mode-desc">${escapeHtml(mode.description)}</p>
+          <p class="mc-mode-objective"><b>Objetivo:</b> ${escapeHtml(mode.objective)}</p>
+          <div class="mc-preset-rules">${rulesMarkup}</div>
+          <div class="mc-mode-foot">
+            <small>${mode.plugin ? `Plugin: ${escapeHtml(mode.plugin)}` : `${mode.rules.length} reglas vanilla`}</small>
+            <div class="mc-mode-actions">
+              ${mode.installed ? `<button class="btn btn-secondary" data-install-mode="${escapeHtml(mode.id)}">Actualizar</button>` : ''}
+              ${mode.equipped
+                ? `<button class="btn btn-secondary" data-unequip-mode="${escapeHtml(mode.id)}">Desequipar</button>`
+                : `<button class="btn btn-primary" data-${mode.installed ? 'equip' : 'install'}-mode="${escapeHtml(mode.id)}" ${selectedConnection ? '' : 'disabled'}>${mode.installed ? 'Equipar preset' : 'Instalar preset'}</button>`}
+            </div>
+          </div>
+        </article>`;
+    }).join('') + `<div class="mc-studio-note"><span>ðŸ’¡</span><span>Equipar un preset pausa las demÃ¡s reglas de esta conexiÃ³n RCON para que durante la partida solo respondan las reglas del juego elegido. â€œProbarâ€ ejecuta la acciÃ³n una vez en el servidor.</span></div>`;
+  }
+
+  async function loadGameModes(connectionId = $('#mcModeConnection')?.value || '') {
+    try {
+      const query = connectionId ? `?connectionId=${encodeURIComponent(connectionId)}` : '';
+      gameModes = await api.get(`/minecraft/game-modes${query}`, { signal });
+    } catch {
+      gameModes = [];
+    }
+    renderModes();
   }
 
   async function loadGameStudio() {
     try {
-      [gameModes, connections] = await Promise.all([
-        api.get('/minecraft/game-modes', { signal }),
-        api.get('/integrations', { signal })
-      ]);
+      connections = await api.get('/integrations', { signal });
     } catch {
-      gameModes = [];
       connections = [];
     }
-    renderModes();
+    const select = $('#mcModeConnection');
+    const rconConnections = connections.filter((item) => item.kind === 'rcon');
+    select.innerHTML = rconConnections.length
+      ? rconConnections.map((item) => `<option value="${escapeHtml(String(item.id))}">${escapeHtml(item.name)}</option>`).join('')
+      : '<option value="">Crea primero una conexiÃ³n RCON</option>';
+    await loadGameModes(select.value);
   }
   // ---------- data ----------
 
@@ -295,6 +337,7 @@ export async function mount({ target, api, toast, signal }) {
     } catch {
       status = { online: false, version: null, players: { online: null, max: null } };
     }
+    if (!$("#mcPlayerName").value && status.players?.names?.length) $("#mcPlayerName").value = status.players.names[0];
     renderStatus();
   }
 
@@ -358,23 +401,48 @@ export async function mount({ target, api, toast, signal }) {
     if (url) window.open(url, '_blank', 'noopener');
   });
 
+  $('#mcModeConnection').addEventListener('change', async (event) => {
+    await loadGameModes(event.target.value);
+  });
+
   $('#mcModeGrid').addEventListener('click', async (event) => {
-    const button = event.target.closest('[data-install-mode]');
+    const button = event.target.closest('[data-install-mode],[data-equip-mode],[data-unequip-mode],[data-test-rule]');
     if (!button) return;
     const playerName = $('#mcPlayerName').value.trim();
     const connectionId = $('#mcModeConnection').value;
-    if (!playerName) return showToast('warning', 'Escribe tu nombre exacto de Minecraft');
-    if (!connectionId) return showToast('warning', 'Primero crea una conexion RCON');
-    setBusy(button, 'Instalando...');
+    if (!connectionId) return showToast('warning', 'Primero crea o selecciona una conexiÃ³n RCON');
+
+    if (button.dataset.testRule) {
+      const risky = ['medium', 'high'].includes(button.dataset.risk);
+      if (risky && !window.confirm(`Esta prueba ejecutarÃ¡ â€œ${button.dataset.ruleName}â€ ahora mismo.\n\nComando: ${button.dataset.command}\n\nÂ¿Continuar?`)) return;
+      setBusy(button, 'Probando...');
+      try {
+        const result = await api.post(`/minecraft/rules/${button.dataset.testRule}/test`, {}, { signal });
+        const response = result.response ? ` Â· ${result.response}` : '';
+        showToast(result.success ? 'success' : 'error', result.success ? `Regla ejecutada${response}` : `Minecraft rechazÃ³ la acciÃ³n${response}`);
+      } catch (error) {
+        showToast('error', error?.message || 'No se pudo probar la regla');
+      } finally {
+        setBusy(button);
+      }
+      return;
+    }
+
+    const modeId = button.dataset.installMode || button.dataset.equipMode || button.dataset.unequipMode;
+    if (button.dataset.installMode && !playerName) return showToast('warning', 'Escribe tu nombre exacto de Minecraft');
+    const action = button.dataset.installMode ? 'install' : button.dataset.equipMode ? 'equip' : 'unequip';
+    setBusy(button, action === 'install' ? 'Instalando...' : action === 'equip' ? 'Equipando...' : 'Pausando...');
     try {
-      const result = await api.post(`/minecraft/game-modes/${button.dataset.installMode}/install`, { playerName, connectionId }, { signal });
-      const message = result.installed
-        ? `${result.installed} reglas instaladas${result.setupCommand ? ` - Ejecuta /${result.setupCommand} en Minecraft` : ''}`
-        : 'Este modo ya estaba instalado';
-      showToast('success', message);
-      await refreshRules();
+      if (action === 'install') {
+        const result = await api.post(`/minecraft/game-modes/${modeId}/install`, { playerName, connectionId }, { signal });
+        showToast('success', `${result.installed || 0} reglas nuevas y ${result.updated || 0} actualizadas${result.setupCommand ? ` Â· Ejecuta /${result.setupCommand} en Minecraft` : ''}`);
+      } else {
+        await api.put(`/minecraft/game-modes/${modeId}/${action}`, { connectionId }, { signal });
+        showToast('success', action === 'equip' ? 'Preset equipado: solo estas reglas quedaron activas' : 'Preset pausado');
+      }
+      await Promise.all([refreshRules(), loadGameModes(connectionId)]);
     } catch (error) {
-      showToast('error', error?.message || 'No se pudo instalar el modo');
+      showToast('error', error?.message || `No se pudo ${action === 'install' ? 'instalar' : action === 'equip' ? 'equipar' : 'pausar'} el preset`);
     } finally {
       setBusy(button);
     }
